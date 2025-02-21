@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".kayitOlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/kullaniciAdiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="89dp"
+        android:layout_marginTop="96dp"
+        android:ems="10"
+        android:hint="@string/kullaniciAdi"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/parolaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="@string/parola"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/telNoText"
+        app:layout_constraintTop_toBottomOf="@+id/telNoText" />
+
+    <EditText
+        android:id="@+id/isimSoyisimText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="@string/isimSoyisim"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
+
+    <EditText
+        android:id="@+id/ePostaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="@string/ePosta"
+        android:inputType="textEmailAddress"
+        app:layout_constraintStart_toStartOf="@+id/isimSoyisimText"
+        app:layout_constraintTop_toBottomOf="@+id/isimSoyisimText" />
+
+    <EditText
+        android:id="@+id/telNoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:hint="@string/telNo"
+        android:inputType="phone"
+        app:layout_constraintStart_toStartOf="@+id/ePostaText"
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/zatenHesabinVarMi"
+        app:layout_constraintStart_toStartOf="@+id/parolaText"
+        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+
+    <TextView
+        android:id="@+id/girisYapLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:text="@string/girisYap"
+        android:textColor="#3B76FF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="@+id/parolaText" />
+
+    <Button
+        android:id="@+id/kayitOlButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/kayitOl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">icimdekiler</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="kullaniciAdi">Kullanıcı Adı</string>
+    <string name="isimSoyisim">İsim-Soyisim</string>
+    <string name="ePosta">e-Posta</string>
+    <string name="telNo">Telefon Numarası</string>
+    <string name="parola">Parola</string>
+    <string name="kayitOl">Kayıt Ol</string>
+    <string name="girisYap">Giriş Yap</string>
+    <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
+    <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
+    <string name="beniHatirla">Beni Hatırla</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

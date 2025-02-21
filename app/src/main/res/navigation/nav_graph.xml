@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/girisYapFragment">
 
+    <fragment
+        android:id="@+id/girisYapFragment"
+        android:name="com.example.icimdekiler.girisYapFragment"
+        android:label="fragment_giris_yap"
+        tools:layout="@layout/fragment_giris_yap" >
+        <action
+            android:id="@+id/action_girisYapFragment_to_kayitOlFragment"
+            app:destination="@id/kayitOlFragment" />
+        <action
+            android:id="@+id/action_girisYapFragment_to_adminAnaSayfaFragment"
+            app:destination="@id/adminAnaSayfaFragment" />
+        <action
+            android:id="@+id/action_girisYapFragment_to_kullaniciAnaSayfaFragment"
+            app:destination="@id/kullaniciAnaSayfaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/kayitOlFragment"
+        android:name="com.example.icimdekiler.kayitOlFragment"
+        android:label="fragment_kayit_ol"
+        tools:layout="@layout/fragment_kayit_ol" >
+        <action
+            android:id="@+id/action_kayitOlFragment_to_kullaniciAnaSayfaFragment"
+            app:destination="@id/kullaniciAnaSayfaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminAnaSayfaFragment"
+        android:name="com.example.icimdekiler.adminAnaSayfaFragment"
+        android:label="fragment_admin_ana_sayfa"
+        tools:layout="@layout/fragment_admin_ana_sayfa" />
+    <fragment
+        android:id="@+id/kullaniciAnaSayfaFragment"
+        android:name="com.example.icimdekiler.kullaniciAnaSayfaFragment"
+        android:label="fragment_kullanici_ana_sayfa"
+        tools:layout="@layout/fragment_kullanici_ana_sayfa" />
 </navigation>

@@ -1,14 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".girisYapFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/kullaniciAdiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="190dp"
+        android:ems="10"
+        android:hint="@string/kullaniciAdi"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/girisYapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/girisYap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <EditText
+        android:id="@+id/parolaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="@string/parola"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/ePostaText"
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+
+    <EditText
+        android:id="@+id/ePostaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="@string/ePosta"
+        android:inputType="textEmailAddress"
+        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/halaKayitOlmadinMi"
+        app:layout_constraintEnd_toStartOf="@+id/kayitOlLabel"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/parolaText"
+        app:layout_constraintTop_toBottomOf="@+id/beniHatirlaCheckBox" />
+
+    <TextView
+        android:id="@+id/kayitOlLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:text="@string/kayitOl"
+        android:textColor="#3B76FF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/parolaText" />
+
+    <CheckBox
+        android:id="@+id/beniHatirlaCheckBox"
+        android:layout_width="111dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/beniHatirla"
+        app:layout_constraintEnd_toEndOf="@+id/parolaText"
+        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
