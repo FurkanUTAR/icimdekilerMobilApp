@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194592847328",
+    "project_id": "icimdekiler-8a95b",
+    "storage_bucket": "icimdekiler-8a95b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194592847328:android:9fc0b712811a4869ff2785",
+        "android_client_info": {
+          "package_name": "com.example.icimdekiler"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXcQfKm_2bRRCeA6IGEXfHelHyinrP7Ks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
