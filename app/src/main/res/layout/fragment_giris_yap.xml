@@ -21,13 +21,13 @@
 
     <Button
         android:id="@+id/girisYapButton"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:text="@string/girisYap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/beniHatirlaCheckBox" />
 
     <EditText
         android:id="@+id/parolaText"
@@ -55,14 +55,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/halaKayitOlmadinMi"
-        app:layout_constraintEnd_toStartOf="@+id/kayitOlLabel"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/beniHatirlaCheckBox" />
+        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
 
     <TextView
         android:id="@+id/kayitOlLabel"
@@ -79,10 +76,9 @@
         android:id="@+id/beniHatirlaCheckBox"
         android:layout_width="111dp"
         android:layout_height="28dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginTop="5dp"
         android:text="@string/beniHatirla"
         app:layout_constraintEnd_toEndOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

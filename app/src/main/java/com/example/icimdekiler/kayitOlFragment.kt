@@ -16,11 +16,13 @@ import com.google.firebase.firestore.firestore
 
 class kayitOlFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
-    val db = Firebase.firestore
-
+    //Binding
     private var _binding: FragmentKayitOlBinding? = null
     private val binding get() = _binding!!
+
+    //Firebase
+    private lateinit var auth: FirebaseAuth
+    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +60,11 @@ class kayitOlFragment : Fragment() {
         if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()){
             auth.createUserWithEmailAndPassword(ePosta,parola)
                 .addOnCompleteListener { task ->
-                    if(task.isSuccessful){
+                    if (task.isSuccessful){
 
                         val guncelKullanici=auth.currentUser
 
-                        if(guncelKullanici != null){
+                        if (guncelKullanici != null) {
 
                             val kullaniciMap= hashMapOf<String,Any>()
                             kullaniciMap.put("kullaniciAdi",kullaniciAdi)
@@ -96,7 +98,7 @@ class kayitOlFragment : Fragment() {
                 }.addOnFailureListener { exeption ->
                     Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_LONG).show()
                 }
-        }else{
+        } else {
             Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()
         }
     }
