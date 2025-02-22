@@ -73,6 +73,7 @@ class kayitOlFragment : Fragment() {
                             kullaniciMap.put("telNo",telNo)
                             kullaniciMap.put("parola",parola)
                             kullaniciMap.put("isAdmin",false)
+                            kullaniciMap.put("hatirla",false)
                             kullaniciMap.put("kullaniciUID",guncelKullanici.uid)
 
                             db.collection("kullaniciBilgileri")

@@ -10,6 +10,4 @@
     <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
     <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
     <string name="beniHatirla">Beni Hatırla</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

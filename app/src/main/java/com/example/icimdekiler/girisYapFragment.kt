@@ -62,7 +62,7 @@ class girisYapFragment : Fragment() {
 
         binding.girisYapButton.setOnClickListener {
             girisYap()
-/*
+            /*
             if (binding.beniHatirlaCheckBox.isChecked){
                 val guncelKullanici=auth.currentUser
                 if (guncelKullanici != null){
@@ -77,8 +77,27 @@ class girisYapFragment : Fragment() {
                     }
                 }
             }
+             */
+        }
+    }
 
- */
+    fun hatirlaKontrol(){
+        val guncelKullanici = auth.currentUser
+        if (guncelKullanici != null){
+            db.collection("kullaniciBilgileri").addSnapshotListener { value, error ->
+                if (error != null){
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                }else{
+                    if (value != null){
+                        if (value.isEmpty){
+                            val documents=value.documents
+                            for(document in documents){
+
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -88,9 +107,10 @@ class girisYapFragment : Fragment() {
         val parola = binding.parolaText.text.toString().trim()
 
         // Boş alan kontrolü yap
-        if (ePosta.isNotEmpty() && parola.isNotEmpty()) {
+        if (ePosta.isNotEmpty() && parola.isNotEmpty() ) {
             // Firebase Authentication ile giriş yapılıyor
-            auth.signInWithEmailAndPassword(ePosta, parola).addOnCompleteListener { task ->
+            auth.signInWithEmailAndPassword(ePosta, parola)
+                .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val guncelKullanici = auth.currentUser  // Şu anki oturum açan kullanıcıyı al
                     if (guncelKullanici != null) {
@@ -102,7 +122,7 @@ class girisYapFragment : Fragment() {
                             .get()
                             .addOnSuccessListener { documents ->
                                 if (!documents.isEmpty) {  // Eğer Firestore'da kullanıcı varsa
-                                    val kullanici = documents.documents.first()  // İlk kullanıcıyı al
+                                    val kullanici = documents.documents.first() // İlk kullanıcıyı al
 
                                     // `isAdmin` alanını Boolean olarak al (null olursa false yap) ve Kullanıcının admin olup olmadığını kaydet
                                     UserSession.isAdmin = kullanici.getBoolean("isAdmin") ?: false
@@ -112,8 +132,10 @@ class girisYapFragment : Fragment() {
 
                                     // Kullanıcının admin olup olmadığına göre yönlendirme yap
                                     if (isAdmin) {
+
                                         val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
                                         Navigation.findNavController(requireView()).navigate(action)
+
                                         Toast.makeText(requireContext(), "Hoşgeldin Admin ${UserSession.kullaniciAdi}", Toast.LENGTH_SHORT).show()
                                     } else {
                                         val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()

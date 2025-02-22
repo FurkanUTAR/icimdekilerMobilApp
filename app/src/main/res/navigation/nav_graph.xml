@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_girisYapFragment_to_kullaniciAnaSayfaFragment"
             app:destination="@id/kullaniciAnaSayfaFragment" />
+        <action
+            android:id="@+id/action_girisYapFragment_to_kullaniciAnaSayfaFragment2"
+            app:destination="@id/kullaniciAnaSayfaFragment" />
     </fragment>
     <fragment
         android:id="@+id/kayitOlFragment"
