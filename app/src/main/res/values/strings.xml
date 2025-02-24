@@ -7,7 +7,9 @@
     <string name="parola">Parola</string>
     <string name="kayitOl">Kayıt Ol</string>
     <string name="girisYap">Giriş Yap</string>
+    <string name="cikisYap">Çıkış Yap</string>
     <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
     <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
     <string name="beniHatirla">Beni Hatırla</string>
+
 </resources>

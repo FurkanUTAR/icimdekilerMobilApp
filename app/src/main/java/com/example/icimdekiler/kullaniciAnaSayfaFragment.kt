@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.icimdekiler.databinding.FragmentGirisYapBinding
+import com.example.icimdekiler.databinding.FragmentKullaniciAnaSayfaBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -14,7 +14,7 @@ import com.google.firebase.firestore.firestore
 class kullaniciAnaSayfaFragment : Fragment() {
 
     //Binding
-    private var _binding: FragmentGirisYapBinding? = null
+    private var _binding: FragmentKullaniciAnaSayfaBinding? = null
     private val binding get() = _binding!!
 
     //Firebase
@@ -30,7 +30,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentGirisYapBinding.inflate(inflater, container, false)
+        _binding = FragmentKullaniciAnaSayfaBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }

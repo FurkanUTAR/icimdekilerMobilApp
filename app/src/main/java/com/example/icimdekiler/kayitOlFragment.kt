@@ -11,7 +11,6 @@ import com.example.icimdekiler.databinding.FragmentKayitOlBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.firestore
 
 class kayitOlFragment : Fragment() {
@@ -46,55 +45,45 @@ class kayitOlFragment : Fragment() {
         }
 
         binding.girisYapLabel.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed() // Önceki ekrana dön
         }
     }
 
-    fun kayitOl(){
-        val kullaniciAdi=binding.kullaniciAdiText.text.toString()
-        val isimSoyisim=binding.isimSoyisimText.text.toString()
-        val ePosta=binding.ePostaText.text.toString()
-        val telNo=binding.telNoText.text.toString()
-        val parola=binding.parolaText.text.toString()
+    fun kayitOl() {
+        val kullaniciAdi = binding.kullaniciAdiText.text.toString()
+        val isimSoyisim = binding.isimSoyisimText.text.toString()
+        val ePosta = binding.ePostaText.text.toString()
+        val telNo = binding.telNoText.text.toString()
+        val parola = binding.parolaText.text.toString()
 
-        if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()){
-            auth.createUserWithEmailAndPassword(ePosta,parola)
+        //Boş alan kontrolü yap
+        if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
+            auth.createUserWithEmailAndPassword(ePosta, parola)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful){
-
-                        val guncelKullanici=auth.currentUser
-
+                    if (task.isSuccessful) {
+                        val guncelKullanici = auth.currentUser
                         if (guncelKullanici != null) {
+                            //Kullanıcı bilgilerini bir Map'e koy
+                            val kullaniciMap = hashMapOf<String, Any>()
+                            kullaniciMap.put("kullaniciAdi", kullaniciAdi)
+                            kullaniciMap.put("isimSoyisim", isimSoyisim)
+                            kullaniciMap.put("ePosta", ePosta)
+                            kullaniciMap.put("telNo", telNo)
+                            kullaniciMap.put("parola", parola)
+                            kullaniciMap.put("isAdmin", false) // Kullanıcı admin değil
+                            kullaniciMap.put("kullaniciUID", guncelKullanici.uid) // Kullanıcı UID'sini ekle
 
-                            val kullaniciMap= hashMapOf<String,Any>()
-                            kullaniciMap.put("kullaniciAdi",kullaniciAdi)
-                            kullaniciMap.put("isimSoyisim",isimSoyisim)
-                            kullaniciMap.put("ePosta",ePosta)
-                            kullaniciMap.put("telNo",telNo)
-                            kullaniciMap.put("parola",parola)
-                            kullaniciMap.put("isAdmin",false)
-                            kullaniciMap.put("hatirla",false)
-                            kullaniciMap.put("kullaniciUID",guncelKullanici.uid)
-
+                            //Kullanıcı bilgilerini Firestore'a kaydet
                             db.collection("kullaniciBilgileri")
-                                .add(kullaniciMap)
-                                .addOnFailureListener { exeption ->
+                                .add(kullaniciMap) // Firestore'a ekle
+                                .addOnFailureListener { exeption -> // Hata olursa
                                     Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_LONG).show()
                                 }
 
-                            /*
-                            val profilGuncellemeIstegi = userProfileChangeRequest {
-                                displayName = kullaniciAdi
-                            }
-                            guncelKullanici.updateProfile(profilGuncellemeIstegi).addOnCompleteListener { task ->
-                                if(task.isSuccessful){
-                                    println("Kullanıcı Adı Güncellendi")
-                                }
-                            }
-                             */
+                            //Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
+                            val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                            Navigation.findNavController(requireView()).navigate(action)
                         }
-                        val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                        Navigation.findNavController(requireView()).navigate(action)
                     }
                 }.addOnFailureListener { exeption ->
                     Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_LONG).show()
