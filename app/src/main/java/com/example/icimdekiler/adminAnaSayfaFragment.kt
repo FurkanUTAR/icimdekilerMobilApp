@@ -40,7 +40,6 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
 
