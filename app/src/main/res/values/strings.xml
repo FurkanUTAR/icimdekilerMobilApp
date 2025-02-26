@@ -11,5 +11,11 @@
     <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
     <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
     <string name="beniHatirla">Beni Hatırla</string>
+    <string name="urunAdi">Ürün Adı</string>
+    <string name="icindekiler">İçindekiler</string>
+    <string name="barkod">Barkod</string>
+    <string name="kaydet">Kaydet</string>
+    <string name="guncelle">Güncelle</string>
+    <string name="sil">Sil</string>
 
 </resources>

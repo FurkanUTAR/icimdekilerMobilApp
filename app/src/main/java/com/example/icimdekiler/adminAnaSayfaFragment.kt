@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
 import com.google.firebase.Firebase
@@ -62,6 +63,11 @@ class adminAnaSayfaFragment : Fragment() {
 
         binding.popupMenu.setOnClickListener {
             popupMenu.show()
+        }
+
+        binding.ekleImage.setOnClickListener {
+            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment()
+            Navigation.findNavController(view).navigate(action)
         }
     }
 

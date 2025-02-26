@@ -61,5 +61,13 @@
         <action
             android:id="@+id/action_adminAnaSayfaFragment_to_girisYapFragment"
             app:destination="@id/girisYapFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_urunEkleFragment"
+            app:destination="@id/urunEkleFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/urunEkleFragment"
+        android:name="com.example.icimdekiler.urunEkleFragment"
+        android:label="fragment_urun_ekle"
+        tools:layout="@layout/fragment_urun_ekle" />
 </navigation>
