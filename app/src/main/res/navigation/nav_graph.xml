@@ -50,8 +50,11 @@
         android:label="fragment_kullanici_ana_sayfa"
         tools:layout="@layout/fragment_kullanici_ana_sayfa" >
         <action
-            android:id="@+id/action_kullaniciAnaSayfaFragment_to_girisYapFragment2"
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_girisYapFragment"
             app:destination="@id/girisYapFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunFragment"
+            app:destination="@id/urunFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -70,4 +73,9 @@
         android:name="com.example.icimdekiler.urunEkleFragment"
         android:label="fragment_urun_ekle"
         tools:layout="@layout/fragment_urun_ekle" />
+    <fragment
+        android:id="@+id/urunFragment"
+        android:name="com.example.icimdekiler.urunFragment"
+        android:label="fragment_urun"
+        tools:layout="@layout/fragment_urun" />
 </navigation>
