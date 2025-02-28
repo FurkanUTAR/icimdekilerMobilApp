@@ -1,4 +1,4 @@
-package com.example.icimdekiler
+package com.example.icimdekiler.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentKullaniciAnaSayfaBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

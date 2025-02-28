@@ -1,15 +1,20 @@
-package com.example.icimdekiler
+package com.example.icimdekiler.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.icimdekiler.R
+import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
+import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -24,6 +29,8 @@ class adminAnaSayfaFragment : Fragment() {
     //Firebase
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
+
+    var urunListesi=ArrayList<Urunler>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +48,11 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        verileriAl()
+
         val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.cikisYap -> {
@@ -68,6 +77,34 @@ class adminAnaSayfaFragment : Fragment() {
         binding.ekleImage.setOnClickListener {
             val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment()
             Navigation.findNavController(view).navigate(action)
+        }
+    }
+
+    fun verileriAl(){
+        db.collection("urunler").addSnapshotListener { snapshot, error ->
+            if (error != null){
+                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+            } else {
+               if (snapshot != null){
+                   if (!snapshot.isEmpty){
+                       val documents = snapshot.documents
+
+                       urunListesi.clear()
+                       for (document in documents){
+                           val barkodNo=document.get("barkodNo") as String
+                           val urunAdi=document.get("urunAdi") as String
+                           val icindekiler=document.get("icindekiler") as String
+
+                           var indirilenUrun = Urunler(barkodNo,urunAdi,icindekiler)
+                           urunListesi.add(indirilenUrun)
+                       }
+
+                       val adapter = UrunlerAdapter(urunListesi)
+                       binding.urunlerRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // Düzeltme burada
+                       binding.urunlerRecyclerView.adapter = adapter
+                   }
+               }
+            }
         }
     }
 

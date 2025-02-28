@@ -1,4 +1,4 @@
-package com.example.icimdekiler
+package com.example.icimdekiler.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

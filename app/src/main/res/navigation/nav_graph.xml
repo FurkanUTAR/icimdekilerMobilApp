@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.icimdekiler.splashFragment"
+        android:name="com.example.icimdekiler.view.splashFragment"
         android:label="splashFragment" >
         <action
             android:id="@+id/action_splashFragment_to_girisYapFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/girisYapFragment"
-        android:name="com.example.icimdekiler.girisYapFragment"
+        android:name="com.example.icimdekiler.view.girisYapFragment"
         android:label="fragment_giris_yap"
         tools:layout="@layout/fragment_giris_yap" >
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/kayitOlFragment"
-        android:name="com.example.icimdekiler.kayitOlFragment"
+        android:name="com.example.icimdekiler.view.kayitOlFragment"
         android:label="fragment_kayit_ol"
         tools:layout="@layout/fragment_kayit_ol" >
         <action
@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/kullaniciAnaSayfaFragment"
-        android:name="com.example.icimdekiler.kullaniciAnaSayfaFragment"
+        android:name="com.example.icimdekiler.view.kullaniciAnaSayfaFragment"
         android:label="fragment_kullanici_ana_sayfa"
         tools:layout="@layout/fragment_kullanici_ana_sayfa" >
         <action
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
-        android:name="com.example.icimdekiler.adminAnaSayfaFragment"
+        android:name="com.example.icimdekiler.view.adminAnaSayfaFragment"
         android:label="fragment_admin_ana_sayfa"
         tools:layout="@layout/fragment_admin_ana_sayfa" >
         <action
@@ -70,12 +70,12 @@
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
-        android:name="com.example.icimdekiler.urunEkleFragment"
+        android:name="com.example.icimdekiler.view.urunEkleFragment"
         android:label="fragment_urun_ekle"
         tools:layout="@layout/fragment_urun_ekle" />
     <fragment
         android:id="@+id/urunFragment"
-        android:name="com.example.icimdekiler.urunFragment"
+        android:name="com.example.icimdekiler.view.urunFragment"
         android:label="fragment_urun"
         tools:layout="@layout/fragment_urun" />
 </navigation>

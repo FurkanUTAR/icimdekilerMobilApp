@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".kullaniciAnaSayfaFragment">
+    tools:context=".view.kullaniciAnaSayfaFragment">
 
     <ImageView
         android:id="@+id/barkodOkuImage3"
@@ -50,6 +50,7 @@
         tools:layout_editor_absoluteX="59dp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/urunlerRecylerView"
         android:layout_width="409dp"
         android:layout_height="575dp"
         app:layout_constraintTop_toBottomOf="@+id/araImage2"
