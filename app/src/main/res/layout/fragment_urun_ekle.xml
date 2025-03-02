@@ -7,7 +7,7 @@
     tools:context=".view.urunEkleFragment">
 
     <EditText
-        android:id="@+id/barkodText"
+        android:id="@+id/barkodNoText"
         android:layout_width="257dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -27,7 +27,7 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barkodText" />
+        app:layout_constraintTop_toBottomOf="@+id/barkodNoText" />
 
     <Spinner
         android:id="@+id/icindekilerSpinner"
@@ -85,9 +85,9 @@
         android:layout_height="40dp"
         android:layout_marginStart="3dp"
         android:src="@drawable/barcode_reader"
-        app:layout_constraintBottom_toBottomOf="@+id/barkodText"
-        app:layout_constraintStart_toEndOf="@+id/barkodText"
-        app:layout_constraintTop_toTopOf="@+id/barkodText" />
+        app:layout_constraintBottom_toBottomOf="@+id/barkodNoText"
+        app:layout_constraintStart_toEndOf="@+id/barkodNoText"
+        app:layout_constraintTop_toTopOf="@+id/barkodNoText" />
 
     <ImageView
         android:id="@+id/ekleImage"
