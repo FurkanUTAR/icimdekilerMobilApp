@@ -30,8 +30,6 @@ class adminAnaSayfaFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
-    var urunListesi=ArrayList<Urunler>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -48,8 +46,6 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        verileriAl()
 
         val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
@@ -78,33 +74,10 @@ class adminAnaSayfaFragment : Fragment() {
             val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment()
             Navigation.findNavController(view).navigate(action)
         }
-    }
 
-    fun verileriAl(){
-        db.collection("urunler").addSnapshotListener { snapshot, error ->
-            if (error != null){
-                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-            } else {
-               if (snapshot != null){
-                   if (!snapshot.isEmpty){
-                       val documents = snapshot.documents
-
-                       urunListesi.clear()
-                       for (document in documents){
-                           val barkodNo=document.get("barkodNo") as String
-                           val urunAdi=document.get("urunAdi") as String
-                           val icindekiler=document.get("icindekiler") as String
-
-                           var indirilenUrun = Urunler(barkodNo,urunAdi,icindekiler)
-                           urunListesi.add(indirilenUrun)
-                       }
-
-                       val adapter = UrunlerAdapter(urunListesi)
-                       binding.urunlerRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // Düzeltme burada
-                       binding.urunlerRecyclerView.adapter = adapter
-                   }
-               }
-            }
+        binding.tumUrunlerButton.setOnClickListener {
+            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment()
+            Navigation.findNavController(view).navigate(action)
         }
     }
 
