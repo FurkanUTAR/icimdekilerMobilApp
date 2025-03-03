@@ -7,14 +7,14 @@
     tools:context=".kullaniciAnaSayfaFragment">
 
     <ImageView
-        android:id="@+id/barkodOkuImage3"
+        android:id="@+id/barkodOkuImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="3dp"
         android:src="@drawable/barcode_reader"
-        app:layout_constraintBottom_toBottomOf="@+id/araImage2"
-        app:layout_constraintStart_toEndOf="@+id/araImage2"
-        app:layout_constraintTop_toTopOf="@+id/araImage2" />
+        app:layout_constraintBottom_toBottomOf="@+id/araImage"
+        app:layout_constraintStart_toEndOf="@+id/araImage"
+        app:layout_constraintTop_toTopOf="@+id/araImage" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/popupMenu"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/araImage2"
+        android:id="@+id/araImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="3dp"
@@ -50,8 +50,9 @@
         tools:layout_editor_absoluteX="59dp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/urunlerView"
         android:layout_width="409dp"
         android:layout_height="575dp"
-        app:layout_constraintTop_toBottomOf="@+id/araImage2"
+        app:layout_constraintTop_toBottomOf="@+id/araImage"
         tools:layout_editor_absoluteX="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
