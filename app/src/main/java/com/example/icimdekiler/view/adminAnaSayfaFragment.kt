@@ -1,15 +1,20 @@
-package com.example.icimdekiler
+package com.example.icimdekiler.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.icimdekiler.R
+import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
+import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -41,9 +46,9 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.cikisYap -> {
@@ -67,6 +72,11 @@ class adminAnaSayfaFragment : Fragment() {
 
         binding.ekleImage.setOnClickListener {
             val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment()
+            Navigation.findNavController(view).navigate(action)
+        }
+
+        binding.tumUrunlerButton.setOnClickListener {
+            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment()
             Navigation.findNavController(view).navigate(action)
         }
     }

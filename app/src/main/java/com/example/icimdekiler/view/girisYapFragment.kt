@@ -1,4 +1,4 @@
-package com.example.icimdekiler
+package com.example.icimdekiler.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.icimdekiler.databinding.FragmentGirisYapBinding
-import com.example.icimdekiler.girisYapFragment.UserSession.isAdmin
+import com.example.icimdekiler.view.girisYapFragment.UserSession.isAdmin
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

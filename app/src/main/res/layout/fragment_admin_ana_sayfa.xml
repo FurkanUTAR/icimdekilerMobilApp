@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".adminAnaSayfaFragment">
+    tools:context=".view.adminAnaSayfaFragment">
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/popupMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_margin="10dp"
         android:clickable="true"
         android:onClick="kayit"
         android:src="@drawable/menu"
@@ -23,14 +22,12 @@
         android:id="@+id/urunAdiText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="85dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/urunAdi"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popupMenu" />
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <ImageView
         android:id="@+id/araImage"
@@ -52,12 +49,31 @@
         app:layout_constraintStart_toEndOf="@+id/araImage"
         app:layout_constraintTop_toTopOf="@+id/araImage" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="161dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/barcode_reader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/tumUrunlerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/barcode_reader"
+        android:drawablePadding="8dp"
+        android:gravity="center|center_vertical"
+        android:padding="16dp"
+        android:text="Tüm Ürünler"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
