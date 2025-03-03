@@ -6,15 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".kullaniciAnaSayfaFragment">
 
+    <Button
+        android:id="@+id/tumUrunlerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/barcode_reader"
+        android:drawablePadding="8dp"
+        android:gravity="center|center_vertical"
+        android:padding="16dp"
+        android:text="Tüm Ürünler"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
+
     <ImageView
-        android:id="@+id/barkodOkuImage3"
+        android:id="@+id/imageView2"
+        android:layout_width="161dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/barcode_reader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/araImage2"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="3dp"
-        android:src="@drawable/barcode_reader"
-        app:layout_constraintBottom_toBottomOf="@+id/araImage2"
-        app:layout_constraintStart_toEndOf="@+id/araImage2"
-        app:layout_constraintTop_toTopOf="@+id/araImage2" />
+        android:layout_marginStart="8dp"
+        android:src="@drawable/search"
+        app:layout_constraintBottom_toBottomOf="@+id/urunAdiText"
+        app:layout_constraintStart_toEndOf="@+id/urunAdiText"
+        app:layout_constraintTop_toTopOf="@+id/urunAdiText"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/urunAdiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/urunAdi"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/popupMenu"
@@ -28,30 +70,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/araImage2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="3dp"
-        android:src="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@+id/urunAdiText"
-        app:layout_constraintStart_toEndOf="@+id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@+id/urunAdiText" />
-
-    <EditText
-        android:id="@+id/urunAdiText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="109dp"
-        android:ems="10"
-        android:hint="@string/urunAdi"
-        android:inputType="text"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="59dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="409dp"
-        android:layout_height="575dp"
-        app:layout_constraintTop_toBottomOf="@+id/araImage2"
-        tools:layout_editor_absoluteX="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

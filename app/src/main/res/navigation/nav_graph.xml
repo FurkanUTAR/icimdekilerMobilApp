@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunFragment"
             app:destination="@id/urunFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_kullaniciTumUrunlerFragment"
+            app:destination="@id/kullaniciTumUrunlerFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -85,5 +88,17 @@
         android:id="@+id/adminTumUrunlerFragment"
         android:name="com.example.icimdekiler.view.adminTumUrunlerFragment"
         android:label="fragment_admin_tum_urunler"
-        tools:layout="@layout/fragment_admin_tum_urunler" />
+        tools:layout="@layout/fragment_admin_tum_urunler" >
+        <action
+            android:id="@+id/action_adminTumUrunlerFragment_to_urunEkleFragment"
+            app:destination="@id/urunEkleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/kullaniciTumUrunlerFragment"
+        android:name="com.example.icimdekiler.view.kullaniciTumUrunlerFragment"
+        android:label="kullaniciTumUrunlerFragment" >
+        <action
+            android:id="@+id/action_kullaniciTumUrunlerFragment_to_urunFragment"
+            app:destination="@id/urunFragment" />
+    </fragment>
 </navigation>

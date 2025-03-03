@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentKullaniciAnaSayfaBinding
@@ -42,6 +43,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
 
@@ -66,10 +68,10 @@ class kullaniciAnaSayfaFragment : Fragment() {
             popupMenu.show()
         }
 
-        /*binding.barkodOkuImage3.setOnClickListener {
-            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment()
+        binding.tumUrunlerButton.setOnClickListener {
+            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
             Navigation.findNavController(view).navigate(action)
-        }*/
+        }
 
     }
 
