@@ -55,13 +55,13 @@ class adminTumUrunlerFragment : Fragment() {
         db.collection("urunler")
             .orderBy("urunAdi", Query.Direction.ASCENDING)
             .limit(30)
-            .addSnapshotListener { snapshot, error ->
+            .addSnapshotListener { value, error ->
                 if (error != null){
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                 } else {
-                    if (snapshot != null){
-                        if (!snapshot.isEmpty){
-                            val documents = snapshot.documents
+                    if (value != null){
+                        if (!value.isEmpty){
+                            val documents = value.documents
 
                             urunListesi.clear()
                             for (document in documents){
@@ -79,7 +79,7 @@ class adminTumUrunlerFragment : Fragment() {
                         }
                     }
                 }
-        }
+            }
     }
 
     private fun urunAra() {
@@ -87,9 +87,8 @@ class adminTumUrunlerFragment : Fragment() {
 
         if (urun.isNotEmpty()) {
             db.collection("urunler")
-                .orderBy("urunAdi")
+                .orderBy("urunAdiLowerCase")
                 .startAt(urun)
-                .endAt(urun + "\uf8ff") // Firestore'un gizli joker karakteri 😏
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
@@ -113,45 +112,6 @@ class adminTumUrunlerFragment : Fragment() {
                 }
         }
     }
-
-
-    /*
-        private fun urunAra(){
-
-            val urun = binding.urunAdiText.text.toString().trim()
-
-            db.collection("urunler")
-                .whereGreaterThanOrEqualTo("urunAdi", urun)
-                .orderBy("urunAdi", Query.Direction.ASCENDING)
-                .limit(30)
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null){
-                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                    } else {
-                        if (snapshot != null){
-                            if (!snapshot.isEmpty){
-                                val documents = snapshot.documents
-
-                                urunListesi.clear()
-                                for (document in documents){
-                                    val barkodNo=document.get("barkodNo") as String
-                                    val urunAdi=document.get("urunAdi") as String
-                                    val icindekiler=document.get("icindekiler") as String
-
-                                    val indirilenUrun = Urunler(barkodNo,urunAdi,icindekiler)
-                                    urunListesi.add(indirilenUrun)
-                                }
-
-                                val adapter = UrunlerAdapter(urunListesi)
-                                binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(),2)
-                                binding.urunlerRecyclerView.adapter = adapter
-                            }
-                        }
-                    }
-            }
-        }
-
-     */
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,10 +35,18 @@ class urunEkleFragment : Fragment() {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var cameraExecutor: ExecutorService
 
+    private val icerikListesi = ArrayList<String>()
+    private lateinit var icerikAdapter:ArrayAdapter<String>
+
+    private lateinit var icindekilerAdapter: ArrayAdapter<String>
+    private val icindekilerListesi = mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
         registerLauncher()
+
+        icerikAl()
     }
 
     override fun onCreateView(
@@ -51,9 +60,67 @@ class urunEkleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        icindekiler()
+
         binding.barkodOkuImage.setOnClickListener {
             barkodOku()
         }
+
+        binding.ekleImage.setOnClickListener {
+            icindekilerListesi.add(icerikListesi[binding.icerikSpinner.selectedItemPosition])
+            // Adapter'a değişikliği bildir
+            icindekilerAdapter.notifyDataSetChanged()
+        }
+
+        binding.kaydetButton.setOnClickListener {
+            val barkodNo = binding.barkodNoText.text.toString().trim()
+            val urunAdi = binding.urunAdiText.text.toString().trim()
+            val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
+            val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
+
+            val urunMap = hashMapOf<String, Any>()
+            urunMap["urunAdi"] = urunAdi
+            urunMap.put("urunAdiLowerCase",urunAdiLowerCase)
+            urunMap.put("barkodNo",barkodNo)
+            urunMap.put("icindekiler",birlesikIcindekiler)
+
+            db.collection("urunler")
+                .add(urunMap)
+                .addOnFailureListener { exeption ->
+                    Toast.makeText(requireContext(),exeption.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+
+        }
+    }
+
+    private fun icerikAl(){
+        db.collection("icerik")
+            .addSnapshotListener { value, error ->
+                if (error != null){
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                } else {
+                    if (value != null){
+                        if (!value.isEmpty){
+                            val documents = value.documents
+
+                            icerikListesi.clear()
+
+                            for (document in documents){
+                                val urun=document.get("urun") as String
+
+                                icerikListesi.add(urun)
+                                icerikAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,android.R.id.text1,icerikListesi)
+                                binding.icerikSpinner.adapter = icerikAdapter
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun icindekiler(){
+        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
+        binding.icindekilerListView.adapter = icindekilerAdapter
     }
 
     private fun barkodOku() {
