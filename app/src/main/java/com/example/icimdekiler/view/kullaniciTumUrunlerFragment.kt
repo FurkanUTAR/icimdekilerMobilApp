@@ -30,6 +30,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
     private var urunListesi=ArrayList<Urunler>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth=Firebase.auth
@@ -48,39 +49,31 @@ class kullaniciTumUrunlerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         urunleriAl()
 
-        binding.araImage.setOnClickListener {
-            urunAra()
-        }
+        binding.araImage.setOnClickListener { urunAra() }
     }
-
-
 
     private fun urunleriAl(){
         db.collection("urunler")
             .orderBy("urunAdi", Query.Direction.ASCENDING)
             .limit(30)
-            .addSnapshotListener { snapshot, error ->
+            .addSnapshotListener { value, error ->
                 if (error != null){
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                 } else {
-                    if (snapshot != null){
-                        if (!snapshot.isEmpty){
-                            val documents = snapshot.documents
+                    if (value != null && !value.isEmpty) {
+                        urunListesi.clear()
+                        for (document in value.documents) {
+                            var barkodNo = document.getString("barkodNo") ?: ""
+                            var urunAdi = document.getString("urunAdi") ?: ""
+                            var icindekiler = document.getString("icindekiler") ?: ""
 
-                            urunListesi.clear()
-                            for (document in documents){
-                                val barkodNo=document.get("barkodNo") as String
-                                val urunAdi=document.get("urunAdi") as String
-                                val icindekiler=document.get("icindekiler") as String
-
-                                val indirilenUrun = Urunler(barkodNo,urunAdi,icindekiler)
-                                urunListesi.add(indirilenUrun)
-                            }
-
-                            val adapter = UrunlerAdapter(urunListesi)
-                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(),2)
-                            binding.urunlerRecyclerView.adapter = adapter
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                            urunListesi.add(indirilenUrun)
                         }
+
+                        val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                        binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                        binding.urunlerRecyclerView.adapter = adapter
                     }
                 }
             }
@@ -94,22 +87,23 @@ class kullaniciTumUrunlerFragment : Fragment() {
                 .orderBy("urunAdi")
                 .startAt(urun)
                 .endAt(urun + "\uf8ff") // Firestore'un gizli joker karakteri 😏
-                .addSnapshotListener { snapshot, error ->
+                .addSnapshotListener { value, error ->
                     if (error != null) {
                         Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                     } else {
-                        if (snapshot != null && !snapshot.isEmpty) {
+                        if (value != null && !value.isEmpty) {
+
                             urunListesi.clear()
-                            for (document in snapshot.documents) {
-                                val barkodNo = document.getString("barkodNo") ?: ""
-                                val urunAdi = document.getString("urunAdi") ?: ""
-                                val icindekiler = document.getString("icindekiler") ?: ""
+                            for (document in value.documents) {
+                                var barkodNo = document.getString("barkodNo") ?: ""
+                                var urunAdi = document.getString("urunAdi") ?: ""
+                                var icindekiler = document.getString("icindekiler") ?: ""
 
                                 val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
                                 urunListesi.add(indirilenUrun)
                             }
 
-                            val adapter = UrunlerAdapter(urunListesi)
+                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
                             binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                             binding.urunlerRecyclerView.adapter = adapter
                         }
@@ -122,5 +116,4 @@ class kullaniciTumUrunlerFragment : Fragment() {
         super.onDestroyView()
         _binding=null
     }
-
 }

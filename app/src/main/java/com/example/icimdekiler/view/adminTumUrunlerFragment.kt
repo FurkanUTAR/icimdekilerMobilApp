@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminTumUrunlerBinding
+import com.example.icimdekiler.databinding.FragmentKayitOlBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -46,9 +47,7 @@ class adminTumUrunlerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         urunleriAl()
 
-        binding.araImage.setOnClickListener {
-            urunAra()
-        }
+        binding.araImage.setOnClickListener { urunAra() }
     }
 
     private fun urunleriAl(){
@@ -59,24 +58,21 @@ class adminTumUrunlerFragment : Fragment() {
                 if (error != null){
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                 } else {
-                    if (value != null){
-                        if (!value.isEmpty){
-                            val documents = value.documents
+                    if (value != null && !value.isEmpty) {
 
-                            urunListesi.clear()
-                            for (document in documents){
-                                val barkodNo=document.get("barkodNo") as String
-                                val urunAdi=document.get("urunAdi") as String
-                                val icindekiler=document.get("icindekiler") as String
+                        urunListesi.clear()
+                        for (document in value.documents) {
+                            var barkodNo = document.getString("barkodNo") ?: ""
+                            var urunAdi = document.getString("urunAdi") ?: ""
+                            var icindekiler = document.getString("icindekiler") ?: ""
 
-                                val indirilenUrun = Urunler(barkodNo,urunAdi,icindekiler)
-                                urunListesi.add(indirilenUrun)
-                            }
-
-                            val adapter = UrunlerAdapter(urunListesi)
-                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(),2)
-                            binding.urunlerRecyclerView.adapter = adapter
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                            urunListesi.add(indirilenUrun)
                         }
+
+                        val adapter = UrunlerAdapter(urunListesi, "admin" )
+                        binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                        binding.urunlerRecyclerView.adapter = adapter
                     }
                 }
             }
@@ -89,22 +85,23 @@ class adminTumUrunlerFragment : Fragment() {
             db.collection("urunler")
                 .orderBy("urunAdiLowerCase")
                 .startAt(urun)
-                .addSnapshotListener { snapshot, error ->
+                .addSnapshotListener { value, error ->
                     if (error != null) {
                         Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                     } else {
-                        if (snapshot != null && !snapshot.isEmpty) {
+                        if (value != null && !value.isEmpty) {
+
                             urunListesi.clear()
-                            for (document in snapshot.documents) {
-                                val barkodNo = document.getString("barkodNo") ?: ""
-                                val urunAdi = document.getString("urunAdi") ?: ""
-                                val icindekiler = document.getString("icindekiler") ?: ""
+                            for (document in value.documents) {
+                                var barkodNo = document.getString("barkodNo") ?: ""
+                                var urunAdi = document.getString("urunAdi") ?: ""
+                                var icindekiler = document.getString("icindekiler") ?: ""
 
                                 val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
                                 urunListesi.add(indirilenUrun)
                             }
 
-                            val adapter = UrunlerAdapter(urunListesi)
+                            val adapter = UrunlerAdapter(urunListesi,"admin")
                             binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                             binding.urunlerRecyclerView.adapter = adapter
                         }
@@ -115,6 +112,6 @@ class adminTumUrunlerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding=null
+        //_binding=null
     }
 }

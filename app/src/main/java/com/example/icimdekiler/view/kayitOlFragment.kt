@@ -12,6 +12,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import androidx.navigation.findNavController
 
 class kayitOlFragment : Fragment() {
 
@@ -56,37 +57,51 @@ class kayitOlFragment : Fragment() {
         val telNo = binding.telNoText.text.toString()
         val parola = binding.parolaText.text.toString()
 
-        //Boş alan kontrolü yap
+        // Boş alan kontrolü yap
         if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
-            auth.createUserWithEmailAndPassword(ePosta, parola)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val guncelKullanici = auth.currentUser
-                        if (guncelKullanici != null) {
-                            //Kullanıcı bilgilerini bir Map'e koy
-                            val kullaniciMap = hashMapOf<String, Any>()
-                            kullaniciMap.put("kullaniciAdi", kullaniciAdi)
-                            kullaniciMap.put("isimSoyisim", isimSoyisim)
-                            kullaniciMap.put("ePosta", ePosta)
-                            kullaniciMap.put("telNo", telNo)
-                            kullaniciMap.put("parola", parola)
-                            kullaniciMap.put("isAdmin", false) // Kullanıcı admin değil
-                            kullaniciMap.put("kullaniciUID", guncelKullanici.uid) // Kullanıcı UID'sini ekle
+            // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
+            db.collection("kullaniciBilgileri")
+                .whereEqualTo("kullaniciAdi", kullaniciAdi)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (querySnapshot.isEmpty) {
+                        // Aynı kullanıcı adı yok, kayıt işlemini başlat
+                        auth.createUserWithEmailAndPassword(ePosta, parola)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val guncelKullanici = auth.currentUser
+                                    if (guncelKullanici != null) {
+                                        // Kullanıcı bilgilerini bir Map'e koy
+                                        val kullaniciMap = hashMapOf<String, Any>()
+                                        kullaniciMap["kullaniciAdi"] = kullaniciAdi
+                                        kullaniciMap["isimSoyisim"] = isimSoyisim
+                                        kullaniciMap["ePosta"] = ePosta
+                                        kullaniciMap["telNo"] = telNo
+                                        kullaniciMap["parola"] = parola
+                                        kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
+                                        kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
 
-                            //Kullanıcı bilgilerini Firestore'a kaydet
-                            db.collection("kullaniciBilgileri")
-                                .add(kullaniciMap) // Firestore'a ekle
-                                .addOnFailureListener { exeption -> // Hata olursa
-                                    Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_LONG).show()
+                                        // Kullanıcı bilgilerini Firestore'a kaydet
+                                        db.collection("kullaniciBilgileri")
+                                            .add(kullaniciMap) // Firestore'a ekle
+                                            .addOnSuccessListener {
+                                                // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
+                                                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                                                requireView().findNavController().navigate(action)
+                                            }.addOnFailureListener { exception ->
+                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                            }
+                                    }
                                 }
-
-                            //Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
-                            val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                            Navigation.findNavController(requireView()).navigate(action)
-                        }
+                            }.addOnFailureListener { exception ->
+                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                            }
+                    } else {
+                        // Aynı kullanıcı adı zaten var, hata mesajı göster
+                        Toast.makeText(requireContext(), "Bu kullanıcı adı zaten kullanılıyor!", Toast.LENGTH_LONG).show()
                     }
-                }.addOnFailureListener { exeption ->
-                    Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_LONG).show()
+                }.addOnFailureListener { exception ->
+                    Toast.makeText(requireContext(), "Sorgu hatası: ${exception.localizedMessage}", Toast.LENGTH_LONG).show()
                 }
         } else {
             Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()

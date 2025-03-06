@@ -53,9 +53,7 @@ class girisYapFragment : Fragment() {
             Navigation.findNavController(requireView()).navigate(action)
         }
 
-        binding.girisYapButton.setOnClickListener {
-            girisYap()
-        }
+        binding.girisYapButton.setOnClickListener { girisYap() }
     }
 
     private fun girisYap(){

@@ -78,7 +78,23 @@
         android:id="@+id/urunEkleFragment"
         android:name="com.example.icimdekiler.view.urunEkleFragment"
         android:label="fragment_urun_ekle"
-        tools:layout="@layout/fragment_urun_ekle" />
+        tools:layout="@layout/fragment_urun_ekle" >
+        <argument
+            android:name="durum"
+            app:argType="string" />
+        <argument
+            android:name="barkodNo"
+            app:argType="string" />
+        <argument
+            android:name="urunAdi"
+            app:argType="string" />
+        <argument
+            android:name="icindekiler"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_urunEkleFragment_to_adminTumUrunlerFragment"
+            app:destination="@id/adminTumUrunlerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/urunFragment"
         android:name="com.example.icimdekiler.view.urunFragment"
@@ -101,4 +117,7 @@
             android:id="@+id/action_kullaniciTumUrunlerFragment_to_urunFragment"
             app:destination="@id/urunFragment" />
     </fragment>
+    <argument
+        android:name="durum"
+        app:argType="string" />
 </navigation>
