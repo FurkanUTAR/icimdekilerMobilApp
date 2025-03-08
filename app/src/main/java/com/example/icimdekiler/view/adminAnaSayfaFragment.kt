@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,13 +24,13 @@ import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+@Suppress("DEPRECATION")
 class adminAnaSayfaFragment : Fragment() {
 
     // Binding
@@ -99,7 +97,6 @@ class adminAnaSayfaFragment : Fragment() {
     }
 
     private fun urunEkleGecisUrunAdi() {
-        val urunAdi=binding.urunAdiText.text.toString().trim()
         val urunAdiLowerCase=binding.urunAdiText.text.toString().lowercase().trim()
 
         db.collection("urunler")
@@ -115,7 +112,7 @@ class adminAnaSayfaFragment : Fragment() {
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler)
                     findNavController().navigate(action)
                 }else Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
-            }
+            }.addOnFailureListener { exepion -> Toast.makeText(requireContext(),exepion.localizedMessage, Toast.LENGTH_LONG).show() }
     }
 
     private fun urunEkleGecisBarkodNo() {
@@ -141,12 +138,8 @@ class adminAnaSayfaFragment : Fragment() {
                     .setAction("İzin Ver") {
                         permissionLauncher.launch(Manifest.permission.CAMERA)
                     }.show()
-            } else {
-                permissionLauncher.launch(Manifest.permission.CAMERA)
-            }
-        } else {
-            pickImageCamera()
-        }
+            } else permissionLauncher.launch(Manifest.permission.CAMERA)
+        } else pickImageCamera()
     }
 
     private fun registerLauncher() {
@@ -169,31 +162,22 @@ class adminAnaSayfaFragment : Fragment() {
                                         val barkod = barcode.displayValue
                                         if (!barkod.isNullOrBlank()) {
                                             barkodNo = barkod
-                                            Log.d("BarkodOku", "Okunan barkod: $barkodNo")
                                             urunEkleGecisBarkodNo()
                                             break
                                         }
                                     }
-                                } else {
-                                    Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
-                                }
+                                } else Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
                             }
-                        }
-                        .addOnFailureListener { e ->
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
-                            }
+                        }.addOnFailureListener { e ->
+                            requireActivity().runOnUiThread { Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
                         }
                 }
             }
         }
 
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-            if (result) {
-                pickImageCamera()
-            } else {
-                Toast.makeText(requireContext(), "Kamera izni verilmedi!", Toast.LENGTH_SHORT).show()
-            }
+            if (result) pickImageCamera()
+            else Toast.makeText(requireContext(), "Kamera izni verilmedi!", Toast.LENGTH_SHORT).show()
         }
     }
 

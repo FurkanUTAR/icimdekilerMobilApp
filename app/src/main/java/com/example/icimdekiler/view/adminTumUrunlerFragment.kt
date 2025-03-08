@@ -70,7 +70,7 @@ class adminTumUrunlerFragment : Fragment() {
                             urunListesi.add(indirilenUrun)
                         }
 
-                        val adapter = UrunlerAdapter(urunListesi, "admin" )
+                        val adapter = UrunlerAdapter(urunListesi, "admin")
                         binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                         binding.urunlerRecyclerView.adapter = adapter
                     }
@@ -86,11 +86,9 @@ class adminTumUrunlerFragment : Fragment() {
                 .orderBy("urunAdiLowerCase")
                 .startAt(urun)
                 .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                    } else {
+                    if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                    else {
                         if (value != null && !value.isEmpty) {
-
                             urunListesi.clear()
                             for (document in value.documents) {
                                 var barkodNo = document.getString("barkodNo") ?: ""

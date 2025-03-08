@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import com.example.icimdekiler.databinding.FragmentSplashBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import androidx.navigation.findNavController
 
 class splashFragment : Fragment() {
 
@@ -39,6 +39,10 @@ class splashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        kontrol()
+    }
+
+    fun kontrol(){
         val currentUser = auth.currentUser
         if (currentUser != null) {
             // Kullanıcı bilgileri Firestore'dan çek
@@ -53,22 +57,22 @@ class splashFragment : Fragment() {
                         // Yönlendirme işlemi
                         if (isAdmin){
                             val action=splashFragmentDirections.actionSplashFragmentToAdminAnaSayfaFragment()
-                            Navigation.findNavController(requireView()).navigate(action)
+                            requireView().findNavController().navigate(action)
                         } else {
                             val action=splashFragmentDirections.actionSplashFragmentToKullaniciAnaSayfaFragment()
-                            Navigation.findNavController(requireView()).navigate(action)
+                            requireView().findNavController().navigate(action)
                         }
                     } else {
                         val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
-                        Navigation.findNavController(requireView()).navigate(action)
+                        requireView().findNavController().navigate(action)
                     }
                 }.addOnFailureListener {
                     val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
-                    Navigation.findNavController(requireView()).navigate(action)
+                    requireView().findNavController().navigate(action)
                 }
         } else {
             val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
-            Navigation.findNavController(requireView()).navigate(action)
+            requireView().findNavController().navigate(action)
         }
     }
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.Navigation
 import com.example.icimdekiler.databinding.FragmentKayitOlBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -41,21 +40,17 @@ class kayitOlFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.kayitOlButton.setOnClickListener {
-            kayitOl()
-        }
+        binding.kayitOlButton.setOnClickListener { kayitOl() }
 
-        binding.girisYapLabel.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed() // Önceki ekrana dön
-        }
+        binding.girisYapLabel.setOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
     }
 
     fun kayitOl() {
-        val kullaniciAdi = binding.kullaniciAdiText.text.toString()
-        val isimSoyisim = binding.isimSoyisimText.text.toString()
-        val ePosta = binding.ePostaText.text.toString()
-        val telNo = binding.telNoText.text.toString()
-        val parola = binding.parolaText.text.toString()
+        val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
+        val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
+        val ePosta = binding.ePostaText.text.toString().trim()
+        val telNo = binding.telNoText.text.toString().trim()
+        val parola = binding.parolaText.text.toString().trim()
 
         // Boş alan kontrolü yap
         if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
@@ -88,24 +83,13 @@ class kayitOlFragment : Fragment() {
                                                 // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
                                                 val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
                                                 requireView().findNavController().navigate(action)
-                                            }.addOnFailureListener { exception ->
-                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                                            }
+                                            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
                                     }
                                 }
-                            }.addOnFailureListener { exception ->
-                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                            }
-                    } else {
-                        // Aynı kullanıcı adı zaten var, hata mesajı göster
-                        Toast.makeText(requireContext(), "Bu kullanıcı adı zaten kullanılıyor!", Toast.LENGTH_LONG).show()
-                    }
-                }.addOnFailureListener { exception ->
-                    Toast.makeText(requireContext(), "Sorgu hatası: ${exception.localizedMessage}", Toast.LENGTH_LONG).show()
-                }
-        } else {
-            Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()
-        }
+                            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
+                    } else Toast.makeText(requireContext(), "Bu kullanıcı adı zaten kullanılıyor!", Toast.LENGTH_LONG).show()
+                }.addOnFailureListener { exception -> Toast.makeText(requireContext(), "Sorgu hatası: ${exception.localizedMessage}", Toast.LENGTH_LONG).show() }
+        } else Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
