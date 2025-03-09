@@ -120,24 +120,21 @@ class urunEkleFragment : Fragment() {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle("Kayıt etmek istediğinizden emin misiniz?")
             alert.setPositiveButton("Evet"){ dialog, value -> urunKaydet()}
-            alert.setNegativeButton("Hayır") { dialog, value -> }
-                .show()
+            alert.setNegativeButton("Hayır",null).show()
         }
 
         binding.guncelleButton.setOnClickListener {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle("Güncellemek istediğinizden emin misiniz?")
             alert.setPositiveButton("Evet"){ dialog, value -> urunGuncelle()}
-            alert.setNegativeButton("Hayır") { dialog, value -> }
-                .show()
+            alert.setNegativeButton("Hayır",null).show()
         }
 
         binding.silButton.setOnClickListener {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle("Silmek istediğinizden emin misiniz?")
             alert.setPositiveButton("Evet"){ dialog, value -> urunSil()}
-            alert.setNegativeButton("Hayır") { dialog, value -> }
-                .show()
+            alert.setNegativeButton("Hayır",null).show()
         }
 
         binding.icindekilerListView.setOnItemClickListener { parent, view, position, id ->

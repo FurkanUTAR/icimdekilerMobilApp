@@ -26,6 +26,7 @@ import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -54,6 +55,7 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         cameraExecutor = Executors.newSingleThreadExecutor()
         registerLauncherCamera()
         registerLauncherGallery()
@@ -70,22 +72,36 @@ class adminAnaSayfaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val popupMenu = PopupMenu(requireContext(), binding.popupMenu)
-        popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.cikisYap -> {
-                    auth.signOut()
-
-                    val navOptions = NavOptions.Builder().setPopUpTo(R.id.adminAnaSayfaFragment, true).setLaunchSingleTop(true).build()
-                    findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment, null, navOptions)
-                    true
+        binding.popupMenu.setOnClickListener { view ->
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.cikisYap -> {
+                        AlertDialog.Builder(view.context)
+                            .setTitle("Çıkış Yap")
+                            .setMessage("Hesabınızdan çıkış yapmak istediğinize emin misiniz?")
+                            .setPositiveButton("Evet") { _, _ ->
+                                auth.signOut()
+                                if (isAdded) {
+                                    requireActivity().runOnUiThread {
+                                        findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
+                                            .setPopUpTo(R.id.adminAnaSayfaFragment, true)
+                                            .setLaunchSingleTop(true)
+                                            .build()
+                                        )
+                                    }
+                                }
+                            }
+                            .setNegativeButton("İptal", null)
+                            .show()
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
             }
+            popupMenu.show()
         }
-
-        binding.popupMenu.setOnClickListener { popupMenu.show() }
 
         binding.barkodOkuImageView.setOnClickListener {
             val secim = arrayOf("Kamera","Galeri")

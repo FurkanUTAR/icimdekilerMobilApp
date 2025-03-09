@@ -42,8 +42,7 @@ class icerikEkleFragment : Fragment() {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle("Kayıt etmek istediğinizden emin misiniz?")
             alert.setPositiveButton("Evet") { dialog, value -> icerikEkle()}
-            alert.setNegativeButton("Hayır") { dialog, value -> }
-                .show()
+            alert.setNegativeButton("Hayır",null).show()
         }
     }
 

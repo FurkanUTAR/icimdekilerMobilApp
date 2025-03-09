@@ -1,6 +1,5 @@
 package com.example.icimdekiler.view
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminTumUrunlerBinding
-import com.example.icimdekiler.databinding.FragmentKayitOlBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +37,7 @@ class adminTumUrunlerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentAdminTumUrunlerBinding.inflate(inflater,container,false)
+        _binding = FragmentAdminTumUrunlerBinding.inflate(inflater,container,false)
         val view = binding.root
         return view
     }
