@@ -11,8 +11,6 @@ import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
@@ -23,14 +21,12 @@ class adminTumUrunlerFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Firebase
-    private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
     private var urunListesi=ArrayList<Urunler>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth=Firebase.auth
     }
 
     override fun onCreateView(
@@ -84,12 +80,12 @@ class adminTumUrunlerFragment : Fragment() {
             db.collection("urunler")
                 .orderBy("urunAdiLowerCase")
                 .startAt(urun)
+                .endAt(urun + "\uf8ff")
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                         return@addSnapshotListener
-                    }
-                    else {
+                    } else {
                         if (value != null && !value.isEmpty) {
                             urunListesi.clear()
                             for (document in value.documents) {

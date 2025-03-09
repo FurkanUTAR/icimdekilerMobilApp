@@ -2,7 +2,6 @@ package com.example.icimdekiler.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.icimdekiler.databinding.RecyclerRowBinding
 import com.example.icimdekiler.model.Urunler
@@ -34,7 +33,7 @@ class UrunlerAdapter(val urunListesi: ArrayList<Urunler>, val kullaniciTipi: Str
                 val action = adminTumUrunlerFragmentDirections.actionAdminTumUrunlerFragmentToUrunEkleFragment(durum = "eski", barkodNo = urun.barkodNo.toString(), urunAdi= urun.urunAdi.toString(), icindekiler= urun.icindekiler.toString())
                 it.findNavController().navigate(action)
             } else {
-                val action= kullaniciTumUrunlerFragmentDirections.actionKullaniciTumUrunlerFragmentToUrunFragment()
+                val action= kullaniciTumUrunlerFragmentDirections.actionKullaniciTumUrunlerFragmentToUrunFragment(urun.barkodNo.toString(),urun.urunAdi.toString(), urun.icindekiler.toString())
                 it.findNavController().navigate(action)
             }
         }

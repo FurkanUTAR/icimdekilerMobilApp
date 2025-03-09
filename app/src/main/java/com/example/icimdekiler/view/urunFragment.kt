@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentUrunBinding
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 
 class urunFragment : Fragment() {
@@ -18,12 +20,15 @@ class urunFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Firebase
-    private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
+
+    private val icindekilerListesi = mutableListOf<String>()
+    private lateinit var icindekilerAdapter: ArrayAdapter<String>
+
+    var barkodNo: String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
     }
 
     override fun onCreateView(
@@ -33,6 +38,59 @@ class urunFragment : Fragment() {
         _binding = FragmentUrunBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
+        binding.icindekilerListView.adapter = icindekilerAdapter
+
+        arguments?.let {
+            barkodNo = urunFragmentArgs.fromBundle(it).barkodNo
+            val urunAdi= urunFragmentArgs.fromBundle(it).urunAdi
+            val gelenIcindekiler= urunFragmentArgs.fromBundle(it).icindekiler
+
+            binding.barkodNoText.text = barkodNo
+            binding.urunAdiText.text = urunAdi
+
+            val icindekiler = gelenIcindekiler.split(", ").map { it.trim() }
+            icindekilerListesi.clear()
+            icindekilerListesi.addAll(icindekiler)
+            icindekilerAdapter.notifyDataSetChanged()
+        }
+
+        binding.icindekilerListView.setOnItemClickListener { parent, view, position, id ->
+            val urun = parent.getItemAtPosition(position) as String
+            aciklamaGetir(urun,position)
+        }
+    }
+
+    private fun aciklamaGetir(urun:String, position:Int ){
+        db.collection("icerik")
+            .whereEqualTo("urun", urun)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // İlk belgeyi al
+                    val document = querySnapshot.documents.firstOrNull()
+
+                    if (document != null) {
+                        // Belgeden "aciklama" alanını al
+                        val aciklama = document.getString("aciklama") ?: "Açıklama bulunamadı"
+                        val alert= AlertDialog.Builder(requireContext())
+                        alert.setMessage(aciklama.toString())
+                        alert.setPositiveButton(R.string.tamam) { dialog, which -> }
+                        alert.setNegativeButton(R.string.sil) { dialog,which ->
+                            if (position >= 0 && position < icindekilerListesi.size ){
+                                icindekilerListesi.removeAt(position)
+                                icindekilerAdapter.notifyDataSetChanged()
+                            }
+                        }
+                        alert.show()
+                    } else Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
+                } else Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show() }
     }
 
     override fun onDestroyView() {

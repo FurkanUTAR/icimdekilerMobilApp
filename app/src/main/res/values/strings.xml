@@ -24,6 +24,8 @@
     <string name="kamera">Kamera</string>
     <string name="galeri">Galeri</string>
     <string name="secimYap">Seçim Yap</string>
+    <string name="urunEkle">Ürün Ekle</string>
+    <string name="icerikEkle">İçerik Ekle</string>
 
     <!-- Başlıklar -->
     <string name="urunAdi">Ürün Adı</string>

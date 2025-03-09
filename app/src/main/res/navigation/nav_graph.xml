@@ -102,7 +102,17 @@
         android:id="@+id/urunFragment"
         android:name="com.example.icimdekiler.view.urunFragment"
         android:label="fragment_urun"
-        tools:layout="@layout/fragment_urun" />
+        tools:layout="@layout/fragment_urun" >
+        <argument
+            android:name="barkodNo"
+            app:argType="string" />
+        <argument
+            android:name="urunAdi"
+            app:argType="string" />
+        <argument
+            android:name="icindekiler"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/adminTumUrunlerFragment"
         android:name="com.example.icimdekiler.view.adminTumUrunlerFragment"

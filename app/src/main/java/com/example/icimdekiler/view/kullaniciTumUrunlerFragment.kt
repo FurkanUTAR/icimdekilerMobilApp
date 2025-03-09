@@ -7,33 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.icimdekiler.R
 import com.example.icimdekiler.adapter.UrunlerAdapter
-import com.example.icimdekiler.databinding.FragmentAdminTumUrunlerBinding
 import com.example.icimdekiler.databinding.FragmentKullaniciTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 
 class kullaniciTumUrunlerFragment : Fragment() {
+
     //Binding
     private var _binding: FragmentKullaniciTumUrunlerBinding? = null
     private val binding get() = _binding!!
 
     //Firebase
-    private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
     private var urunListesi=ArrayList<Urunler>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth=Firebase.auth
     }
 
     override fun onCreateView(
@@ -52,29 +46,38 @@ class kullaniciTumUrunlerFragment : Fragment() {
         binding.araImage.setOnClickListener { urunAra() }
     }
 
-    private fun urunleriAl(){
+    private fun urunleriAl() {
         db.collection("urunler")
             .orderBy("urunAdi", Query.Direction.ASCENDING)
             .limit(30)
             .addSnapshotListener { value, error ->
-                if (error != null){
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                } else {
-                    if (value != null && !value.isEmpty) {
-                        urunListesi.clear()
-                        for (document in value.documents) {
-                            var barkodNo = document.getString("barkodNo") ?: ""
-                            var urunAdi = document.getString("urunAdi") ?: ""
-                            var icindekiler = document.getString("icindekiler") ?: ""
+                if (!isAdded || isDetached) return@addSnapshotListener
 
+                if (error != null) {
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+
+                if (value != null && !value.isEmpty) {
+                    urunListesi.clear()
+                    for (document in value.documents) {
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+
+                        if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
                             val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
                             urunListesi.add(indirilenUrun)
                         }
+                    }
 
+                    if (isAdded && !isDetached) {
                         val adapter = UrunlerAdapter(urunListesi, "kullanici")
                         binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                         binding.urunlerRecyclerView.adapter = adapter
                     }
+                } else {
+                    Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -86,13 +89,13 @@ class kullaniciTumUrunlerFragment : Fragment() {
             db.collection("urunler")
                 .orderBy("urunAdi")
                 .startAt(urun)
-                .endAt(urun + "\uf8ff") // Firestore'un gizli joker karakteri 😏
+                .endAt(urun + "\uf8ff")
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        return@addSnapshotListener
                     } else {
                         if (value != null && !value.isEmpty) {
-
                             urunListesi.clear()
                             for (document in value.documents) {
                                 var barkodNo = document.getString("barkodNo") ?: ""
@@ -103,9 +106,13 @@ class kullaniciTumUrunlerFragment : Fragment() {
                                 urunListesi.add(indirilenUrun)
                             }
 
-                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                            val adapter = UrunlerAdapter(urunListesi,"kullanici")
                             binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                             binding.urunlerRecyclerView.adapter = adapter
+                        } else {
+                            urunListesi.clear()
+                            binding.urunlerRecyclerView.adapter?.notifyDataSetChanged()
+                            return@addSnapshotListener
                         }
                     }
                 }
@@ -114,6 +121,6 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding=null
+       // _binding=null
     }
 }

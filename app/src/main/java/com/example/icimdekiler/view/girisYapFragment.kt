@@ -82,11 +82,11 @@ class girisYapFragment : Fragment() {
                                         if (isAdmin) {
                                             val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
                                             requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "${R.string.hosgeldin} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
                                         } else {
                                             val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
                                             requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "${R.string.hosgeldin}  $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
                                         }
                                     } else Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
                                 }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }

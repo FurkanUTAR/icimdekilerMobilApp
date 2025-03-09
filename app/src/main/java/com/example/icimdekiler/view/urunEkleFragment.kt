@@ -104,7 +104,7 @@ class urunEkleFragment : Fragment() {
             }
         }
 
-        binding.barkodOkuImage.setOnClickListener {
+        binding.barkodOkuImageView.setOnClickListener {
             val secim = arrayOf("${R.string.kamera}","${R.string.galeri}")
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle(R.string.secimYap)

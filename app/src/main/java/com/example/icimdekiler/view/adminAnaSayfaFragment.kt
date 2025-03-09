@@ -100,9 +100,12 @@ class adminAnaSayfaFragment : Fragment() {
         }
 
         binding.barkodOkuImageView.setOnClickListener {
-            val secim = arrayOf("Kamera","Galeri")
+            val secim = arrayOf(
+                getString(R.string.kamera), // Kamera seçeneği
+                getString(R.string.galeri)  // Galeri seçeneği
+            )
             val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle("Seçim Yap")
+            alert.setTitle(R.string.secimYap)
             alert.setItems(secim){ dialog, which ->
                 if(which==0) barkodOkuKamera()
                 else barkodOkuGaleri()
@@ -112,9 +115,12 @@ class adminAnaSayfaFragment : Fragment() {
         binding.araImage.setOnClickListener { urunEkleGecisUrunAdi() }
 
         binding.ekleImage.setOnClickListener {
-            val secim=arrayOf("Ürün Ekle","İçerik Ekle")
+            val secim = arrayOf(
+                getString(R.string.urunEkle),
+                getString(R.string.icerikEkle)
+            )
             val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle("Seçim Yap")
+            alert.setTitle(R.string.secimYap)
             alert.setItems(secim) { dialog, which ->
                 if (which == 0){
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment(durum = "yeni", barkodNo = "", urunAdi = "", icindekiler = "")
