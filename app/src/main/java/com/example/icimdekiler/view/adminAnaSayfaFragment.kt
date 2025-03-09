@@ -79,21 +79,17 @@ class adminAnaSayfaFragment : Fragment() {
                 when (item.itemId) {
                     R.id.cikisYap -> {
                         AlertDialog.Builder(view.context)
-                            .setTitle("Çıkış Yap")
-                            .setMessage("Hesabınızdan çıkış yapmak istediğinize emin misiniz?")
-                            .setPositiveButton("Evet") { _, _ ->
+                            .setTitle(R.string.cikisYap)
+                            .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
+                            .setPositiveButton(R.string.evet) { dialog, value ->
                                 auth.signOut()
-                                if (isAdded) {
-                                    requireActivity().runOnUiThread {
-                                        findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
-                                            .setPopUpTo(R.id.adminAnaSayfaFragment, true)
-                                            .setLaunchSingleTop(true)
-                                            .build()
-                                        )
-                                    }
-                                }
+                                findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
+                                    .setPopUpTo(R.id.adminAnaSayfaFragment, true)
+                                    .setLaunchSingleTop(true)
+                                    .build()
+                                )
                             }
-                            .setNegativeButton("İptal", null)
+                            .setNegativeButton(R.string.iptal, null)
                             .show()
                         true
                     }
@@ -151,7 +147,7 @@ class adminAnaSayfaFragment : Fragment() {
 
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler)
                     findNavController().navigate(action)
-                }else Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
+                }else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
             }.addOnFailureListener { exepion -> Toast.makeText(requireContext(),exepion.localizedMessage, Toast.LENGTH_LONG).show() }
     }
 
@@ -170,7 +166,7 @@ class adminAnaSayfaFragment : Fragment() {
                 } else {
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "")
                     findNavController().navigate(action)
-                    Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
     }
@@ -179,8 +175,8 @@ class adminAnaSayfaFragment : Fragment() {
         if(Build.VERSION.SDK_INT >= 33){
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
-                    Snackbar.make(requireView(), "Barkod okumak için galeriye erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("İzin Ver") {
+                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.izinVer) {
                             permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
                         }.show()
                 } else {
@@ -193,8 +189,8 @@ class adminAnaSayfaFragment : Fragment() {
         }else{
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Snackbar.make(requireView(), "Barkod okumak için galeriye erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("İzin Ver") {
+                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.izinVer) {
                             permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                         }.show()
                 } else {
@@ -210,8 +206,8 @@ class adminAnaSayfaFragment : Fragment() {
     private fun barkodOkuKamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
-                Snackbar.make(requireView(), "Barkod okumak için kameraya erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("İzin Ver") {
+                Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.izinVer) {
                         permissionLauncherCamera.launch(Manifest.permission.CAMERA)
                     }.show()
             } else permissionLauncherCamera.launch(Manifest.permission.CAMERA)
@@ -240,9 +236,9 @@ class adminAnaSayfaFragment : Fragment() {
                                         break // İlk barkodu alınca döngüden çık
                                     }
                                 }
-                            } else Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
+                            } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                         }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
-                } else Toast.makeText(requireContext(), "Görsel bulunamadı", Toast.LENGTH_SHORT).show()
+                } else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -250,7 +246,7 @@ class adminAnaSayfaFragment : Fragment() {
             if (result) {
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncherGallery.launch(intent)
-            } else Toast.makeText(requireContext(), "Galeri izni verilmedi!", Toast.LENGTH_SHORT).show()
+            } else Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -274,10 +270,10 @@ class adminAnaSayfaFragment : Fragment() {
                                                 break
                                             }
                                         }
-                                    } else Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
+                                    } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                             }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
                     }
-                }else Toast.makeText(requireContext(), "Görsel alınamadı", Toast.LENGTH_SHORT).show()
+                }else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -286,7 +282,7 @@ class adminAnaSayfaFragment : Fragment() {
                 val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
                 activityResultLauncherCamera.launch(intent)
             }
-            else Toast.makeText(requireContext(), "Kamera izni verilmedi!", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(requireContext(), R.string.kameraIzniVerilmedi, Toast.LENGTH_SHORT).show()
         }
     }
 

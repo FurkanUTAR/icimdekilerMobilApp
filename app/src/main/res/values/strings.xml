@@ -1,23 +1,65 @@
 <resources>
+    <!-- Uygulama Adı -->
     <string name="app_name">icimdekiler</string>
+
+    <!-- Kullanıcı Arayüzü Metinleri -->
     <string name="kullaniciAdi">Kullanıcı Adı</string>
     <string name="isimSoyisim">İsim-Soyisim</string>
     <string name="ePosta">e-Posta</string>
     <string name="telNo">Telefon Numarası</string>
     <string name="parola">Parola</string>
+
+    <!-- Buton Metinleri -->
     <string name="kayitOl">Kayıt Ol</string>
     <string name="girisYap">Giriş Yap</string>
     <string name="cikisYap">Çıkış Yap</string>
-    <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
-    <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
-    <string name="beniHatirla">Beni Hatırla</string>
+    <string name="kaydet">Kaydet</string>
+    <string name="guncelle">Güncelle</string>
+    <string name="sil">Sil</string>
+    <string name="izinVer">İzin Ver</string>
+    <string name="evet">Evet</string>
+    <string name="hayir">Hayır</string>
+    <string name="iptal">İptal</string>
+    <string name="tamam">Tamam</string>
+    <string name="kamera">Kamera</string>
+    <string name="galeri">Galeri</string>
+    <string name="secimYap">Seçim Yap</string>
+
+    <!-- Başlıklar -->
     <string name="urunAdi">Ürün Adı</string>
     <string name="icindekiler">İçindekiler</string>
     <string name="icerik">İçerik</string>
     <string name="barkod">Barkod</string>
-    <string name="kaydet">Kaydet</string>
-    <string name="guncelle">Güncelle</string>
-    <string name="sil">Sil</string>
     <string name="aciklama">Açıklama</string>
 
+    <!-- Diğer Metinler -->
+    <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
+    <string name="zatenHesabinVarMi">Zaten Hesabın Var Mı?</string>
+    <string name="beniHatirla">Beni Hatırla</string>
+
+    <!-- Uyarı ve Hata Mesajları -->
+    <string name="buKullaniciAdiZatenKullaniliyor">Bu kullanıcı adı zaten kullanılıyor!</string>
+    <string name="lutfenBosAlanBirakmayiniz">Lütfen boş alan bırakmayınız!</string>
+    <string name="hosgeldin">Hoşgeldin</string>
+    <string name="kullaniciBilgileriYanlis">Kullanıcı bilgileri yanlış!</string>
+    <string name="kullaniciBulunamadi">Kullanıcı bulunamadı!</string>
+    <string name="girisBasarisizEpostaVeyaParolaHatali">Giriş başarısız! E-posta veya parola hatalı.</string>
+    <string name="cikisYapmakIstediginizdenEminMisiniz">Çıkış yapmak istediğinizden emin misiniz?</string>
+    <string name="urunBulunamadi">Ürün bulunamadı</string>
+    <string name="barkodOkumakIcinGaleriyeErisimIzniGerekli">Barkod okumak için galeriye erişim izni gerekli!</string>
+    <string name="barkodOkumakIcinKamerayaErisimIzniGerekli">Barkod okumak için kameraya erişim izni gerekli!</string>
+    <string name="barkodOkunamadi">Barkod okunamadı!</string>
+    <string name="gorselBulunamadi">Görsel bulunamadı!</string>
+    <string name="galeriIzniVerilmedi">Galeri izni verilmedi!</string>
+    <string name="kameraIzniVerilmedi">Kamera izni verilmedi!</string>
+    <string name="belgeBulunamadi">Belge bulunamadı!</string>
+    <string name="sonucBulunamadi">Sonuç bulunamadı!</string>
+    <string name="urunBasariylaSilindi">Ürün başarıyla silindi!</string>
+    <string name="silmekIstediginizdenEminMisiniz">Silmek istediğinizden emin misiniz?</string>
+    <string name="urunBasariylaGuncellendi">Ürün başarıyla güncellendi!</string>
+    <string name="guncellemekIstediginizdenEminMisiniz">Güncellemek istediğinizden emin misiniz?</string>
+    <string name="urunBasariylaKayitEdildi">Ürün başarıyla kayıt edildi!</string>
+    <string name="kayitEtmekIstediginizdenEminMisiniz">Kayıt etmek istediğinizden emin misiniz?</string>
+    <string name="urunDahaOnceKayitEdilmis">Bu ürün daha önce kayıt edilmiş!</string>
+    <string name="gecersizBarkodNo">Geçersiz barkod no!</string>
 </resources>

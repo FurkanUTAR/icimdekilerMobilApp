@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
+import com.example.icimdekiler.R
 
 class girisYapFragment : Fragment() {
 
@@ -81,18 +82,18 @@ class girisYapFragment : Fragment() {
                                         if (isAdmin) {
                                             val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
                                             requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "Hoşgeldin Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), "${R.string.hosgeldin} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
                                         } else {
                                             val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
                                             requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "Hoşgeldin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), "${R.string.hosgeldin}  $kullaniciAdi", Toast.LENGTH_SHORT).show()
                                         }
-                                    } else Toast.makeText(requireContext(), "Kullanıcı bilgileri yanlış!", Toast.LENGTH_LONG).show()
+                                    } else Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
                                 }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
-                        } else Toast.makeText(requireContext(), "Kullanıcı bulunamadı!", Toast.LENGTH_LONG).show()
-                    } else Toast.makeText(requireContext(), "Giriş başarısız! E-posta veya parola hatalı.", Toast.LENGTH_LONG).show()
+                        } else Toast.makeText(requireContext(), R.string.kullaniciBulunamadi, Toast.LENGTH_LONG).show()
+                    } else Toast.makeText(requireContext(), R.string.girisBasarisizEpostaVeyaParolaHatali, Toast.LENGTH_LONG).show()
                 }
-        }else Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()
+        } else Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {

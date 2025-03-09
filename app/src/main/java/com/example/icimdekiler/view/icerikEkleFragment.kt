@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentIcerikEkleBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import org.checkerframework.checker.units.qual.radians
 import kotlin.collections.set
 
 class icerikEkleFragment : Fragment() {
@@ -24,7 +24,6 @@ class icerikEkleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -40,9 +39,9 @@ class icerikEkleFragment : Fragment() {
 
         binding.kaydetButton.setOnClickListener {
             val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle("Kayıt etmek istediğinizden emin misiniz?")
-            alert.setPositiveButton("Evet") { dialog, value -> icerikEkle()}
-            alert.setNegativeButton("Hayır",null).show()
+            alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
+            alert.setPositiveButton(R.string.evet) { dialog, value -> icerikEkle()}
+            alert.setNegativeButton(R.string.hayir,null).show()
         }
     }
 
@@ -63,9 +62,9 @@ class icerikEkleFragment : Fragment() {
                     if (document == null){
                         db.collection("icerik")
                             .add(icerikMap)
-                            .addOnSuccessListener { task -> Toast.makeText(requireContext(), "Ürün başarıyla kayıt edildi", Toast.LENGTH_SHORT).show() }
+                            .addOnSuccessListener { task -> Toast.makeText(requireContext(), R.string.urunBasariylaKayitEdildi, Toast.LENGTH_SHORT).show() }
                             .addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
-                    } else Toast.makeText(requireContext(), "Bu ürün daha önce kayıt edilmiş", Toast.LENGTH_SHORT).show()
+                    } else Toast.makeText(requireContext(), R.string.urunDahaOnceKayitEdilmis, Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
     }

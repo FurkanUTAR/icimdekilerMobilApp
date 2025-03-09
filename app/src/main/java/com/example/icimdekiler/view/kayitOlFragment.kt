@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
+import com.example.icimdekiler.R
 
 class kayitOlFragment : Fragment() {
 
@@ -87,9 +88,9 @@ class kayitOlFragment : Fragment() {
                                     }
                                 }
                             }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
-                    } else Toast.makeText(requireContext(), "Bu kullanıcı adı zaten kullanılıyor!", Toast.LENGTH_LONG).show()
-                }.addOnFailureListener { exception -> Toast.makeText(requireContext(), "Sorgu hatası: ${exception.localizedMessage}", Toast.LENGTH_LONG).show() }
-        } else Toast.makeText(requireContext(), "Lütfen boş alan bırakmayınız!", Toast.LENGTH_LONG).show()
+                    } else Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
+                }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
+        } else Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {

@@ -72,7 +72,6 @@ class kullaniciAnaSayfaFragment : Fragment() {
             val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
             Navigation.findNavController(view).navigate(action)
         }
-
     }
 
     override fun onDestroyView() {
