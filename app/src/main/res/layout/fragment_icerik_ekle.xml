@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.icerikEkleFragment">
+
+
+    <EditText
+        android:id="@+id/urunAdiText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="50dp"
+        android:ems="10"
+        android:hint="@string/urunAdi"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/aciklamaText"
+        app:layout_constraintStart_toStartOf="@+id/aciklamaText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/kaydetButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/kaydet"
+        app:layout_constraintEnd_toEndOf="@+id/aciklamaText"
+        app:layout_constraintStart_toStartOf="@+id/aciklamaText"
+        app:layout_constraintTop_toBottomOf="@+id/aciklamaText" />
+
+    <EditText
+        android:id="@+id/aciklamaText"
+        android:layout_width="match_parent"
+        android:layout_height="159dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="50dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/aciklama"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

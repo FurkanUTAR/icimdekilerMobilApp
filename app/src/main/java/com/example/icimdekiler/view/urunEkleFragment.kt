@@ -1,11 +1,12 @@
 package com.example.icimdekiler.view
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +37,12 @@ class urunEkleFragment : Fragment() {
     private val binding get() = _binding!!
     val db = Firebase.firestore
 
-    private lateinit var permissionLauncher: ActivityResultLauncher<String>
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var permissionLauncherCamera: ActivityResultLauncher<String>
+    private lateinit var activityResultLauncherCamera: ActivityResultLauncher<Intent>
+
+    private lateinit var permissionLauncherGallery: ActivityResultLauncher<String>
+    private lateinit var activityResultLauncherGallery: ActivityResultLauncher<Intent>
+
     private lateinit var cameraExecutor: ExecutorService
 
     private val icerikListesi = ArrayList<String>()
@@ -51,7 +56,8 @@ class urunEkleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
-        registerLauncher()
+        registerLauncherCamera()
+        registerLauncherGallery()
         icerikAl()
     }
 
@@ -71,7 +77,7 @@ class urunEkleFragment : Fragment() {
 
         arguments?.let {
             val durum= urunEkleFragmentArgs.fromBundle(it).durum
-            barkodNo= urunEkleFragmentArgs.fromBundle(it).barkodNo
+            barkodNo = urunEkleFragmentArgs.fromBundle(it).barkodNo
             val urunAdi= urunEkleFragmentArgs.fromBundle(it).urunAdi
             val gelenIcindekiler= urunEkleFragmentArgs.fromBundle(it).icindekiler
 
@@ -79,6 +85,7 @@ class urunEkleFragment : Fragment() {
                 binding.kaydetButton.isEnabled = true
                 binding.guncelleButton.isEnabled = false
                 binding.silButton.isEnabled = false
+                binding.barkodNoText.setText(barkodNo)
             } else {
                 binding.kaydetButton.isEnabled = false
                 binding.guncelleButton.isEnabled = true
@@ -94,18 +101,44 @@ class urunEkleFragment : Fragment() {
             }
         }
 
-        binding.barkodOkuImage.setOnClickListener { barkodOku() }
+        binding.barkodOkuImage.setOnClickListener {
+            val secim = arrayOf("Kamera","Galeri")
+            val alert = AlertDialog.Builder(requireContext())
+            alert.setTitle("Seçim Yap")
+            alert.setItems(secim){ dialog, which ->
+                if(which==0) barkodOkuKamera()
+                else barkodOkuGaleri()
+            }.show()
+        }
 
         binding.ekleImage.setOnClickListener {
             icindekilerListesi.add(icerikListesi[binding.icerikSpinner.selectedItemPosition])
             icindekilerAdapter.notifyDataSetChanged()
         }
 
-        binding.kaydetButton.setOnClickListener { urunKaydet() }
+        binding.kaydetButton.setOnClickListener {
+            val alert = AlertDialog.Builder(requireContext())
+            alert.setTitle("Kayıt etmek istediğinizden emin misiniz?")
+            alert.setPositiveButton("Evet"){ dialog, value -> urunKaydet()}
+            alert.setNegativeButton("Hayır") { dialog, value -> }
+                .show()
+        }
 
-        binding.silButton.setOnClickListener { urunSil() }
+        binding.guncelleButton.setOnClickListener {
+            val alert = AlertDialog.Builder(requireContext())
+            alert.setTitle("Güncellemek istediğinizden emin misiniz?")
+            alert.setPositiveButton("Evet"){ dialog, value -> urunGuncelle()}
+            alert.setNegativeButton("Hayır") { dialog, value -> }
+                .show()
+        }
 
-        binding.guncelleButton.setOnClickListener { urunGuncelle() }
+        binding.silButton.setOnClickListener {
+            val alert = AlertDialog.Builder(requireContext())
+            alert.setTitle("Silmek istediğinizden emin misiniz?")
+            alert.setPositiveButton("Evet"){ dialog, value -> urunSil()}
+            alert.setNegativeButton("Hayır") { dialog, value -> }
+                .show()
+        }
 
         binding.icindekilerListView.setOnItemClickListener { parent, view, position, id ->
             val urun = parent.getItemAtPosition(position) as String
@@ -121,20 +154,24 @@ class urunEkleFragment : Fragment() {
 
         val urunMap = hashMapOf<String, Any>()
         urunMap["urunAdi"] = urunAdi
-        urunMap.put("urunAdiLowerCase", urunAdiLowerCase)
-        urunMap.put("barkodNo", barkodNo)
-        urunMap.put("icindekiler", birlesikIcindekiler)
+        urunMap["urunAdiLowerCase"] = urunAdiLowerCase
+        urunMap["barkodNo"] = barkodNo
+        urunMap["icindekiler"] = birlesikIcindekiler
 
         if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && birlesikIcindekiler.isNotEmpty() && urunAdiLowerCase.isNotEmpty()) {
             db.collection("urunler")
-                .add(urunMap)
-                .addOnFailureListener { exeption ->
-                    Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT)
-                        .show()
-                }
-        }else{
-            Toast.makeText(requireContext(), "Boş alan bırakmayınız", Toast.LENGTH_SHORT).show()
-        }
+                .whereEqualTo("urunAdiLowerCase",urunAdiLowerCase)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val document = querySnapshot.documents.firstOrNull()
+                    if (document == null){
+                        db.collection("urunler")
+                            .add(urunMap)
+                            .addOnSuccessListener { Toast.makeText(requireContext(), "Ürün başarıyla kayıt edildi.", Toast.LENGTH_SHORT).show() }
+                            .addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
+                    } else Toast.makeText(requireContext(), "Bu ürün daha önce kayıt edilmiş.", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
+        }else Toast.makeText(requireContext(), "Boş alan bırakmayınız", Toast.LENGTH_SHORT).show()
     }
 
     private fun urunGuncelle(){
@@ -148,10 +185,8 @@ class urunEkleFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     val document = querySnapshot.documents.firstOrNull()
-
                     if (document != null) {
                         val documentId = document.id
-
                         if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && birlesikIcindekiler.isNotEmpty()) {
                             db.collection("urunler")
                                 .document(documentId)
@@ -162,22 +197,12 @@ class urunEkleFragment : Fragment() {
                                         "icindekiler" to birlesikIcindekiler
                                     )
                                 )
-                                .addOnSuccessListener {
-                                    Toast.makeText(requireContext(), "Ürün başarıyla güncellendi!", Toast.LENGTH_SHORT).show()
-                                }
-                                .addOnFailureListener { exception ->
-                                    Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
-                                }
+                                .addOnSuccessListener { Toast.makeText(requireContext(), "Ürün başarıyla güncellendi!", Toast.LENGTH_SHORT).show() }
+                                .addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show() }
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "Belge bulunamadı", Toast.LENGTH_SHORT).show()
-                    }
-                }.addOnFailureListener { exception ->
-                    Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
-        }else{
-            Toast.makeText(requireContext(), "Geçersiz Barkod No", Toast.LENGTH_SHORT).show()
-        }
+                    } else Toast.makeText(requireContext(), "Belge bulunamadı", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { exception -> Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_SHORT).show() }
+        } else Toast.makeText(requireContext(), "Geçersiz Barkod No", Toast.LENGTH_SHORT).show()
     }
 
     private fun urunSil() {
@@ -187,7 +212,6 @@ class urunEkleFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     val document = querySnapshot.documents.firstOrNull()
-
                     if (document != null) {
                         val documentId = document.id
                         db.collection("urunler")
@@ -195,30 +219,14 @@ class urunEkleFragment : Fragment() {
                             .delete()
                             .addOnSuccessListener {
                                 try {
-                                    // Navigasyon işlemi
                                     val navOptions = NavOptions.Builder().setPopUpTo(R.id.urunEkleFragment, true).setLaunchSingleTop(true).build()
                                     findNavController().navigate(R.id.action_urunEkleFragment_to_adminTumUrunlerFragment, null, navOptions)
-                                } catch (e: Exception) {
-                                    // Navigasyon hatası durumunda hata mesajı göster
-                                    Toast.makeText(requireContext(), "Navigasyon hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                                }
-
-                                Toast.makeText(requireContext(), "Silindi", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { exception ->
-                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        Toast.makeText(requireContext(), "Belge bulunamadı", Toast.LENGTH_SHORT).show()
-                    }
-
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
-        }else{
-            Toast.makeText(requireContext(), "Geçersiz Barkod No", Toast.LENGTH_SHORT).show()
-        }
+                                } catch (e: Exception) { Toast.makeText(requireContext(), "Navigasyon hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show() }
+                                Toast.makeText(requireContext(), "Ürün başarıyla silindi", Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show() }
+                    } else Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { exception -> Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_SHORT).show() }
+        } else Toast.makeText(requireContext(), "Geçersiz Barkod No", Toast.LENGTH_SHORT).show()
     }
 
     private fun icerikAl(){
@@ -232,7 +240,6 @@ class urunEkleFragment : Fragment() {
                             val documents = value.documents
 
                             icerikListesi.clear()
-
                             for (document in documents){
                                 val urun=document.get("urun") as String
 
@@ -268,35 +275,93 @@ class urunEkleFragment : Fragment() {
                             }
                         }
                         alert.show()
-                    } else {
-                        Toast.makeText(requireContext(), "Belge bulunamadı", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Sonuç bulunamadı", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
+                    } else Toast.makeText(requireContext(), "Belge bulunamadı", Toast.LENGTH_SHORT).show()
+                } else Toast.makeText(requireContext(), "Sonuç bulunamadı", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show() }
     }
 
-    private fun barkodOku() {
+    private fun barkodOkuGaleri() {
+        if(Build.VERSION.SDK_INT >= 33){
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
+                    Snackbar.make(requireView(), "Barkod okumak için galeriye erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("İzin Ver") {
+                            permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                        }.show()
+                } else {
+                    permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                }
+            } else {
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                activityResultLauncherGallery.launch(intent)
+            }
+        }else{
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Snackbar.make(requireView(), "Barkod okumak için galeriye erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("İzin Ver") {
+                            permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }.show()
+                } else {
+                    permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            } else {
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                activityResultLauncherGallery.launch(intent)
+            }
+        }
+    }
+
+    private fun barkodOkuKamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
                 Snackbar.make(requireView(), "Barkod okumak için kameraya erişim izni gerekli!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("İzin Ver") {
-                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                        permissionLauncherCamera.launch(Manifest.permission.CAMERA)
                     }.show()
             } else {
-                permissionLauncher.launch(Manifest.permission.CAMERA)
+                permissionLauncherCamera.launch(Manifest.permission.CAMERA)
             }
         } else {
-            pickImageCamera()
+            val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+            activityResultLauncherCamera.launch(intent)
         }
     }
 
-    private fun registerLauncher() {
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private fun registerLauncherGallery() {
+        activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                val imageUri = result.data?.data
+                if (imageUri!=null){
+                    val image = InputImage.fromFilePath(requireContext(), imageUri)
+                    val scanner = BarcodeScanning.getClient()
+
+                    scanner.process(image)
+                        .addOnSuccessListener { barcodes ->
+                            if (barcodes.isNotEmpty()) {
+                                for (barcode in barcodes) {
+                                    val barkod = barcode.displayValue
+                                    if (barkod != null) {
+                                        binding.barkodNoText.setText(barkod)
+                                        break // İlk barkodu alınca döngüden çık
+                                    }
+                                }
+                            } else Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
+                        }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
+                } else Toast.makeText(requireContext(), "Görsel bulunamadı", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+            if (result) {
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                activityResultLauncherGallery.launch(intent)
+            } else Toast.makeText(requireContext(), "Galeri izni verilmedi!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun registerLauncherCamera() {
+        activityResultLauncherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
                 val image = InputImage.fromBitmap(imageBitmap, 0)
@@ -313,29 +378,18 @@ class urunEkleFragment : Fragment() {
                                         break // Tek barkod okutulduğunda döngüden çık
                                     }
                                 }
-                            } else {
-                                Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(),e.localizedMessage, Toast.LENGTH_SHORT).show()
-                        }
+                            } else Toast.makeText(requireContext(), "Barkod Okunamadı!", Toast.LENGTH_SHORT).show()
+                        }.addOnFailureListener { e -> Toast.makeText(requireContext(),e.localizedMessage, Toast.LENGTH_SHORT).show() }
                 }
             }
         }
 
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        permissionLauncherCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
             if (result) {
-                pickImageCamera()
-            } else {
-                Toast.makeText(requireContext(), "Kamera izni verilmedi!", Toast.LENGTH_SHORT).show()
-            }
+                val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+                activityResultLauncherCamera.launch(intent)
+            } else Toast.makeText(requireContext(), "Kamera izni verilmedi!", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun pickImageCamera() {
-        val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        activityResultLauncher.launch(intent)
     }
 
     override fun onDestroyView() {

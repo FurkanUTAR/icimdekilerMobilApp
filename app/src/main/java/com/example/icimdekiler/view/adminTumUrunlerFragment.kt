@@ -1,5 +1,6 @@
 package com.example.icimdekiler.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -86,7 +87,10 @@ class adminTumUrunlerFragment : Fragment() {
                 .orderBy("urunAdiLowerCase")
                 .startAt(urun)
                 .addSnapshotListener { value, error ->
-                    if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                    if (error != null) {
+                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        return@addSnapshotListener
+                    }
                     else {
                         if (value != null && !value.isEmpty) {
                             urunListesi.clear()
@@ -102,6 +106,10 @@ class adminTumUrunlerFragment : Fragment() {
                             val adapter = UrunlerAdapter(urunListesi,"admin")
                             binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                             binding.urunlerRecyclerView.adapter = adapter
+                        } else {
+                            urunListesi.clear()
+                            binding.urunlerRecyclerView.adapter?.notifyDataSetChanged()
+                            return@addSnapshotListener
                         }
                     }
                 }
@@ -110,6 +118,6 @@ class adminTumUrunlerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        //_binding=null
+        // _binding = null
     }
 }

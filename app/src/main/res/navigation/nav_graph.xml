@@ -73,6 +73,9 @@
         <action
             android:id="@+id/action_adminAnaSayfaFragment_to_urunEkleFragment"
             app:destination="@id/urunEkleFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_icerikEkleFragment"
+            app:destination="@id/icerikEkleFragment" />
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
@@ -120,4 +123,9 @@
     <argument
         android:name="durum"
         app:argType="string" />
+    <fragment
+        android:id="@+id/icerikEkleFragment"
+        android:name="com.example.icimdekiler.view.icerikEkleFragment"
+        android:label="fragment_icerik_ekle"
+        tools:layout="@layout/fragment_icerik_ekle" />
 </navigation>
