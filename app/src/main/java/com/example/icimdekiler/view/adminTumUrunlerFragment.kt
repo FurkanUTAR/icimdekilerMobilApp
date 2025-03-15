@@ -50,24 +50,30 @@ class adminTumUrunlerFragment : Fragment() {
             .orderBy("urunAdi", Query.Direction.ASCENDING)
             .limit(30)
             .addSnapshotListener { value, error ->
-                if (error != null){
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                } else {
+                if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                else {
                     if (value != null && !value.isEmpty) {
 
                         urunListesi.clear()
                         for (document in value.documents) {
+                            var documentId=document.id
                             var barkodNo = document.getString("barkodNo") ?: ""
                             var urunAdi = document.getString("urunAdi") ?: ""
                             var icindekiler = document.getString("icindekiler") ?: ""
+                            var gorselUrl = document.getString("gorselUrl") ?: ""
 
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl,documentId)
                             urunListesi.add(indirilenUrun)
                         }
 
-                        val adapter = UrunlerAdapter(urunListesi, "admin")
-                        binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                        binding.urunlerRecyclerView.adapter = adapter
+                        context?.let { ctx ->
+                            binding?.let { bind ->
+                                val adapter = UrunlerAdapter(urunListesi, "admin")
+                                bind.urunlerRecyclerView.layoutManager = GridLayoutManager(ctx, 2)
+                                bind.urunlerRecyclerView.adapter = adapter
+                                adapter.notifyDataSetChanged()
+                            }
+                        }
                     }
                 }
             }
@@ -89,11 +95,19 @@ class adminTumUrunlerFragment : Fragment() {
                         if (value != null && !value.isEmpty) {
                             urunListesi.clear()
                             for (document in value.documents) {
+                                var documentId=document.id
                                 var barkodNo = document.getString("barkodNo") ?: ""
                                 var urunAdi = document.getString("urunAdi") ?: ""
                                 var icindekiler = document.getString("icindekiler") ?: ""
+                                var gorselUrl = document.getString("gorselUrl") ?: ""
 
-                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                                val indirilenUrun = Urunler(
+                                    barkodNo,
+                                    urunAdi,
+                                    icindekiler,
+                                    gorselUrl,
+                                    documentId
+                                )
                                 urunListesi.add(indirilenUrun)
                             }
 
@@ -103,7 +117,6 @@ class adminTumUrunlerFragment : Fragment() {
                         } else {
                             urunListesi.clear()
                             binding.urunlerRecyclerView.adapter?.notifyDataSetChanged()
-                            return@addSnapshotListener
                         }
                     }
                 }

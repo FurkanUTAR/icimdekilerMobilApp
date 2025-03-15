@@ -61,12 +61,20 @@ class kullaniciTumUrunlerFragment : Fragment() {
                 if (value != null && !value.isEmpty) {
                     urunListesi.clear()
                     for (document in value.documents) {
+                        var documentId = document.id
                         val barkodNo = document.getString("barkodNo") ?: ""
                         val urunAdi = document.getString("urunAdi") ?: ""
                         val icindekiler = document.getString("icindekiler") ?: ""
+                        var gorselUrl = document.getString("gorselUrl") ?: ""
 
                         if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                            val indirilenUrun = Urunler(
+                                barkodNo,
+                                urunAdi,
+                                icindekiler,
+                                gorselUrl,
+                                documentId
+                            )
                             urunListesi.add(indirilenUrun)
                         }
                     }
@@ -98,11 +106,19 @@ class kullaniciTumUrunlerFragment : Fragment() {
                         if (value != null && !value.isEmpty) {
                             urunListesi.clear()
                             for (document in value.documents) {
+                                var documentId=document.id
                                 var barkodNo = document.getString("barkodNo") ?: ""
                                 var urunAdi = document.getString("urunAdi") ?: ""
                                 var icindekiler = document.getString("icindekiler") ?: ""
+                                var gorselUrl = document.getString("gorselUrl") ?: ""
 
-                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler)
+                                val indirilenUrun = Urunler(
+                                    barkodNo,
+                                    urunAdi,
+                                    icindekiler,
+                                    gorselUrl,
+                                    documentId
+                                )
                                 urunListesi.add(indirilenUrun)
                             }
 

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,14 +50,13 @@ class adminAnaSayfaFragment : Fragment() {
     private lateinit var permissionLauncherGallery: ActivityResultLauncher<String>
     private lateinit var activityResultLauncherGallery: ActivityResultLauncher<Intent>
 
-    private lateinit var cameraExecutor: ExecutorService
+    private val cameraExecutor = Executors.newSingleThreadExecutor()
 
     private var barkodNo: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
-        cameraExecutor = Executors.newSingleThreadExecutor()
         registerLauncherCamera()
         registerLauncherGallery()
     }
@@ -112,7 +112,7 @@ class adminAnaSayfaFragment : Fragment() {
             }.show()
         }
 
-        binding.araImage.setOnClickListener { urunEkleGecisUrunAdi() }
+        binding.araImage.setOnClickListener { urunAdiAra() }
 
         binding.ekleImage.setOnClickListener {
             val secim = arrayOf(
@@ -123,7 +123,7 @@ class adminAnaSayfaFragment : Fragment() {
             alert.setTitle(R.string.secimYap)
             alert.setItems(secim) { dialog, which ->
                 if (which == 0){
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment(durum = "yeni", barkodNo = "", urunAdi = "", icindekiler = "")
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment(durum = "yeni","","","" ,"","")
                     findNavController().navigate(action)
                 }else{
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToIcerikEkleFragment()
@@ -138,8 +138,8 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun urunEkleGecisUrunAdi() {
-        val urunAdiLowerCase=binding.urunAdiText.text.toString().lowercase().trim()
+    private fun urunAdiAra() {
+        val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
 
         db.collection("urunler")
             .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
@@ -147,30 +147,41 @@ class adminAnaSayfaFragment : Fragment() {
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
                     val document = querySnapshot.documents.firstOrNull()
+                    val documentId = document?.id ?: ""
                     barkodNo = document?.getString("barkodNo") ?: ""
                     val urunAdi = document?.getString("urunAdi") ?: ""
                     val icindekiler = document?.getString("icindekiler") ?: ""
+                    val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler)
-                    findNavController().navigate(action)
-                }else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener { exepion -> Toast.makeText(requireContext(),exepion.localizedMessage, Toast.LENGTH_LONG).show() }
+                    // 📌 Mevcut fragment’i kontrol et
+                    val currentFragment = findNavController().currentDestination?.id
+                    val targetFragment = R.id.urunEkleFragment
+
+                    if (currentFragment != targetFragment) {
+                        val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                        findNavController().navigate(action)
+                    } else Log.d("NavigationDebug", "Zaten urunEkleFragment içindesin, tekrar yönlendirme yapılmadı.")
+                } else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
     }
 
-    private fun urunEkleGecisBarkodNo() {
+    private fun barkodNoAra() {
         db.collection("urunler")
             .whereEqualTo("barkodNo", barkodNo)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
                     val document = querySnapshot.documents.firstOrNull()
+                    var documentId= document?.id ?: ""
                     val urunAdi = document?.getString("urunAdi") ?: ""
                     val icindekiler = document?.getString("icindekiler") ?: ""
+                    val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler)
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler,gorselUrl, documentId.toString())
                     findNavController().navigate(action)
                 } else {
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "")
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "","","")
                     findNavController().navigate(action)
                     Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                 }
@@ -238,7 +249,7 @@ class adminAnaSayfaFragment : Fragment() {
                                     val barkod = barcode.displayValue
                                     if (barkod != null) {
                                         barkodNo = barkod
-                                        urunEkleGecisBarkodNo()
+                                        barkodNoAra()
                                         break // İlk barkodu alınca döngüden çık
                                     }
                                 }
@@ -272,7 +283,7 @@ class adminAnaSayfaFragment : Fragment() {
                                             val barkod = barcode.displayValue
                                             if (!barkod.isNullOrBlank()) {
                                                 barkodNo = barkod
-                                                urunEkleGecisBarkodNo()
+                                                barkodNoAra()
                                                 break
                                             }
                                         }

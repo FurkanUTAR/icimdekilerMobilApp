@@ -97,6 +97,12 @@
         <action
             android:id="@+id/action_urunEkleFragment_to_adminTumUrunlerFragment"
             app:destination="@id/adminTumUrunlerFragment" />
+        <argument
+            android:name="gorselUrl"
+            app:argType="string" />
+        <argument
+            android:name="documentId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/urunFragment"

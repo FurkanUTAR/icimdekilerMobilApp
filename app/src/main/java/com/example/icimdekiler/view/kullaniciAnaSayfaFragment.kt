@@ -243,6 +243,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     val image = InputImage.fromBitmap(imageBitmap, 0)
                     val scanner = BarcodeScanning.getClient()
 
+                    /*
                     cameraExecutor.execute {
                         scanner.process(image)
                             .addOnSuccessListener { barcodes ->
@@ -258,6 +259,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                 } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                             }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
                     }
+
+                     */
                 }else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
             }
         }
