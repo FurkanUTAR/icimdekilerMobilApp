@@ -345,7 +345,7 @@ class urunEkleFragment : Fragment() {
             }
     }
 
-    private fun aciklamaGetir(urun:String, position:Int ){
+    private fun aciklamaGetir(urun:String, position:Int){
         db.collection("icerik")
             .whereEqualTo("urun", urun)
             .get()
@@ -492,7 +492,7 @@ class urunEkleFragment : Fragment() {
         }
 
         // Bitmap'i yeniden boyutlandır
-        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
+        return bitmap.scale(finalWidth, finalHeight)
     }
 
     private fun registerLauncherCamera() {

@@ -118,6 +118,8 @@
         <argument
             android:name="icindekiler"
             app:argType="string" />
+        <argument android:name="gorselUrl"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/adminTumUrunlerFragment"

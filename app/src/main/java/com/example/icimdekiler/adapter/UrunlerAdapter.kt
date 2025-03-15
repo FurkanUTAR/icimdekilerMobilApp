@@ -54,7 +54,8 @@ class UrunlerAdapter(val urunListesi: ArrayList<Urunler>, val kullaniciTipi: Str
                 val action = kullaniciTumUrunlerFragmentDirections.actionKullaniciTumUrunlerFragmentToUrunFragment(
                     urun.barkodNo.toString(),
                     urun.urunAdi.toString(),
-                    urun.icindekiler.toString()
+                    urun.icindekiler.toString(),
+                    urun.gorselUrl.toString()
                 )
                 it.findNavController().navigate(action)
             }

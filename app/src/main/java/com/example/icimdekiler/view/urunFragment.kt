@@ -12,6 +12,7 @@ import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentUrunBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.squareup.picasso.Picasso
 
 class urunFragment : Fragment() {
 
@@ -48,8 +49,9 @@ class urunFragment : Fragment() {
 
         arguments?.let {
             barkodNo = urunFragmentArgs.fromBundle(it).barkodNo
-            val urunAdi= urunFragmentArgs.fromBundle(it).urunAdi
-            val gelenIcindekiler= urunFragmentArgs.fromBundle(it).icindekiler
+            val urunAdi = urunFragmentArgs.fromBundle(it).urunAdi
+            val gelenIcindekiler = urunFragmentArgs.fromBundle(it).icindekiler
+            var gorselUrl = urunFragmentArgs.fromBundle(it).gorselUrl
 
             binding.barkodNoText.text = barkodNo
             binding.urunAdiText.text = urunAdi
@@ -58,6 +60,12 @@ class urunFragment : Fragment() {
             icindekilerListesi.clear()
             icindekilerListesi.addAll(icindekiler)
             icindekilerAdapter.notifyDataSetChanged()
+
+            if (gorselUrl.isNotEmpty()) {
+                Picasso.get().load(gorselUrl).fit().centerCrop().into(binding.gorselSecImageView) // 📌 ImageView'inin id'sini buraya yaz
+            } else {
+                binding.gorselSecImageView.setImageResource(R.drawable.ic_launcher_background) // Varsayılan resim
+            }
         }
 
         binding.icindekilerListView.setOnItemClickListener { parent, view, position, id ->
@@ -66,7 +74,7 @@ class urunFragment : Fragment() {
         }
     }
 
-    private fun aciklamaGetir(urun:String, position:Int ){
+    private fun aciklamaGetir(urun:String, position:Int){
         db.collection("icerik")
             .whereEqualTo("urun", urun)
             .get()
@@ -81,12 +89,6 @@ class urunFragment : Fragment() {
                         val alert= AlertDialog.Builder(requireContext())
                         alert.setMessage(aciklama.toString())
                         alert.setPositiveButton(R.string.tamam) { dialog, which -> }
-                        alert.setNegativeButton(R.string.sil) { dialog,which ->
-                            if (position >= 0 && position < icindekilerListesi.size ){
-                                icindekilerListesi.removeAt(position)
-                                icindekilerAdapter.notifyDataSetChanged()
-                            }
-                        }
                         alert.show()
                     } else Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
                 } else Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()

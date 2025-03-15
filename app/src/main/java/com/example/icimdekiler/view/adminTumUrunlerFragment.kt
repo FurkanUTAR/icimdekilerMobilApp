@@ -53,7 +53,6 @@ class adminTumUrunlerFragment : Fragment() {
                 if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                 else {
                     if (value != null && !value.isEmpty) {
-
                         urunListesi.clear()
                         for (document in value.documents) {
                             var documentId=document.id

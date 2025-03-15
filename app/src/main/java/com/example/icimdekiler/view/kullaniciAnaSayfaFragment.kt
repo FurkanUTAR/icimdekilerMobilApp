@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,14 +50,14 @@ class kullaniciAnaSayfaFragment : Fragment() {
     private lateinit var permissionLauncherGallery: ActivityResultLauncher<String>
     private lateinit var activityResultLauncherGallery: ActivityResultLauncher<Intent>
 
-    private lateinit var cameraExecutor: ExecutorService
+    private var cameraExecutor: ExecutorService? = null
 
     private var barkodNo: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        cameraExecutor = Executors.newSingleThreadExecutor()  // 📌 Executor'u başlat
         auth = Firebase.auth
-        cameraExecutor = Executors.newSingleThreadExecutor()
         registerLauncherCamera()
         registerLauncherGallery()
     }
@@ -113,7 +114,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
             }.show()
         }
 
-        binding.araImageView.setOnClickListener { urunGecisUrunAdi() }
+        binding.araImageView.setOnClickListener { urunAdiAra() }
 
         binding.tumUrunlerButton.setOnClickListener {
             val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
@@ -121,7 +122,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun urunGecisUrunAdi() {
+    private fun urunAdiAra() {
         val urunAdiLowerCase=binding.urunAdiText.text.toString().lowercase().trim()
 
         db.collection("urunler")
@@ -133,14 +134,20 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     barkodNo = document?.getString("barkodNo") ?: ""
                     val urunAdi = document?.getString("urunAdi") ?: ""
                     val icindekiler = document?.getString("icindekiler") ?: ""
+                    var gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler)
-                    findNavController().navigate(action)
+                    val currentFragment = findNavController().currentDestination?.id
+                    val targetFragment = R.id.urunEkleFragment
+
+                    if (currentFragment != targetFragment) {
+                        val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
+                        findNavController().navigate(action)
+                    } else Log.d("NavigationDebug", "Zaten urunEkleFragment içindesin, tekrar yönlendirme yapılmadı.")
                 } else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
             }.addOnFailureListener { exepion -> Toast.makeText(requireContext(),exepion.localizedMessage, Toast.LENGTH_LONG).show() }
     }
 
-    private fun urunGecisBarkodNo() {
+    private fun barkodNoAra() {
         db.collection("urunler")
             .whereEqualTo("barkodNo", barkodNo)
             .get()
@@ -149,8 +156,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     val document = querySnapshot.documents.firstOrNull()
                     val urunAdi = document?.getString("urunAdi") ?: ""
                     val icindekiler = document?.getString("icindekiler") ?: ""
+                    var gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler)
+                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
                     findNavController().navigate(action)
                 } else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
             }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
@@ -217,7 +225,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                     val barkod = barcode.displayValue
                                     if (barkod != null) {
                                         barkodNo = barkod
-                                        urunGecisBarkodNo()
+                                        barkodNoAra()
                                         break // İlk barkodu alınca döngüden çık
                                     }
                                 }
@@ -243,8 +251,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     val image = InputImage.fromBitmap(imageBitmap, 0)
                     val scanner = BarcodeScanning.getClient()
 
-                    /*
-                    cameraExecutor.execute {
+
+                    cameraExecutor?.execute {
                         scanner.process(image)
                             .addOnSuccessListener { barcodes ->
                                 if (barcodes.isNotEmpty()) {
@@ -252,15 +260,13 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                         val barkod = barcode.displayValue
                                         if (!barkod.isNullOrBlank()) {
                                             barkodNo = barkod
-                                            urunGecisBarkodNo()
+                                            barkodNoAra()
                                             break
                                         }
                                     }
                                 } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                             }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
                     }
-
-                     */
                 }else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
             }
         }
@@ -277,6 +283,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        cameraExecutor.shutdown()
+        cameraExecutor?.shutdown()  // 📌 Executor'u güvenli şekilde kapat
+        cameraExecutor = null
     }
 }

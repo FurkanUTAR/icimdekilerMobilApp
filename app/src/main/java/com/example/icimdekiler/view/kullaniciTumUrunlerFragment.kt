@@ -68,13 +68,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
                         var gorselUrl = document.getString("gorselUrl") ?: ""
 
                         if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
-                            val indirilenUrun = Urunler(
-                                barkodNo,
-                                urunAdi,
-                                icindekiler,
-                                gorselUrl,
-                                documentId
-                            )
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                             urunListesi.add(indirilenUrun)
                         }
                     }
@@ -95,7 +89,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
         if (urun.isNotEmpty()) {
             db.collection("urunler")
-                .orderBy("urunAdi")
+                .orderBy("urunAdiLowerCase")
                 .startAt(urun)
                 .endAt(urun + "\uf8ff")
                 .addSnapshotListener { value, error ->
@@ -112,13 +106,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
                                 var icindekiler = document.getString("icindekiler") ?: ""
                                 var gorselUrl = document.getString("gorselUrl") ?: ""
 
-                                val indirilenUrun = Urunler(
-                                    barkodNo,
-                                    urunAdi,
-                                    icindekiler,
-                                    gorselUrl,
-                                    documentId
-                                )
+                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                                 urunListesi.add(indirilenUrun)
                             }
 
