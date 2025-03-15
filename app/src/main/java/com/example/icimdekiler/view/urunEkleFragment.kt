@@ -242,7 +242,7 @@ class urunEkleFragment : Fragment() {
                 .addOnFailureListener { exception ->
                     Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
                 }
-        } else  Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
+        } else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
     }
 
     private fun urunGuncelle() {
