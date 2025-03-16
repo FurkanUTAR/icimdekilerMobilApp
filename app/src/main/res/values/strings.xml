@@ -1,6 +1,6 @@
 <resources>
     <!-- Uygulama Adı -->
-    <string name="app_name">icimdekiler</string>
+    <string name="app_name">İçimdekiler</string>
 
     <!-- Kullanıcı Arayüzü Metinleri -->
     <string name="kullaniciAdi">Kullanıcı Adı</string>
@@ -26,6 +26,7 @@
     <string name="secimYap">Seçim Yap</string>
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
+    <string name="tumUrunler">Tüm Ürünler</string>
 
     <!-- Başlıklar -->
     <string name="urunAdi">Ürün Adı</string>

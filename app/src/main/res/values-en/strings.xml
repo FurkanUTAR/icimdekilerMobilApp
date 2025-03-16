@@ -1,0 +1,68 @@
+<resources>
+    <!-- Uygulama Adı -->
+    <string name="app_name">İçimdekiler</string>
+
+    <!-- Kullanıcı Arayüzü Metinleri -->
+    <string name="kullaniciAdi">Username</string>
+    <string name="isimSoyisim">Name-Surname</string>
+    <string name="ePosta">Email</string>
+    <string name="telNo">Phone Number</string>
+    <string name="parola">Password</string>
+
+    <!-- Buton Metinleri -->
+    <string name="kayitOl">Sign Up</string>
+    <string name="girisYap">Sign In</string>
+    <string name="cikisYap">Log Out</string>
+    <string name="kaydet">Save</string>
+    <string name="guncelle">Update</string>
+    <string name="sil">Delete</string>
+    <string name="izinVer">Allow</string>
+    <string name="evet">Yes</string>
+    <string name="hayir">No</string>
+    <string name="iptal">Cancel</string>
+    <string name="tamam">OK</string>
+    <string name="kamera">Camera</string>
+    <string name="galeri">Gallery</string>
+    <string name="secimYap">Make a Selection</string>
+    <string name="urunEkle">Add Product</string>
+    <string name="icerikEkle">Add Content</string>
+    <string name="tumUrunler">All Products</string>
+
+    <!-- Başlıklar -->
+    <string name="urunAdi">Product Name</string>
+    <string name="icindekiler">Ingredients</string>
+    <string name="icerik">Content</string>
+    <string name="barkod">Barcode</string>
+    <string name="aciklama">Description</string>
+
+    <!-- Diğer Metinler -->
+    <string name="halaKayitOlmadinMi">Not registered yet?</string>
+    <string name="zatenHesabinVarMi">Already have an account?</string>
+    <string name="beniHatirla">Remember Me</string>
+
+    <!-- Uyarı ve Hata Mesajları -->
+    <string name="buKullaniciAdiZatenKullaniliyor">This username is already in use!</string>
+    <string name="lutfenBosAlanBirakmayiniz">Please do not leave any empty fields!</string>
+    <string name="hosgeldin">Welcome</string>
+    <string name="kullaniciBilgileriYanlis">Incorrect user information!</string>
+    <string name="kullaniciBulunamadi">User not found!</string>
+    <string name="girisBasarisizEpostaVeyaParolaHatali">Login failed! Incorrect email or password.</string>
+    <string name="cikisYapmakIstediginizdenEminMisiniz">Are you sure you want to log out?</string>
+    <string name="urunBulunamadi">Product not found!</string>
+    <string name="barkodOkumakIcinGaleriyeErisimIzniGerekli">Gallery access is required to read the barcode!</string>
+    <string name="barkodOkumakIcinKamerayaErisimIzniGerekli">Camera access is required to read the barcode!</string>
+    <string name="barkodOkunamadi">Barcode could not be read!</string>
+    <string name="gorselBulunamadi">Image not found!</string>
+    <string name="galeriIzniVerilmedi">Gallery permission denied!</string>
+    <string name="kameraIzniVerilmedi">Camera permission denied!</string>
+    <string name="belgeBulunamadi">No document found!</string>
+    <string name="sonucBulunamadi">No results found!</string>
+    <string name="urunBasariylaSilindi">Product deleted successfully!</string>
+    <string name="silmekIstediginizdenEminMisiniz">Are you sure you want to delete this?</string>
+    <string name="urunBasariylaGuncellendi">Product updated successfully!</string>
+    <string name="guncellemekIstediginizdenEminMisiniz">Are you sure you want to update?</string>
+    <string name="urunBasariylaKayitEdildi">Product registered successfully!</string>
+    <string name="kayitEtmekIstediginizdenEminMisiniz">Are you sure you want to save this?</string>
+    <string name="urunDahaOnceKayitEdilmis">This product has already been registered!</string>
+    <string name="gecersizBarkodNo">Invalid barcode number!</string>
+</resources>

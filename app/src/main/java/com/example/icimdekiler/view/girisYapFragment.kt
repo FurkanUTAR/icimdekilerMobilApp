@@ -52,7 +52,7 @@ class girisYapFragment : Fragment() {
         binding.girisYapButton.setOnClickListener { girisYap() }
     }
 
-    private fun girisYap(){
+    private fun girisYap() {
         // Kullanıcının girdiği bilgileri al
         val ePosta = binding.ePostaText.text.toString().trim()
         val parola = binding.parolaText.text.toString().trim()
@@ -78,15 +78,18 @@ class girisYapFragment : Fragment() {
                                         isAdmin = kullanici.getBoolean("isAdmin") ?: false
                                         kullaniciAdi = kullanici.getString("kullaniciAdi") ?: "Bilinmiyor"
 
-                                        // Kullanıcının admin olup olmadığına göre yönlendirme yap
-                                        if (isAdmin) {
-                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
-                                            requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
-                                        } else {
-                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
-                                            requireView().findNavController().navigate(action)
-                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                        // Fragment ekli mi kontrol et
+                                        if (isAdded) {
+                                            val navController = view?.findNavController()
+                                            if (isAdmin) {
+                                                val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
+                                                navController?.navigate(action)
+                                                Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
+                                                navController?.navigate(action)
+                                                Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                            }
                                         }
                                     } else Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
                                 }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
@@ -94,6 +97,7 @@ class girisYapFragment : Fragment() {
                     } else Toast.makeText(requireContext(), R.string.girisBasarisizEpostaVeyaParolaHatali, Toast.LENGTH_LONG).show()
                 }
         } else Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
+
     }
 
     override fun onDestroyView() {
