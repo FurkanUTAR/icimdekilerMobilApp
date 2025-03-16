@@ -45,9 +45,9 @@ class adminTumUrunlerFragment : Fragment() {
         binding.araImage.setOnClickListener { urunAra() }
     }
 
-    private fun urunleriAl(){
+    private fun urunleriAl() {
         db.collection("urunler")
-            .orderBy("urunAdi", Query.Direction.ASCENDING)
+            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
             .limit(30)
             .addSnapshotListener { value, error ->
                 if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
@@ -55,13 +55,13 @@ class adminTumUrunlerFragment : Fragment() {
                     if (value != null && !value.isEmpty) {
                         urunListesi.clear()
                         for (document in value.documents) {
-                            var documentId=document.id
-                            var barkodNo = document.getString("barkodNo") ?: ""
-                            var urunAdi = document.getString("urunAdi") ?: ""
-                            var icindekiler = document.getString("icindekiler") ?: ""
-                            var gorselUrl = document.getString("gorselUrl") ?: ""
+                            val documentId = document.id
+                            val barkodNo = document.getString("barkodNo") ?: ""
+                            val urunAdi = document.getString("urunAdi") ?: ""
+                            val icindekiler = document.getString("icindekiler") ?: ""
+                            val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl,documentId)
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                             urunListesi.add(indirilenUrun)
                         }
 
@@ -79,47 +79,32 @@ class adminTumUrunlerFragment : Fragment() {
     }
 
     private fun urunAra() {
-        val urun = binding.urunAdiText.text.toString().trim()
+        val urun = binding.urunAdiText.text.toString().trim().lowercase()
 
-        if (urun.isNotEmpty()) {
-            db.collection("urunler")
-                .orderBy("urunAdiLowerCase")
-                .startAt(urun)
-                .endAt(urun + "\uf8ff")
-                .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                        return@addSnapshotListener
-                    } else {
-                        if (value != null && !value.isEmpty) {
-                            urunListesi.clear()
-                            for (document in value.documents) {
-                                var documentId=document.id
-                                var barkodNo = document.getString("barkodNo") ?: ""
-                                var urunAdi = document.getString("urunAdi") ?: ""
-                                var icindekiler = document.getString("icindekiler") ?: ""
-                                var gorselUrl = document.getString("gorselUrl") ?: ""
+        val sorgu =
+            if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
+            else db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
 
-                                val indirilenUrun = Urunler(
-                                    barkodNo,
-                                    urunAdi,
-                                    icindekiler,
-                                    gorselUrl,
-                                    documentId
-                                )
-                                urunListesi.add(indirilenUrun)
-                            }
+        sorgu.get()
+            .addOnSuccessListener { documents ->
+                urunListesi.clear()
+                for (document in documents) {
+                    val documentId = document.id
+                    val barkodNo = document.getString("barkodNo") ?: ""
+                    val urunAdi = document.getString("urunAdi") ?: ""
+                    val icindekiler = document.getString("icindekiler") ?: ""
+                    val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                            val adapter = UrunlerAdapter(urunListesi,"admin")
-                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                            binding.urunlerRecyclerView.adapter = adapter
-                        } else {
-                            urunListesi.clear()
-                            binding.urunlerRecyclerView.adapter?.notifyDataSetChanged()
-                        }
+                    if (urun.isEmpty() || urunAdi.lowercase().contains(urun)) {
+                        val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                        urunListesi.add(indirilenUrun)
                     }
                 }
-        }
+
+                val adapter = UrunlerAdapter(urunListesi, "admin")
+                binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                binding.urunlerRecyclerView.adapter = adapter
+            }.addOnFailureListener { error -> Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show() }
     }
 
     override fun onDestroyView() {
