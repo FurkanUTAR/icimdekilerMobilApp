@@ -27,6 +27,7 @@
     <string name="urunEkle">Add Product</string>
     <string name="icerikEkle">Add Content</string>
     <string name="tumUrunler">All Products</string>
+    <string name="kapat">Close</string>
 
     <!-- Başlıklar -->
     <string name="urunAdi">Product Name</string>

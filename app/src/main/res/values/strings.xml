@@ -27,6 +27,7 @@
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
     <string name="tumUrunler">Tüm Ürünler</string>
+    <string name="kapat">Kapat</string>
 
     <!-- Başlıklar -->
     <string name="urunAdi">Ürün Adı</string>
