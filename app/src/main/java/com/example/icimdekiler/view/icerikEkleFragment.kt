@@ -46,15 +46,15 @@ class icerikEkleFragment : Fragment() {
     }
 
     fun icerikEkle(){
-        val urunAdi=binding.urunAdiText.text.toString().trim()
+        val urun=binding.urunAdiText.text.toString().trim()
         val aciklama=binding.aciklamaText.text.toString().trim()
 
         val icerikMap=hashMapOf<String,Any>()
-        icerikMap["urunAdi"] = urunAdi
+        icerikMap["urun"] = urun
         icerikMap["aciklama"] = aciklama
 
         db.collection("icerik")
-            .whereEqualTo("urunAdi",urunAdi)
+            .whereEqualTo("urun",urun)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (querySnapshot != null){
