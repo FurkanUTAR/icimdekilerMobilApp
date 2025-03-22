@@ -94,7 +94,6 @@ class urunEkleFragment : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -188,17 +187,10 @@ class urunEkleFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun showBarcodeScannerDialog() {
-        val dialog = BottomSheetDialog(requireContext())
-        val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
-        dialog.setContentView(view)
-        dialog.show()
-
-        val previewView = view.findViewById<PreviewView>(R.id.previewView)
-        val btnClose = view.findViewById<Button>(R.id.btnClose)
-
+        // Kamera izni kontrol edilir.
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // İzin verilmediyse kullanıcıya izin isteği gösterilir.
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
                 Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.izinVer) {
@@ -207,37 +199,49 @@ class urunEkleFragment : Fragment() {
             } else {
                 requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
             }
-        } else {
-            startCamera(previewView, dialog)
-        }
+        } else { // İzin verildiyse kamerayı başlat.
+            // BottomSheet dialog oluşturulur.
+            val dialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
+            dialog.setContentView(view)
+            dialog.show() // Dialog gösterilir.
 
-        btnClose.setOnClickListener {
-            dialog.dismiss()
+            val previewView = view.findViewById<PreviewView>(R.id.previewView)
+            val btnClose = view.findViewById<Button>(R.id.btnClose)
+
+            startCamera(previewView, dialog)
+
+            btnClose.setOnClickListener { dialog.dismiss() } // Dialog'u kapat butonu.
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog) {
+        // Kamera sağlayıcısını alır.
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
+        // Kamera başlatma işlemi tamamlandığında çağrılır.
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
+            // Kamera önizlemesi oluşturulur.
             val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
+                it.surfaceProvider = previewView.surfaceProvider
             }
 
+            // Görüntü analizi için yapılandırma yapılır.
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
                     it.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
-                        analyzeImage(imageProxy, dialog)
+                        analyzeImage(imageProxy, dialog) // Görüntüyü analiz et.
                     }
                 }
 
+            // Arka kamerayı seçer.
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             try {
+                // Kamera bağlantısını yapılandırır.
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
             } catch (e: Exception) {
@@ -248,10 +252,13 @@ class urunEkleFragment : Fragment() {
 
     @OptIn(ExperimentalGetImage::class)
     private fun analyzeImage(imageProxy: ImageProxy, dialog: BottomSheetDialog) {
+        // Görüntüyü alır.
         val mediaImage = imageProxy.image
         if (mediaImage != null) {
+            // Görüntüyü ML Kit için uygun formata dönüştürür.
             val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
+            // Barkod tarayıcıyı kullanarak görüntüyü analiz eder.
             barcodeScanner.process(image)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
@@ -262,23 +269,20 @@ class urunEkleFragment : Fragment() {
                                     binding.barkodNoText.setText(barkod)
                                     dialog.dismiss()
                                 }
-                                break
+                                break // İlk barkodu bulunca döngüden çık.
                             }
                         }
                     }
                 }
                 .addOnFailureListener { e ->
+                    // Hata durumunda kullanıcıya bilgi ver.
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                     }
-                }
-                .addOnCompleteListener {
-                    imageProxy.close()
-                }
+                }.addOnCompleteListener { imageProxy.close() } // Görüntüyü kapat.
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -12,23 +12,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
@@ -44,20 +55,19 @@ class adminAnaSayfaFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
-    private lateinit var permissionLauncherCamera: ActivityResultLauncher<String>
-    private lateinit var activityResultLauncherCamera: ActivityResultLauncher<Intent>
-
     private lateinit var permissionLauncherGallery: ActivityResultLauncher<String>
     private lateinit var activityResultLauncherGallery: ActivityResultLauncher<Intent>
 
-    private val cameraExecutor = Executors.newSingleThreadExecutor()
+    private lateinit var cameraExecutor: ExecutorService
+    private lateinit var barcodeScanner: BarcodeScanner
 
     private var barkodNo: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
-        registerLauncherCamera()
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        barcodeScanner = BarcodeScanning.getClient()
         registerLauncherGallery()
     }
 
@@ -107,7 +117,7 @@ class adminAnaSayfaFragment : Fragment() {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle(R.string.secimYap)
             alert.setItems(secim){ dialog, which ->
-                if(which==0) barkodOkuKamera()
+                if(which==0) showBarcodeScannerDialog()
                 else barkodOkuGaleri()
             }.show()
         }
@@ -135,6 +145,115 @@ class adminAnaSayfaFragment : Fragment() {
         binding.tumUrunlerButton.setOnClickListener {
             val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment()
             findNavController().navigate(action)
+        }
+    }
+
+    private fun showBarcodeScannerDialog() {
+        // Kamera izni kontrol edilir.
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // İzin verilmediyse kullanıcıya izin isteği gösterilir.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
+                Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.izinVer) {
+                        requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
+                    }.show()
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
+            }
+        } else { // İzin verildiyse kamerayı başlat.
+            // BottomSheet dialog oluşturulur.
+            val dialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
+            dialog.setContentView(view)
+            dialog.show() // Dialog gösterilir.
+
+            val previewView = view.findViewById<PreviewView>(R.id.previewView)
+            val btnClose = view.findViewById<Button>(R.id.btnClose)
+
+            startCamera(previewView, dialog)
+
+            btnClose.setOnClickListener { dialog.dismiss() } // Dialog'u kapat butonu.
+        }
+    }
+
+    private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog) {
+        // Kamera sağlayıcısını alır.
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        // Kamera başlatma işlemi tamamlandığında çağrılır.
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+            // Kamera önizlemesi oluşturulur.
+            val preview = Preview.Builder().build().also {
+                it.surfaceProvider = previewView.surfaceProvider
+            }
+
+            // Görüntü analizi için yapılandırma yapılır.
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
+                        analyzeImage(imageProxy, dialog) // Görüntüyü analiz et.
+                    }
+                }
+
+            // Arka kamerayı seçer.
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            try {
+                // Kamera bağlantısını yapılandırır.
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
+            } catch (e: Exception) {
+                Log.e("CameraX", "Kamera bağlantısı başarısız", e)
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    @OptIn(ExperimentalGetImage::class)
+    private fun analyzeImage(imageProxy: ImageProxy, dialog: BottomSheetDialog) {
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+            barcodeScanner.process(image)
+                .addOnSuccessListener { barcodes ->
+                    if (barcodes.isNotEmpty()) {
+                        for (barcode in barcodes) {
+                            val barkod = barcode.displayValue
+                            if (barkod != null) {
+                                requireActivity().runOnUiThread {
+                                    barkodNo = barkod
+                                    barkodNoAra()
+                                    dialog.dismiss()
+                                }
+                                break
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnCompleteListener {
+                    imageProxy.close() // Bu satırı ekleyin
+                }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            val dialog = BottomSheetDialog(requireContext())
+            val previewView = dialog.findViewById<PreviewView>(R.id.previewView)
+            if (previewView != null) {
+                startCamera(previewView, dialog)
+            }
+        } else {
+            Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -173,19 +292,31 @@ class adminAnaSayfaFragment : Fragment() {
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
                     val document = querySnapshot.documents.firstOrNull()
-                    var documentId= document?.id ?: ""
+                    val documentId = document?.id ?: ""
                     val urunAdi = document?.getString("urunAdi") ?: ""
                     val icindekiler = document?.getString("icindekiler") ?: ""
                     val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler,gorselUrl, documentId.toString())
-                    findNavController().navigate(action)
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+
+                    // Eğer zaten urunEkleFragment içindeysek yönlendirme yapma
+                    if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
+                        findNavController().navigate(action)
+                    }
                 } else {
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "","","")
-                    findNavController().navigate(action)
+                    val action = adminAnaSayfaFragmentDirections
+                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "", "", "")
+
+                    if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
+                        findNavController().navigate(action)
+                    }
+
                     Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun barkodOkuGaleri() {
@@ -220,25 +351,11 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun barkodOkuKamera() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
-                Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.izinVer) {
-                        permissionLauncherCamera.launch(Manifest.permission.CAMERA)
-                    }.show()
-            } else permissionLauncherCamera.launch(Manifest.permission.CAMERA)
-        } else {
-            val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-            activityResultLauncherCamera.launch(intent)
-        }
-    }
-
     private fun registerLauncherGallery() {
         activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 val imageUri = result.data?.data
-                if (imageUri!=null){
+                if (imageUri != null) {
                     val image = InputImage.fromFilePath(requireContext(), imageUri)
                     val scanner = BarcodeScanning.getClient()
 
@@ -250,7 +367,7 @@ class adminAnaSayfaFragment : Fragment() {
                                     if (barkod != null) {
                                         barkodNo = barkod
                                         barkodNoAra()
-                                        break // İlk barkodu alınca döngüden çık
+                                        break
                                     }
                                 }
                             } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
@@ -267,45 +384,9 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun registerLauncherCamera() {
-        activityResultLauncherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                if (imageBitmap != null) {
-                    val image = InputImage.fromBitmap(imageBitmap, 0)
-                    val scanner = BarcodeScanning.getClient()
-
-                    cameraExecutor.execute {
-                        scanner.process(image)
-                            .addOnSuccessListener { barcodes ->
-                                    if (barcodes.isNotEmpty()) {
-                                        for (barcode in barcodes) {
-                                            val barkod = barcode.displayValue
-                                            if (!barkod.isNullOrBlank()) {
-                                                barkodNo = barkod
-                                                barkodNoAra()
-                                                break
-                                            }
-                                        }
-                                    } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
-                            }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
-                    }
-                }else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        permissionLauncherCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-            if (result) {
-                val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-                activityResultLauncherCamera.launch(intent)
-            }
-            else Toast.makeText(requireContext(), R.string.kameraIzniVerilmedi, Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        cameraExecutor.shutdown()
+        cameraExecutor.shutdown() // Bu satırı ekleyin
     }
 }
