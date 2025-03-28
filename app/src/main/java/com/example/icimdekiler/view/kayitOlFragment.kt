@@ -41,56 +41,118 @@ class kayitOlFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.kayitOlButton.setOnClickListener { kayitOl() }
+        try {
+            binding.kayitOlButton.setOnClickListener {
+                try {
+                    kayitOl()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
 
-        binding.girisYapLabel.setOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            binding.girisYapLabel.setOnClickListener {
+                try {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun kayitOl() {
-        val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
-        val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
-        val ePosta = binding.ePostaText.text.toString().trim()
-        val telNo = binding.telNoText.text.toString().trim()
-        val parola = binding.parolaText.text.toString().trim()
+        try {
+            val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
+            val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
+            val ePosta = binding.ePostaText.text.toString().trim()
+            val telNo = binding.telNoText.text.toString().trim()
+            val parola = binding.parolaText.text.toString().trim()
 
-        // Boş alan kontrolü yap
-        if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
-            // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
-            db.collection("kullaniciBilgileri")
-                .whereEqualTo("kullaniciAdi", kullaniciAdi)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (querySnapshot.isEmpty) {
-                        // Aynı kullanıcı adı yok, kayıt işlemini başlat
-                        auth.createUserWithEmailAndPassword(ePosta, parola)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    val guncelKullanici = auth.currentUser
-                                    if (guncelKullanici != null) {
-                                        // Kullanıcı bilgilerini bir Map'e koy
-                                        val kullaniciMap = hashMapOf<String, Any>()
-                                        kullaniciMap["kullaniciAdi"] = kullaniciAdi
-                                        kullaniciMap["isimSoyisim"] = isimSoyisim
-                                        kullaniciMap["ePosta"] = ePosta
-                                        kullaniciMap["telNo"] = telNo
-                                        kullaniciMap["parola"] = parola
-                                        kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
-                                        kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
+            // Boş alan kontrolü yap
+            if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
+                // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
+                db.collection("kullaniciBilgileri")
+                    .whereEqualTo("kullaniciAdi", kullaniciAdi)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        try {
+                            if (querySnapshot.isEmpty) {
+                                // Aynı kullanıcı adı yok, kayıt işlemini başlat
+                                auth.createUserWithEmailAndPassword(ePosta, parola)
+                                    .addOnCompleteListener { task ->
+                                        try {
+                                            if (task.isSuccessful) {
+                                                val guncelKullanici = auth.currentUser
+                                                if (guncelKullanici != null) {
+                                                    // Kullanıcı bilgilerini bir Map'e koy
+                                                    val kullaniciMap = hashMapOf<String, Any>()
+                                                    kullaniciMap["kullaniciAdi"] = kullaniciAdi
+                                                    kullaniciMap["isimSoyisim"] = isimSoyisim
+                                                    kullaniciMap["ePosta"] = ePosta
+                                                    kullaniciMap["telNo"] = telNo
+                                                    kullaniciMap["parola"] = parola
+                                                    kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
+                                                    kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
 
-                                        // Kullanıcı bilgilerini Firestore'a kaydet
-                                        db.collection("kullaniciBilgileri")
-                                            .add(kullaniciMap) // Firestore'a ekle
-                                            .addOnSuccessListener {
-                                                // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
-                                                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                                                requireView().findNavController().navigate(action)
-                                            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
+                                                    // Kullanıcı bilgilerini Firestore'a kaydet
+                                                    db.collection("kullaniciBilgileri")
+                                                        .add(kullaniciMap) // Firestore'a ekle
+                                                        .addOnSuccessListener {
+                                                            try {
+                                                                // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
+                                                                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                                                                requireView().findNavController().navigate(action)
+                                                            } catch (e: Exception) {
+                                                                e.printStackTrace()
+                                                            }
+                                                        }.addOnFailureListener { exception ->
+                                                            try {
+                                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                                            } catch (e: Exception) {
+                                                                e.printStackTrace()
+                                                            }
+                                                        }
+                                                }
+                                            }
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+                                    }.addOnFailureListener { exception ->
+                                        try {
+                                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
                                     }
+                            } else {
+                                try {
+                                    Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
-                            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
-                    } else Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
-                }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
-        } else Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }.addOnFailureListener { exception ->
+                        try {
+                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+            } else {
+                try {
+                    Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onDestroyView() {

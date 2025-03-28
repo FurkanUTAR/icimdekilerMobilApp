@@ -3,7 +3,6 @@ package com.example.icimdekiler.view
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -47,11 +46,9 @@ import java.util.concurrent.Executors
 
 class kullaniciAnaSayfaFragment : Fragment() {
 
-    //Binding
     private var _binding: FragmentKullaniciAnaSayfaBinding? = null
     private val binding get() = _binding!!
 
-    //Firebase
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
@@ -65,293 +62,513 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        barcodeScanner = BarcodeScanning.getClient()
-        registerLauncherGallery()
+        try {
+            auth = Firebase.auth
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            barcodeScanner = BarcodeScanning.getClient()
+            registerLauncherGallery()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentKullaniciAnaSayfaBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        try {
+            _binding = FragmentKullaniciAnaSayfaBinding.inflate(inflater, container, false)
+            return binding.root
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.popupMenu.setOnClickListener { view ->
-            val popupMenu = PopupMenu(view.context, view)
-            popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.cikisYap -> {
-                        AlertDialog.Builder(view.context)
-                            .setTitle(R.string.cikisYap)
-                            .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                            .setPositiveButton(R.string.evet) { dialog, value ->
-                                auth.signOut()
-                                findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
-                                    .setPopUpTo(R.id.kullaniciAnaSayfaFragment, true)
-                                    .setLaunchSingleTop(true)
-                                    .build()
-                                )
+        try {
+            binding.popupMenu.setOnClickListener { v ->
+                try {
+                    val popupMenu = PopupMenu(v.context, v)
+                    popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
+                    popupMenu.setOnMenuItemClickListener { item ->
+                        try {
+                            when (item.itemId) {
+                                R.id.cikisYap -> {
+                                    AlertDialog.Builder(v.context)
+                                        .setTitle(R.string.cikisYap)
+                                        .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
+                                        .setPositiveButton(R.string.evet) { dialog, value ->
+                                            try {
+                                                auth.signOut()
+                                                findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
+                                                    .setPopUpTo(R.id.kullaniciAnaSayfaFragment, true)
+                                                    .setLaunchSingleTop(true)
+                                                    .build()
+                                                )
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
+                                        }
+                                        .setNegativeButton(R.string.iptal, null)
+                                        .show()
+                                    true
+                                }
+                                else -> false
                             }
-                            .setNegativeButton(R.string.iptal, null)
-                            .show()
-                        true
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            false
+                        }
                     }
-                    else -> false
+                    popupMenu.show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-            popupMenu.show()
-        }
 
-        binding.barkodOkuImageView.setOnClickListener {
-            val secim = arrayOf(
-                getString(R.string.kamera), // Kamera seçeneği
-                getString(R.string.galeri)  // Galeri seçeneği
-            )
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.secimYap)
-            alert.setItems(secim){ dialog, which ->
-                if(which==0) showBarcodeScannerDialog()
-                else barkodOkuGaleri()
-            }.show()
-        }
+            binding.barkodOkuImageView.setOnClickListener {
+                try {
+                    val secim = arrayOf(
+                        getString(R.string.kamera),
+                        getString(R.string.galeri)
+                    )
+                    val alert = AlertDialog.Builder(requireContext())
+                    alert.setTitle(R.string.secimYap)
+                    alert.setItems(secim){ dialog, which ->
+                        try {
+                            if(which==0) showBarcodeScannerDialog()
+                            else barkodOkuGaleri()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }.show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
 
-        binding.araImageView.setOnClickListener { urunAdiAra() }
+            binding.araImageView.setOnClickListener {
+                try {
+                    urunAdiAra()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
 
-        binding.tumUrunlerButton.setOnClickListener {
-            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
-            findNavController().navigate(action)
+            binding.tumUrunlerButton.setOnClickListener {
+                try {
+                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
+                    findNavController().navigate(action)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun showBarcodeScannerDialog() {
-        // Kamera izni kontrol edilir.
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // İzin verilmediyse kullanıcıya izin isteği gösterilir.
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
-                Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.izinVer) {
+        try {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
+                    Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.izinVer) {
+                            try {
+                                requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }.show()
+                } else {
+                    try {
                         requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
-                    }.show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             } else {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
+                try {
+                    val dialog = BottomSheetDialog(requireContext())
+                    val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
+                    dialog.setContentView(view)
+                    dialog.show()
+
+                    val previewView = view.findViewById<PreviewView>(R.id.previewView)
+                    val btnClose = view.findViewById<Button>(R.id.btnClose)
+
+                    startCamera(previewView, dialog)
+
+                    btnClose.setOnClickListener {
+                        try {
+                            dialog.dismiss()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        } else { // İzin verildiyse kamerayı başlat.
-            // BottomSheet dialog oluşturulur.
-            val dialog = BottomSheetDialog(requireContext())
-            val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
-            dialog.setContentView(view)
-            dialog.show() // Dialog gösterilir.
-
-            val previewView = view.findViewById<PreviewView>(R.id.previewView)
-            val btnClose = view.findViewById<Button>(R.id.btnClose)
-
-            startCamera(previewView, dialog)
-
-            btnClose.setOnClickListener { dialog.dismiss() } // Dialog'u kapat butonu.
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog) {
-        // Kamera sağlayıcısını alır.
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        try {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
-        // Kamera başlatma işlemi tamamlandığında çağrılır.
-        cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            cameraProviderFuture.addListener({
+                try {
+                    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            // Kamera önizlemesi oluşturulur.
-            val preview = Preview.Builder().build().also {
-                it.surfaceProvider = previewView.surfaceProvider
-            }
-
-            // Görüntü analizi için yapılandırma yapılır.
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
-                        analyzeImage(imageProxy, dialog) // Görüntüyü analiz et.
+                    val preview = Preview.Builder().build().also {
+                        it.surfaceProvider = previewView.surfaceProvider
                     }
-                }
 
-            // Arka kamerayı seçer.
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            try {
-                // Kamera bağlantısını yapılandırır.
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
-            } catch (e: Exception) {
-                Log.e("CameraX", "Kamera bağlantısı başarısız", e)
-            }
-        }, ContextCompat.getMainExecutor(requireContext()))
+                    val imageAnalyzer = ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
+                        .also {
+                            it.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
+                                try {
+                                    analyzeImage(imageProxy, dialog)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+
+                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                    try {
+                        cameraProvider.unbindAll()
+                        cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
+                    } catch (e: Exception) {
+                        Log.e("CameraX", "Kamera bağlantısı başarısız", e)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }, ContextCompat.getMainExecutor(requireContext()))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     @OptIn(ExperimentalGetImage::class)
     private fun analyzeImage(imageProxy: ImageProxy, dialog: BottomSheetDialog) {
-        val mediaImage = imageProxy.image
-        if (mediaImage != null) {
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        try {
+            val mediaImage = imageProxy.image
+            if (mediaImage != null) {
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-            barcodeScanner.process(image)
-                .addOnSuccessListener { barcodes ->
-                    if (barcodes.isNotEmpty()) {
-                        for (barcode in barcodes) {
-                            val barkod = barcode.displayValue
-                            if (barkod != null) {
-                                requireActivity().runOnUiThread {
-                                    barkodNo = barkod
-                                    barkodNoAra()
-                                    dialog.dismiss()
+                barcodeScanner.process(image)
+                    .addOnSuccessListener { barcodes ->
+                        try {
+                            if (barcodes.isNotEmpty()) {
+                                for (barcode in barcodes) {
+                                    val barkod = barcode.displayValue
+                                    if (barkod != null) {
+                                        requireActivity().runOnUiThread {
+                                            try {
+                                                barkodNo = barkod
+                                                barkodNoAra()
+                                                dialog.dismiss()
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
+                                        }
+                                        break
+                                    }
                                 }
-                                break
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        requireActivity().runOnUiThread {
+                            try {
+                                Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
                         }
                     }
-                }
-                .addOnFailureListener { e ->
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    .addOnCompleteListener {
+                        try {
+                            imageProxy.close()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
-                }
-                .addOnCompleteListener {
-                    imageProxy.close() // Bu satırı ekleyin
-                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            val dialog = BottomSheetDialog(requireContext())
-            val previewView = dialog.findViewById<PreviewView>(R.id.previewView)
-            if (previewView != null) {
-                startCamera(previewView, dialog)
+        try {
+            if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                val dialog = BottomSheetDialog(requireContext())
+                val previewView = dialog.findViewById<PreviewView>(R.id.previewView)
+                if (previewView != null) {
+                    try {
+                        startCamera(previewView, dialog)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            } else {
+                try {
+                    Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        } else {
-            Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun urunAdiAra() {
-        val urunAdiLowerCase=binding.urunAdiText.text.toString().lowercase().trim()
+        try {
+            val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
 
-        db.collection("urunler")
-            .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val document = querySnapshot.documents.firstOrNull()
-                    barkodNo = document?.getString("barkodNo") ?: ""
-                    val urunAdi = document?.getString("urunAdi") ?: ""
-                    val icindekiler = document?.getString("icindekiler") ?: ""
-                    var gorselUrl = document?.getString("gorselUrl") ?: ""
+            db.collection("urunler")
+                .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    try {
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents.firstOrNull()
+                            barkodNo = document?.getString("barkodNo") ?: ""
+                            val urunAdi = document?.getString("urunAdi") ?: ""
+                            val icindekiler = document?.getString("icindekiler") ?: ""
+                            var gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val currentFragment = findNavController().currentDestination?.id
-                    val targetFragment = R.id.urunEkleFragment
+                            val currentFragment = findNavController().currentDestination?.id
+                            val targetFragment = R.id.urunEkleFragment
 
-                    if (currentFragment != targetFragment) {
-                        val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
-                        findNavController().navigate(action)
-                    } else Log.d("NavigationDebug", "Zaten urunEkleFragment içindesin, tekrar yönlendirme yapılmadı.")
-                } else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener { exepion -> Toast.makeText(requireContext(),exepion.localizedMessage, Toast.LENGTH_LONG).show() }
+                            if (currentFragment != targetFragment) {
+                                val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
+                                findNavController().navigate(action)
+                            } else Log.d("NavigationDebug", "Zaten urunEkleFragment içindesin, tekrar yönlendirme yapılmadı.")
+                        } else {
+                            try {
+                                Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }.addOnFailureListener { exepion ->
+                    try {
+                        Toast.makeText(requireContext(), exepion.localizedMessage, Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun barkodNoAra() {
-        db.collection("urunler")
-            .whereEqualTo("barkodNo", barkodNo)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val document = querySnapshot.documents.firstOrNull()
-                    val urunAdi = document?.getString("urunAdi") ?: ""
-                    val icindekiler = document?.getString("icindekiler") ?: ""
-                    var gorselUrl = document?.getString("gorselUrl") ?: ""
+        try {
+            db.collection("urunler")
+                .whereEqualTo("barkodNo", barkodNo)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    try {
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents.firstOrNull()
+                            val urunAdi = document?.getString("urunAdi") ?: ""
+                            val icindekiler = document?.getString("icindekiler") ?: ""
+                            var gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
-                    if (findNavController().currentDestination?.id != R.id.urunFragment) {
-                        findNavController().navigate(action)
+                            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
+                            if (findNavController().currentDestination?.id != R.id.urunFragment) {
+                                findNavController().navigate(action)
+                            }
+                        } else {
+                            try {
+                                Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } else Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
+                }.addOnFailureListener { exeption ->
+                    try {
+                        Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun barkodOkuGaleri() {
-        if(Build.VERSION.SDK_INT >= 33){
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
-                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.izinVer) {
+        try {
+            if(Build.VERSION.SDK_INT >= 33){
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
+                        Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.izinVer) {
+                                try {
+                                    permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }.show()
+                    } else {
+                        try {
                             permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                        }.show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                 } else {
-                    permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                    try {
+                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        activityResultLauncherGallery.launch(intent)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
-            } else {
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                activityResultLauncherGallery.launch(intent)
-            }
-        }else{
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.izinVer) {
+            }else{
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.izinVer) {
+                                try {
+                                    permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }.show()
+                    } else {
+                        try {
                             permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        }.show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                 } else {
-                    permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    try {
+                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        activityResultLauncherGallery.launch(intent)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
-            } else {
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                activityResultLauncherGallery.launch(intent)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun registerLauncherGallery() {
-        activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                val imageUri = result.data?.data
-                if (imageUri!=null){
-                    val image = InputImage.fromFilePath(requireContext(), imageUri)
-                    val scanner = BarcodeScanning.getClient()
+        try {
+            activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                try {
+                    if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                        val imageUri = result.data?.data
+                        if (imageUri!=null){
+                            try {
+                                val image = InputImage.fromFilePath(requireContext(), imageUri)
+                                val scanner = BarcodeScanning.getClient()
 
-                    scanner.process(image)
-                        .addOnSuccessListener { barcodes ->
-                            if (barcodes.isNotEmpty()) {
-                                for (barcode in barcodes) {
-                                    val barkod = barcode.displayValue
-                                    if (barkod != null) {
-                                        barkodNo = barkod
-                                        barkodNoAra()
-                                        break // İlk barkodu alınca döngüden çık
+                                scanner.process(image)
+                                    .addOnSuccessListener { barcodes ->
+                                        try {
+                                            if (barcodes.isNotEmpty()) {
+                                                for (barcode in barcodes) {
+                                                    val barkod = barcode.displayValue
+                                                    if (barkod != null) {
+                                                        barkodNo = barkod
+                                                        barkodNoAra()
+                                                        break
+                                                    }
+                                                }
+                                            } else {
+                                                try {
+                                                    Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
+                                                } catch (e: Exception) {
+                                                    e.printStackTrace()
+                                                }
+                                            }
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+                                    }.addOnFailureListener { e ->
+                                        try {
+                                            Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
                                     }
-                                }
-                            } else Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
-                        }.addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
-                } else Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        } else {
+                            try {
+                                Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        }
 
-        permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-            if (result) {
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                activityResultLauncherGallery.launch(intent)
-            } else Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
+            permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+                try {
+                    if (result) {
+                        try {
+                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            activityResultLauncherGallery.launch(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        try {
+                            Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
-        cameraExecutor.shutdown() // Bu satırı ekleyin
+        try {
+            _binding = null
+            cameraExecutor.shutdown()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

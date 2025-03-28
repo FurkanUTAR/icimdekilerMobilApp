@@ -16,11 +16,9 @@ import com.example.icimdekiler.R
 
 class girisYapFragment : Fragment() {
 
-    //Binding
     private var _binding: FragmentGirisYapBinding? = null
     private val binding get() = _binding!!
 
-    //Firebase
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
@@ -45,59 +43,88 @@ class girisYapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.kayitOlLabel.setOnClickListener {
-            val action = girisYapFragmentDirections.actionGirisYapFragmentToKayitOlFragment()
-            requireView().findNavController().navigate(action)
+            try {
+                val action = girisYapFragmentDirections.actionGirisYapFragmentToKayitOlFragment()
+                requireView().findNavController().navigate(action)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
-        binding.girisYapButton.setOnClickListener { girisYap() }
+        binding.girisYapButton.setOnClickListener {
+            try {
+                girisYap()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun girisYap() {
-        // Kullanıcının girdiği bilgileri al
-        val ePosta = binding.ePostaText.text.toString().trim()
-        val parola = binding.parolaText.text.toString().trim()
+        try {
+            val ePosta = binding.ePostaText.text.toString().trim()
+            val parola = binding.parolaText.text.toString().trim()
 
-        // Boş alan kontrolü yap
-        if (ePosta.isNotEmpty() && parola.isNotEmpty()) {
-            // Firebase Authentication ile giriş yapılıyor
-            auth.signInWithEmailAndPassword(ePosta, parola)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val guncelKullanici = auth.currentUser  // Şu anki oturum açan kullanıcıyı al
-                        if (guncelKullanici != null) {
-                            // Firestore'dan kullanıcı bilgilerini getir
-                            db.collection("kullaniciBilgileri")
-                                .whereEqualTo("ePosta", ePosta)  // Kullanıcıyı e-posta adresi ile bul
-                                .whereEqualTo("parola", parola)  // Parolayı da doğrula
-                                .whereEqualTo("kullaniciUID", guncelKullanici.uid)  // UID eşleşmesini kontrol et
-                                .get()
-                                .addOnSuccessListener { documents ->
-                                    if (!documents.isEmpty) {  // Eğer Firestore'da kullanıcı varsa
-                                        val kullanici = documents.documents.first() // İlk kullanıcıyı al
+            if (ePosta.isNotEmpty() && parola.isNotEmpty()) {
+                auth.signInWithEmailAndPassword(ePosta, parola)
+                    .addOnCompleteListener { task ->
+                        try {
+                            if (task.isSuccessful) {
+                                val guncelKullanici = auth.currentUser
+                                if (guncelKullanici != null) {
+                                    db.collection("kullaniciBilgileri")
+                                        .whereEqualTo("ePosta", ePosta)
+                                        .whereEqualTo("parola", parola)
+                                        .whereEqualTo("kullaniciUID", guncelKullanici.uid)
+                                        .get()
+                                        .addOnSuccessListener { documents ->
+                                            try {
+                                                if (!documents.isEmpty) {
+                                                    val kullanici = documents.documents.first()
+                                                    isAdmin = kullanici.getBoolean("isAdmin") ?: false
+                                                    kullaniciAdi = kullanici.getString("kullaniciAdi") ?: "Bilinmiyor"
 
-                                        isAdmin = kullanici.getBoolean("isAdmin") ?: false
-                                        kullaniciAdi = kullanici.getString("kullaniciAdi") ?: "Bilinmiyor"
-
-                                        // Fragment ekli mi kontrol et
-                                        if (isAdded) {
-                                            val navController = view?.findNavController()
-                                            if (isAdmin) {
-                                                val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
-                                                navController?.navigate(action)
-                                                Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
-                                            } else {
-                                                val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
-                                                navController?.navigate(action)
-                                                Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                    if (isAdded) {
+                                                        val navController = view?.findNavController()
+                                                        if (isAdmin) {
+                                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
+                                                            navController?.navigate(action)
+                                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                        } else {
+                                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
+                                                            navController?.navigate(action)
+                                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                        }
+                                                    }
+                                                } else {
+                                                    Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
+                                                }
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
+                                        }.addOnFailureListener { exception ->
+                                            try {
+                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
                                             }
                                         }
-                                    } else Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
-                                }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show() }
-                        } else Toast.makeText(requireContext(), R.string.kullaniciBulunamadi, Toast.LENGTH_LONG).show()
-                    } else Toast.makeText(requireContext(), R.string.girisBasarisizEpostaVeyaParolaHatali, Toast.LENGTH_LONG).show()
-                }
-        } else Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
-
+                                } else {
+                                    Toast.makeText(requireContext(), R.string.kullaniciBulunamadi, Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                Toast.makeText(requireContext(), R.string.girisBasarisizEpostaVeyaParolaHatali, Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+            } else {
+                Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onDestroyView() {
