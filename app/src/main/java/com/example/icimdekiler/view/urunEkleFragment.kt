@@ -130,7 +130,7 @@ class urunEkleFragment : Fragment() {
             if (gorselUrl.isNotEmpty()) {
                 Picasso.get().load(gorselUrl).fit().centerCrop().into(binding.gorselSecImageView)
             } else {
-                binding.gorselSecImageView.setImageResource(R.drawable.ic_launcher_background)
+                binding.gorselSecImageView.setImageResource(R.drawable.insert_photo)
             }
         }
 
@@ -559,6 +559,7 @@ class urunEkleFragment : Fragment() {
                                 val urun=document.get("urun") as String
 
                                 icerikListesi.add(urun)
+                                icerikListesi.sort()
                                 icerikAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,android.R.id.text1,icerikListesi)
                                 binding.icerikSpinner.adapter = icerikAdapter
                             }
