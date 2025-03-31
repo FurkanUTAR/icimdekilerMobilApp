@@ -19,6 +19,7 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -57,6 +58,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var barcodeScanner: BarcodeScanner
+
+    private var camera: Camera? = null
+    private var isFlashOn = false  // Flash durumu
 
     private var barkodNo: String = ""
 
@@ -173,21 +177,33 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     private fun showBarcodeScannerDialog() {
         try {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
-                    Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        Manifest.permission.CAMERA
+                    )
+                ) {
+                    Snackbar.make(
+                        requireView(),
+                        R.string.barkodOkumakIcinKamerayaErisimIzniGerekli,
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                         .setAction(R.string.izinVer) {
                             try {
                                 requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
                             } catch (e: Exception) {
-                                e.printStackTrace()
+                                Log.e("KullanıcıAnaSayfa", "Permission request error", e)
                             }
                         }.show()
                 } else {
                     try {
                         requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Log.e("KullanıcıAnaSayfa", "Permission request error", e)
                     }
                 }
             } else {
@@ -200,35 +216,48 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     val previewView = view.findViewById<PreviewView>(R.id.previewView)
                     val btnClose = view.findViewById<Button>(R.id.btnClose)
 
-                    startCamera(previewView, dialog)
+                    val btnFlashToggle = view.findViewById<Button>(R.id.btnFlashToggle)
+                    startCamera(previewView, dialog, btnFlashToggle)
 
                     btnClose.setOnClickListener {
                         try {
+                            // Flash'ı kapat
+                            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+                            cameraProviderFuture.addListener({
+                                val cameraProvider = cameraProviderFuture.get()
+                                cameraProvider.unbindAll() // Kamerayı durdur
+                            }, ContextCompat.getMainExecutor(requireContext()))
+
+
                             dialog.dismiss()
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Log.e("KullanıcıAnaSayfa", "Dialog close error", e)
                         }
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("KullanıcıAnaSayfa", "Camera dialog error", e)
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("KullanıcıAnaSayfa", "Barcode scanner error", e)
         }
     }
 
-    private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog) {
+    private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog, btnFlashToggle: Button?) {
         try {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
             cameraProviderFuture.addListener({
                 try {
-                    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+                    val cameraProvider = cameraProviderFuture.get()
 
-                    val preview = Preview.Builder().build().also {
-                        it.surfaceProvider = previewView.surfaceProvider
-                    }
+                    val preview = androidx.camera.core.Preview.Builder()
+                        .setTargetRotation(previewView.display.rotation)
+                        .build()
+                        .also {
+                            it.surfaceProvider = previewView.surfaceProvider
+                        }
 
                     val imageAnalyzer = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -238,24 +267,43 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                 try {
                                     analyzeImage(imageProxy, dialog)
                                 } catch (e: Exception) {
-                                    e.printStackTrace()
+                                    Log.e("KullanıcıAnaSayfa", "Image analysis error", e)
                                 }
                             }
                         }
 
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                    val cameraSelector = androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
+
                     try {
                         cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
+
+                        // 📸 Kamera nesnesini değişkene atıyoruz
+                        camera = cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
+
+                        // Flash başlangıçta kapalı olacak
+                        camera?.cameraControl?.enableTorch(false)
+
+                        // 🎯 Buton ile flash kontrolü
+                        btnFlashToggle?.setOnClickListener {
+                            isFlashOn = !isFlashOn  // Flash durumunu tersine çevir
+                            camera?.cameraControl?.enableTorch(isFlashOn)
+
+                            // Buton metnini güncelle
+                            btnFlashToggle.text = if (isFlashOn) "Flash Kapat" else "Flash Aç"
+                        }
+
                     } catch (e: Exception) {
-                        Log.e("CameraX", "Kamera bağlantısı başarısız", e)
+                        Log.e("CameraX", "Camera bind failed", e)
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "Flash açılamadı: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("KullanıcıAnaSayfa", "Camera setup error", e)
                 }
             }, ContextCompat.getMainExecutor(requireContext()))
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("KullanıcıAnaSayfa", "Camera start error", e)
         }
     }
 
@@ -320,7 +368,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 val previewView = dialog.findViewById<PreviewView>(R.id.previewView)
                 if (previewView != null) {
                     try {
-                        startCamera(previewView, dialog)
+                        val btnFlashToggle = view?.findViewById<Button>(R.id.btnFlashToggle)
+                        startCamera(previewView, dialog, btnFlashToggle)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

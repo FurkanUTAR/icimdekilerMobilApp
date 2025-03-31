@@ -432,197 +432,256 @@ class adminAnaSayfaFragment : Fragment() {
         try {
             val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
 
-            db.collection("urunler")
-                .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    try {
-                        if (!querySnapshot.isEmpty) {
-                            val document = querySnapshot.documents.firstOrNull()
-                            val documentId = document?.id ?: ""
-                            barkodNo = document?.getString("barkodNo") ?: ""
-                            val urunAdi = document?.getString("urunAdi") ?: ""
-                            val icindekiler = document?.getString("icindekiler") ?: ""
-                            val gorselUrl = document?.getString("gorselUrl") ?: ""
+            try {
+                db.collection("urunler")
+                    .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        try {
+                            if (!querySnapshot.isEmpty) {
+                                try {
+                                    val document = querySnapshot.documents.firstOrNull()
+                                    val documentId = document?.id ?: ""
+                                    barkodNo = document?.getString("barkodNo") ?: ""
+                                    val urunAdi = document?.getString("urunAdi") ?: ""
+                                    val icindekiler = document?.getString("icindekiler") ?: ""
+                                    val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                            val currentFragment = findNavController().currentDestination?.id
-                            val targetFragment = R.id.urunEkleFragment
+                                    try {
+                                        val currentFragment = findNavController().currentDestination?.id
+                                        val targetFragment = R.id.urunEkleFragment
 
-                            if (currentFragment != targetFragment) {
-                                val action = adminAnaSayfaFragmentDirections
-                                    .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                        "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
-                                    )
-                                findNavController().navigate(action)
+                                        if (currentFragment != targetFragment) {
+                                            val action = adminAnaSayfaFragmentDirections
+                                                .actionAdminAnaSayfaFragmentToUrunEkleFragment(
+                                                    "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
+                                                )
+                                            findNavController().navigate(action)
+                                        } else {
+                                            Log.d("NavigationDebug", "Already in urunEkleFragment")
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("AdminAnaSayfa", "Navigation error", e)
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Document processing error", e)
+                                }
                             } else {
-                                Log.d(
-                                    "NavigationDebug",
-                                    "Already in urunEkleFragment, no redirection"
-                                )
+                                try {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.urunBulunamadi,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Toast error", e)
+                                }
                             }
-                        } else {
-                            try {
-                                Toast.makeText(
-                                    requireContext(),
-                                    R.string.urunBulunamadi,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Toast error", e)
-                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Query success processing error", e)
                         }
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Query success error", e)
                     }
-                }
-                .addOnFailureListener { exception ->
-                    try {
-                        Toast.makeText(
-                            requireContext(),
-                            exception.localizedMessage,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Toast error", e)
+                    .addOnFailureListener { exception ->
+                        try {
+                            Toast.makeText(
+                                requireContext(),
+                                exception.localizedMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Toast error", e)
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                Log.e("AdminAnaSayfa", "Firestore query error", e)
+            }
         } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "Search error", e)
+            Log.e("AdminAnaSayfa", "Search processing error", e)
         }
     }
 
     private fun barkodNoAra() {
         try {
-            db.collection("urunler")
-                .whereEqualTo("barkodNo", barkodNo)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    try {
-                        if (!querySnapshot.isEmpty) {
-                            val document = querySnapshot.documents.firstOrNull()
-                            val documentId = document?.id ?: ""
-                            val urunAdi = document?.getString("urunAdi") ?: ""
-                            val icindekiler = document?.getString("icindekiler") ?: ""
-                            val gorselUrl = document?.getString("gorselUrl") ?: ""
+            try {
+                db.collection("urunler")
+                    .whereEqualTo("barkodNo", barkodNo)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        try {
+                            if (!querySnapshot.isEmpty) {
+                                try {
+                                    val document = querySnapshot.documents.firstOrNull()
+                                    val documentId = document?.id ?: ""
+                                    val urunAdi = document?.getString("urunAdi") ?: ""
+                                    val icindekiler = document?.getString("icindekiler") ?: ""
+                                    val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                            val action = adminAnaSayfaFragmentDirections
-                                .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                    "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
-                                )
+                                    try {
+                                        val action = adminAnaSayfaFragmentDirections
+                                            .actionAdminAnaSayfaFragmentToUrunEkleFragment(
+                                                "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
+                                            )
 
-                            if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
-                                findNavController().navigate(action)
-                            }
-                        } else {
-                            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "", "", "")
-                            if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
-                                findNavController().navigate(action)
-                            }
+                                        if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
+                                            findNavController().navigate(action)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("AdminAnaSayfa", "Navigation error", e)
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Document processing error", e)
+                                }
+                            } else {
+                                try {
+                                    val action = adminAnaSayfaFragmentDirections
+                                        .actionAdminAnaSayfaFragmentToUrunEkleFragment(
+                                            "yeni", barkodNo, "", "", "", ""
+                                        )
+                                    if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
+                                        findNavController().navigate(action)
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Navigation error", e)
+                                }
 
-                            try {
-                                Toast.makeText(
-                                    requireContext(),
-                                    R.string.urunBulunamadi,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Toast error", e)
+                                try {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.urunBulunamadi,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Toast error", e)
+                                }
                             }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Query success processing error", e)
                         }
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Query success error", e)
                     }
-                }
-                .addOnFailureListener { exception ->
-                    try {
-                        Toast.makeText(
-                            requireContext(),
-                            exception.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Toast error", e)
+                    .addOnFailureListener { exception ->
+                        try {
+                            Toast.makeText(
+                                requireContext(),
+                                exception.localizedMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Toast error", e)
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                Log.e("AdminAnaSayfa", "Firestore query error", e)
+            }
         } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "Barcode search error", e)
+            Log.e("AdminAnaSayfa", "Barcode search processing error", e)
         }
     }
 
     private fun barkodOkuGaleri() {
         try {
             if (Build.VERSION.SDK_INT >= 33) {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.READ_MEDIA_IMAGES
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
+                try {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
                             Manifest.permission.READ_MEDIA_IMAGES
-                        )
+                        ) != PackageManager.PERMISSION_GRANTED
                     ) {
-                        Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.izinVer) {
+                        try {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                                    requireActivity(),
+                                    Manifest.permission.READ_MEDIA_IMAGES
+                                )
+                            ) {
+                                try {
+                                    Snackbar.make(
+                                        requireView(),
+                                        R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli,
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                        .setAction(R.string.izinVer) {
+                                            try {
+                                                permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                            }
+                                        }.show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Snackbar error", e)
+                                }
+                            } else {
                                 try {
                                     permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Permission launch error", e)
                                 }
-                            }.show()
+                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Permission check error", e)
+                        }
                     } else {
                         try {
-                            permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            activityResultLauncherGallery.launch(intent)
                         } catch (e: Exception) {
-                            Log.e("AdminAnaSayfa", "Permission launch error", e)
+                            Log.e("AdminAnaSayfa", "Gallery intent error", e)
                         }
                     }
-                } else {
-                    try {
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        activityResultLauncherGallery.launch(intent)
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Gallery intent error", e)
-                    }
+                } catch (e: Exception) {
+                    Log.e("AdminAnaSayfa", "Android 13+ permission check error", e)
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
+                try {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
                             Manifest.permission.READ_EXTERNAL_STORAGE
-                        )
+                        ) != PackageManager.PERMISSION_GRANTED
                     ) {
-                        Snackbar.make(
-                            requireView(),
-                            R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli,
-                            Snackbar.LENGTH_INDEFINITE
-                        )
-                            .setAction(R.string.izinVer) {
+                        try {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                                    requireActivity(),
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                )
+                            ) {
+                                try {
+                                    Snackbar.make(
+                                        requireView(),
+                                        R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli,
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                        .setAction(R.string.izinVer) {
+                                            try {
+                                                permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                            }
+                                        }.show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Snackbar error", e)
+                                }
+                            } else {
                                 try {
                                     permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Permission launch error", e)
                                 }
-                            }.show()
+                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Permission check error", e)
+                        }
                     } else {
                         try {
-                            permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            activityResultLauncherGallery.launch(intent)
                         } catch (e: Exception) {
-                            Log.e("AdminAnaSayfa", "Permission launch error", e)
+                            Log.e("AdminAnaSayfa", "Gallery intent error", e)
                         }
                     }
-                } else {
-                    try {
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        activityResultLauncherGallery.launch(intent)
-                    } catch (e: Exception) {
-                        Log.e("AdminAnaSayfa", "Gallery intent error", e)
-                    }
+                } catch (e: Exception) {
+                    Log.e("AdminAnaSayfa", "Pre-Android 13 permission check error", e)
                 }
             }
         } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "Gallery barcode error", e)
+            Log.e("AdminAnaSayfa", "Gallery barcode processing error", e)
         }
     }
 
@@ -631,67 +690,75 @@ class adminAnaSayfaFragment : Fragment() {
             activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 try {
                     if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                        val imageUri = result.data?.data
-                        if (imageUri != null) {
-                            try {
-                                val image = InputImage.fromFilePath(requireContext(), imageUri)
-                                val scanner = BarcodeScanning.getClient()
+                        try {
+                            val imageUri = result.data?.data
+                            if (imageUri != null) {
+                                try {
+                                    val image = InputImage.fromFilePath(requireContext(), imageUri)
+                                    val scanner = BarcodeScanning.getClient()
 
-                                scanner.process(image)
-                                    .addOnSuccessListener { barcodes ->
-                                        try {
-                                            if (barcodes.isNotEmpty()) {
-                                                for (barcode in barcodes) {
-                                                    val barkod = barcode.displayValue
-                                                    if (barkod != null) {
-                                                        barkodNo = barkod
-                                                        barkodNoAra()
-                                                        break
+                                    scanner.process(image)
+                                        .addOnSuccessListener { barcodes ->
+                                            try {
+                                                if (barcodes.isNotEmpty()) {
+                                                    for (barcode in barcodes) {
+                                                        val barkod = barcode.displayValue
+                                                        if (barkod != null) {
+                                                            barkodNo = barkod
+                                                            try {
+                                                                barkodNoAra()
+                                                            } catch (e: Exception) {
+                                                                Log.e("AdminAnaSayfa", "Barcode search error", e)
+                                                            }
+                                                            break
+                                                        }
+                                                    }
+                                                } else {
+                                                    try {
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            R.string.barkodOkunamadi,
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    } catch (e: Exception) {
+                                                        Log.e("AdminAnaSayfa", "Toast error", e)
                                                     }
                                                 }
-                                            } else {
-                                                try {
-                                                    Toast.makeText(
-                                                        requireContext(),
-                                                        R.string.barkodOkunamadi,
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                } catch (e: Exception) {
-                                                    Log.e("AdminAnaSayfa", "Toast error", e)
-                                                }
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Barcode success processing error", e)
                                             }
-                                        } catch (e: Exception) {
-                                            Log.e("AdminAnaSayfa", "Barcode success error", e)
                                         }
-                                    }
-                                    .addOnFailureListener { e ->
-                                        try {
-                                            Toast.makeText(
-                                                requireContext(),
-                                                e.localizedMessage,
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        } catch (e: Exception) {
-                                            Log.e("AdminAnaSayfa", "Toast error", e)
+                                        .addOnFailureListener { e ->
+                                            try {
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    e.localizedMessage,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Toast error", e)
+                                            }
                                         }
-                                    }
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Image processing error", e)
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Image processing error", e)
+                                }
+                            } else {
+                                try {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.gorselBulunamadi,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Toast error", e)
+                                }
                             }
-                        } else {
-                            try {
-                                Toast.makeText(
-                                    requireContext(),
-                                    R.string.gorselBulunamadi,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Toast error", e)
-                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Activity result processing error", e)
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Activity result error", e)
+                    Log.e("AdminAnaSayfa", "Activity result handling error", e)
                 }
             }
 
@@ -716,7 +783,7 @@ class adminAnaSayfaFragment : Fragment() {
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Permission result error", e)
+                    Log.e("AdminAnaSayfa", "Permission result handling error", e)
                 }
             }
         } catch (e: Exception) {
@@ -725,12 +792,20 @@ class adminAnaSayfaFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         try {
-            _binding = null
-            cameraExecutor.shutdown()
+            super.onDestroyView()
+            try {
+                _binding = null
+            } catch (e: Exception) {
+                Log.e("AdminAnaSayfa", "Binding cleanup error", e)
+            }
+            try {
+                cameraExecutor.shutdown()
+            } catch (e: Exception) {
+                Log.e("AdminAnaSayfa", "Camera executor shutdown error", e)
+            }
         } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "Cleanup error", e)
+            Log.e("AdminAnaSayfa", "onDestroyView error", e)
         }
     }
 }
