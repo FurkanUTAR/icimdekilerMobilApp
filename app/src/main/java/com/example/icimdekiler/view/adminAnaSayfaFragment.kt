@@ -248,8 +248,14 @@ class adminAnaSayfaFragment : Fragment() {
                     btnClose.setOnClickListener {
                         try {
                             // Flash'ı kapat
-                            val cameraProvider = null
-                            cameraProvider.unbindAll()
+                            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+                            cameraProviderFuture.addListener({
+                                val cameraProvider = cameraProviderFuture.get()
+                                cameraProvider.unbindAll() // Kamerayı durdur
+                            }, ContextCompat.getMainExecutor(requireContext()))
+
+
                             dialog.dismiss()
                         } catch (e: Exception) {
                             Log.e("AdminAnaSayfa", "Dialog close error", e)
@@ -719,8 +725,4 @@ class adminAnaSayfaFragment : Fragment() {
             Log.e("AdminAnaSayfa", "Cleanup error", e)
         }
     }
-}
-
-private fun Nothing?.unbindAll() {
-    TODO("Not yet implemented")
 }
