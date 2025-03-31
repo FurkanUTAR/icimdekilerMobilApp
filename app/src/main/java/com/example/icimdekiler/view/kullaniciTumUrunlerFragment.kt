@@ -11,9 +11,9 @@ import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentKullaniciTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-
 
 class kullaniciTumUrunlerFragment : Fragment() {
 
@@ -22,9 +22,9 @@ class kullaniciTumUrunlerFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Firebase
-    private val db = Firebase.firestore
+    private val db = FirebaseFirestore.getInstance()
 
-    private var urunListesi=ArrayList<Urunler>()
+    private var urunListesi = ArrayList<Urunler>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentKullaniciTumUrunlerBinding.inflate(inflater,container,false)
+        _binding = FragmentKullaniciTumUrunlerBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }
@@ -61,11 +61,11 @@ class kullaniciTumUrunlerFragment : Fragment() {
                 if (value != null && !value.isEmpty) {
                     urunListesi.clear()
                     for (document in value.documents) {
-                        var documentId = document.id
+                        val documentId = document.id
                         val barkodNo = document.getString("barkodNo") ?: ""
                         val urunAdi = document.getString("urunAdi") ?: ""
                         val icindekiler = document.getString("icindekiler") ?: ""
-                        var gorselUrl = document.getString("gorselUrl") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
 
                         if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
                             val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
@@ -110,11 +110,13 @@ class kullaniciTumUrunlerFragment : Fragment() {
                 val adapter = UrunlerAdapter(urunListesi, "kullanici")
                 binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                 binding.urunlerRecyclerView.adapter = adapter
-            }.addOnFailureListener { error -> Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show() }
+            }.addOnFailureListener { error ->
+                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-       // _binding=null
+        _binding = null
     }
 }

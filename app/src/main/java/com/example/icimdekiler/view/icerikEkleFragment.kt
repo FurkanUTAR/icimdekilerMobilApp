@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentIcerikEkleBinding
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlin.collections.set
 
@@ -20,7 +21,7 @@ class icerikEkleFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Firebase
-    private val db=Firebase.firestore
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,37 +41,50 @@ class icerikEkleFragment : Fragment() {
         binding.kaydetButton.setOnClickListener {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, value -> icerikEkle()}
-            alert.setNegativeButton(R.string.hayir,null).show()
+            alert.setPositiveButton(R.string.evet) { dialog, _ -> icerikEkle() }
+            alert.setNegativeButton(R.string.hayir, null).show()
         }
     }
 
-    fun icerikEkle(){
-        val urun=binding.urunAdiText.text.toString().trim()
-        val aciklama=binding.aciklamaText.text.toString().trim()
+    private fun icerikEkle() {
+        val urun = binding.urunAdiText.text.toString().trim()
+        val aciklama = binding.aciklamaText.text.toString().trim()
 
-        val icerikMap=hashMapOf<String,Any>()
+        if (urun.isEmpty() || aciklama.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val icerikMap = hashMapOf<String, Any>()
         icerikMap["urun"] = urun
         icerikMap["aciklama"] = aciklama
 
         db.collection("icerik")
-            .whereEqualTo("urun",urun)
+            .whereEqualTo("urun", urun)
             .get()
             .addOnSuccessListener { querySnapshot ->
-                if (querySnapshot != null){
+                if (querySnapshot != null) {
                     val document = querySnapshot.documents.firstOrNull()
-                    if (document == null){
+                    if (document == null) {
                         db.collection("icerik")
                             .add(icerikMap)
-                            .addOnSuccessListener { task -> Toast.makeText(requireContext(), R.string.urunBasariylaKayitEdildi, Toast.LENGTH_SHORT).show() }
-                            .addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
-                    } else Toast.makeText(requireContext(), R.string.urunDahaOnceKayitEdilmis, Toast.LENGTH_SHORT).show()
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), R.string.urunBasariylaKayitEdildi, Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { exception ->
+                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(requireContext(), R.string.urunDahaOnceKayitEdilmis, Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }.addOnFailureListener { exeption -> Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show() }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding=null
+        _binding = null
     }
 }

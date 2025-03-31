@@ -16,11 +16,9 @@ import com.squareup.picasso.Picasso
 
 class urunFragment : Fragment() {
 
-    //Binding
     private var _binding: FragmentUrunBinding? = null
     private val binding get() = _binding!!
 
-    //Firebase
     val db = Firebase.firestore
 
     private val icindekilerListesi = mutableListOf<String>()
@@ -28,71 +26,79 @@ class urunFragment : Fragment() {
 
     var barkodNo: String=""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUrunBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
-        binding.icindekilerListView.adapter = icindekilerAdapter
+        try {
+            icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
+            binding.icindekilerListView.adapter = icindekilerAdapter
 
-        arguments?.let {
-            barkodNo = urunFragmentArgs.fromBundle(it).barkodNo
-            val urunAdi = urunFragmentArgs.fromBundle(it).urunAdi
-            val gelenIcindekiler = urunFragmentArgs.fromBundle(it).icindekiler
-            var gorselUrl = urunFragmentArgs.fromBundle(it).gorselUrl
+            arguments?.let {
+                barkodNo = urunFragmentArgs.fromBundle(it).barkodNo
+                val urunAdi = urunFragmentArgs.fromBundle(it).urunAdi
+                val gelenIcindekiler = urunFragmentArgs.fromBundle(it).icindekiler
+                val gorselUrl = urunFragmentArgs.fromBundle(it).gorselUrl
 
-            binding.barkodNoText.text = barkodNo
-            binding.urunAdiText.text = urunAdi
+                binding.barkodNoText.text = barkodNo
+                binding.urunAdiText.text = urunAdi
 
-            val icindekiler = gelenIcindekiler.split(", ").map { it.trim() }
-            icindekilerListesi.clear()
-            icindekilerListesi.addAll(icindekiler)
-            icindekilerAdapter.notifyDataSetChanged()
+                val icindekiler = gelenIcindekiler.split(", ").map { it.trim() }
+                icindekilerListesi.clear()
+                icindekilerListesi.addAll(icindekiler)
+                icindekilerAdapter.notifyDataSetChanged()
 
-            if (gorselUrl.isNotEmpty()) {
-                Picasso.get().load(gorselUrl).fit().centerCrop().into(binding.gorselSecImageView) // 📌 ImageView'inin id'sini buraya yaz
-            } else {
-                binding.gorselSecImageView.setImageResource(R.drawable.ic_launcher_background) // Varsayılan resim
+                if (gorselUrl.isNotEmpty()) {
+                    Picasso.get().load(gorselUrl).fit().centerCrop().into(binding.gorselSecImageView)
+                } else {
+                    binding.gorselSecImageView.setImageResource(R.drawable.ic_launcher_background)
+                }
             }
-        }
 
-        binding.icindekilerListView.setOnItemClickListener { parent, view, position, id ->
-            val urun = parent.getItemAtPosition(position) as String
-            aciklamaGetir(urun,position)
+            binding.icindekilerListView.setOnItemClickListener { parent, _, position, _ ->
+                val urun = parent.getItemAtPosition(position) as String
+                aciklamaGetir(urun, position)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Hata: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun aciklamaGetir(urun:String, position:Int){
-        db.collection("icerik")
-            .whereEqualTo("urun", urun)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    // İlk belgeyi al
-                    val document = querySnapshot.documents.firstOrNull()
+    private fun aciklamaGetir(urun: String, position: Int) {
+        try {
+            db.collection("icerik")
+                .whereEqualTo("urun", urun)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents.firstOrNull()
 
-                    if (document != null) {
-                        // Belgeden "aciklama" alanını al
-                        val aciklama = document.getString("aciklama") ?: "Açıklama bulunamadı"
-                        val alert= AlertDialog.Builder(requireContext())
-                        alert.setMessage(aciklama.toString())
-                        alert.setPositiveButton(R.string.tamam) { dialog, which -> }
-                        alert.show()
-                    } else Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
-                } else Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener { exception -> Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show() }
+                        if (document != null) {
+                            val aciklama = document.getString("aciklama") ?: "Açıklama bulunamadı"
+                            val alert = AlertDialog.Builder(requireContext())
+                            alert.setMessage(aciklama)
+                            alert.setPositiveButton(R.string.tamam) { dialog, _ -> dialog.dismiss() }
+                            alert.show()
+                        } else {
+                            Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(requireContext(), "Veritabanı hatası: ${exception.localizedMessage}", Toast.LENGTH_SHORT).show()
+                }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Hata: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {

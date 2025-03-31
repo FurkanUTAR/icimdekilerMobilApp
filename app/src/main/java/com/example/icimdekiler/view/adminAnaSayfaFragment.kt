@@ -218,11 +218,7 @@ class adminAnaSayfaFragment : Fragment() {
                         Manifest.permission.CAMERA
                     )
                 ) {
-                    Snackbar.make(
-                        requireView(),
-                        R.string.barkodOkumakIcinKamerayaErisimIzniGerekli,
-                        Snackbar.LENGTH_INDEFINITE
-                    )
+                    Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.izinVer) {
                             try {
                                 requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
@@ -277,12 +273,15 @@ class adminAnaSayfaFragment : Fragment() {
 
     private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog, btnFlashToggle: Button?) {
         try {
+            // Kamera sağlayıcısını alır.
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
+            // Kamera başlatma işlemi tamamlandığında çağrılır.
             cameraProviderFuture.addListener({
                 try {
                     val cameraProvider = cameraProviderFuture.get()
 
+                    // Kamera önizlemesi oluşturulur.
                     val preview = androidx.camera.core.Preview.Builder()
                         .setTargetRotation(previewView.display.rotation)
                         .build()
@@ -290,6 +289,7 @@ class adminAnaSayfaFragment : Fragment() {
                             it.surfaceProvider = previewView.surfaceProvider
                         }
 
+                    // Görüntü analizi için yapılandırma yapılır.
                     val imageAnalyzer = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build()

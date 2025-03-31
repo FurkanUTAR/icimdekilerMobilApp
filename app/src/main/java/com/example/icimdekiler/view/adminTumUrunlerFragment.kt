@@ -11,6 +11,7 @@ import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
@@ -21,9 +22,9 @@ class adminTumUrunlerFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Firebase
-    private val db = Firebase.firestore
+    private val db = FirebaseFirestore.getInstance()
 
-    private var urunListesi=ArrayList<Urunler>()
+    private var urunListesi = ArrayList<Urunler>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +34,8 @@ class adminTumUrunlerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAdminTumUrunlerBinding.inflate(inflater,container,false)
-        val view = binding.root
-        return view
+        _binding = FragmentAdminTumUrunlerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,8 +50,9 @@ class adminTumUrunlerFragment : Fragment() {
             .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
             .limit(30)
             .addSnapshotListener { value, error ->
-                if (error != null) Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                else {
+                if (error != null) {
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                } else {
                     if (value != null && !value.isEmpty) {
                         urunListesi.clear()
                         for (document in value.documents) {
@@ -81,9 +82,14 @@ class adminTumUrunlerFragment : Fragment() {
     private fun urunAra() {
         val urun = binding.urunAdiText.text.toString().trim().lowercase()
 
-        val sorgu =
-            if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
-            else db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+        val sorgu = if (urun.isEmpty()) {
+            db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
+        } else {
+            db.collection("urunler")
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+                .whereGreaterThanOrEqualTo("urunAdiLowerCase", urun) // arama kriterini ekle
+                .whereLessThanOrEqualTo("urunAdiLowerCase", urun + '\uf8ff') // tam eşleşme için
+        }
 
         sorgu.get()
             .addOnSuccessListener { documents ->
@@ -104,11 +110,13 @@ class adminTumUrunlerFragment : Fragment() {
                 val adapter = UrunlerAdapter(urunListesi, "admin")
                 binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                 binding.urunlerRecyclerView.adapter = adapter
-            }.addOnFailureListener { error -> Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show() }
+            }.addOnFailureListener { error ->
+                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // _binding = null
+        //_binding = null
     }
 }
