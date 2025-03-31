@@ -19,6 +19,7 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.camera.core.Camera
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -55,6 +56,9 @@ class adminAnaSayfaFragment : Fragment() {
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var barcodeScanner: BarcodeScanner
+
+    private var camera: Camera? = null
+    private var isFlashOn = false  // Flash durumu
 
     private var barkodNo: String = ""
 
@@ -243,7 +247,8 @@ class adminAnaSayfaFragment : Fragment() {
                     val previewView = view.findViewById<PreviewView>(R.id.previewView)
                     val btnClose = view.findViewById<Button>(R.id.btnClose)
 
-                    startCamera(previewView, dialog)
+                    val btnFlashToggle = view.findViewById<Button>(R.id.btnFlashToggle)
+                    startCamera(previewView, dialog, btnFlashToggle)
 
                     btnClose.setOnClickListener {
                         try {
@@ -270,7 +275,7 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog) {
+    private fun startCamera(previewView: PreviewView, dialog: BottomSheetDialog, btnFlashToggle: Button?) {
         try {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -278,7 +283,6 @@ class adminAnaSayfaFragment : Fragment() {
                 try {
                     val cameraProvider = cameraProviderFuture.get()
 
-                    // Flash modunu ayarla
                     val preview = androidx.camera.core.Preview.Builder()
                         .setTargetRotation(previewView.display.rotation)
                         .build()
@@ -286,7 +290,6 @@ class adminAnaSayfaFragment : Fragment() {
                             it.surfaceProvider = previewView.surfaceProvider
                         }
 
-                    // ImageAnalyzer yapılandırması
                     val imageAnalyzer = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build()
@@ -305,15 +308,23 @@ class adminAnaSayfaFragment : Fragment() {
                     try {
                         cameraProvider.unbindAll()
 
-                        // Kamerayı flash ile başlat
-                        val camera = cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
+                        // 📸 Kamera nesnesini değişkene atıyoruz
+                        camera = cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageAnalyzer)
 
-                        // Flash'ı aç
-                        camera.cameraControl.enableTorch(true)
+                        // Flash başlangıçta kapalı olacak
+                        camera?.cameraControl?.enableTorch(false)
+
+                        // 🎯 Buton ile flash kontrolü
+                        btnFlashToggle?.setOnClickListener {
+                            isFlashOn = !isFlashOn  // Flash durumunu tersine çevir
+                            camera?.cameraControl?.enableTorch(isFlashOn)
+
+                            // Buton metnini güncelle
+                            btnFlashToggle.text = if (isFlashOn) "Flash Kapat" else "Flash Aç"
+                        }
 
                     } catch (e: Exception) {
                         Log.e("CameraX", "Camera bind failed", e)
-                        // Flash açılamazsa kullanıcıyı bilgilendir
                         requireActivity().runOnUiThread {
                             Toast.makeText(requireContext(), "Flash açılamadı: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                         }
@@ -387,11 +398,7 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         try {
             if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -399,7 +406,8 @@ class adminAnaSayfaFragment : Fragment() {
                 val previewView = dialog.findViewById<PreviewView>(R.id.previewView)
                 if (previewView != null) {
                     try {
-                        startCamera(previewView, dialog)
+                        val btnFlashToggle = view?.findViewById<Button>(R.id.btnFlashToggle)
+                        startCamera(previewView, dialog, btnFlashToggle)
                     } catch (e: Exception) {
                         Log.e("AdminAnaSayfa", "Camera restart error", e)
                     }
