@@ -27,6 +27,8 @@
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
     <string name="tumUrunler">Tüm Ürünler</string>
+    <string name="flasAc">Flaş Aç</string>
+    <string name="flasKapat">Flaş Kapat</string>
     <string name="kapat">Kapat</string>
 
     <!-- Başlıklar -->

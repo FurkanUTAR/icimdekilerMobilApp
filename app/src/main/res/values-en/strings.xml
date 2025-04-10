@@ -27,6 +27,8 @@
     <string name="urunEkle">Add Product</string>
     <string name="icerikEkle">Add Content</string>
     <string name="tumUrunler">All Products</string>
+    <string name="flasAc">Open Flash</string>
+    <string name="flasKapat">Close Flash</string>
     <string name="kapat">Close</string>
 
     <!-- Başlıklar -->
