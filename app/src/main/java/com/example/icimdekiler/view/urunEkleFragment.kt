@@ -536,6 +536,12 @@ class urunEkleFragment : Fragment() {
             val barkodNo = binding.barkodNoText.text.toString().trim()
             val urunAdi = binding.urunAdiText.text.toString().trim()
             val urunAdiLowerCase = urunAdi.lowercase().trim()
+                .replace("ç", "c")
+                .replace("ğ", "g")
+                .replace("ı", "i")
+                .replace("ö", "o")
+                .replace("ş", "s")
+                .replace("ü", "u")
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
             if (barkodNo.isEmpty() || urunAdi.isEmpty() || birlesikIcindekiler.isEmpty()) {
@@ -597,6 +603,12 @@ class urunEkleFragment : Fragment() {
             val barkodNo = binding.barkodNoText.text.toString().trim()
             val urunAdi = binding.urunAdiText.text.toString().trim()
             val urunAdiLowerCase = urunAdi.lowercase().trim()
+                .replace("ç", "c")
+                .replace("ğ", "g")
+                .replace("ı", "i")
+                .replace("ö", "o")
+                .replace("ş", "s")
+                .replace("ü", "u")
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
             if (barkodNo.isEmpty()) {

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -38,6 +39,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -93,6 +95,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         try {
+            urunleriAl()
+
             binding.popupMenu.setOnClickListener { v ->
                 try {
                     val popupMenu = PopupMenu(v.context, v)
@@ -384,6 +388,38 @@ class kullaniciAnaSayfaFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun urunleriAl() {
+        db.collection("urunler")
+            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
+            .limit(30)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                } else {
+                    if (value != null && !value.isEmpty) {
+                        val urunAdlari = ArrayList<String>()  // AutoComplete için liste
+
+                        for (document in value.documents) {
+                            val urunAdi = document.getString("urunAdi") ?: ""
+                            urunAdlari.add(urunAdi)  // isimleri listeye ekle
+                        }
+
+                        context?.let { ctx ->
+                            binding.let { bind ->
+                                // AutoCompleteTextView Adapter tanımla
+                                val autoCompleteAdapter = ArrayAdapter(
+                                    ctx,
+                                    android.R.layout.simple_dropdown_item_1line,
+                                    urunAdlari
+                                )
+                                bind.urunAdiText.setAdapter(autoCompleteAdapter)
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     private fun urunAdiAra() {
