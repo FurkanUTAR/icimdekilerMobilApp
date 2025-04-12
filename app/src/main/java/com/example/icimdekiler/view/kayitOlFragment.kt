@@ -72,77 +72,80 @@ class kayitOlFragment : Fragment() {
 
             // Boş alan kontrolü yap
             if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
-                // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
-                db.collection("kullaniciBilgileri")
-                    .whereEqualTo("kullaniciAdi", kullaniciAdi)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        try {
-                            if (querySnapshot.isEmpty) {
-                                // Aynı kullanıcı adı yok, kayıt işlemini başlat
-                                auth.createUserWithEmailAndPassword(ePosta, parola)
-                                    .addOnCompleteListener { task ->
-                                        try {
-                                            if (task.isSuccessful) {
-                                                val guncelKullanici = auth.currentUser
-                                                if (guncelKullanici != null) {
-                                                    // Kullanıcı bilgilerini bir Map'e koy
-                                                    val kullaniciMap = hashMapOf<String, Any>()
-                                                    kullaniciMap["kullaniciAdi"] = kullaniciAdi
-                                                    kullaniciMap["isimSoyisim"] = isimSoyisim
-                                                    kullaniciMap["ePosta"] = ePosta
-                                                    kullaniciMap["telNo"] = telNo
-                                                    kullaniciMap["parola"] = parola
-                                                    kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
-                                                    kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
+                if (parola.length < 6) Toast.makeText(requireContext(), R.string.parolaEnAzAltiKarakterOlmali, Toast.LENGTH_SHORT).show()
+                else {
+                    // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
+                    db.collection("kullaniciBilgileri")
+                        .whereEqualTo("kullaniciAdi", kullaniciAdi)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            try {
+                                if (querySnapshot.isEmpty) {
+                                    // Aynı kullanıcı adı yok, kayıt işlemini başlat
+                                    auth.createUserWithEmailAndPassword(ePosta, parola)
+                                        .addOnCompleteListener { task ->
+                                            try {
+                                                if (task.isSuccessful) {
+                                                    val guncelKullanici = auth.currentUser
+                                                    if (guncelKullanici != null) {
+                                                        // Kullanıcı bilgilerini bir Map'e koy
+                                                        val kullaniciMap = hashMapOf<String, Any>()
+                                                        kullaniciMap["kullaniciAdi"] = kullaniciAdi
+                                                        kullaniciMap["isimSoyisim"] = isimSoyisim
+                                                        kullaniciMap["ePosta"] = ePosta
+                                                        kullaniciMap["telNo"] = telNo
+                                                        kullaniciMap["parola"] = parola
+                                                        kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
+                                                        kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
 
-                                                    // Kullanıcı bilgilerini Firestore'a kaydet
-                                                    db.collection("kullaniciBilgileri")
-                                                        .add(kullaniciMap) // Firestore'a ekle
-                                                        .addOnSuccessListener {
-                                                            try {
-                                                                // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
-                                                                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                                                                requireView().findNavController().navigate(action)
-                                                            } catch (e: Exception) {
-                                                                e.printStackTrace()
+                                                        // Kullanıcı bilgilerini Firestore'a kaydet
+                                                        db.collection("kullaniciBilgileri")
+                                                            .add(kullaniciMap) // Firestore'a ekle
+                                                            .addOnSuccessListener {
+                                                                try {
+                                                                    // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
+                                                                    val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                                                                    requireView().findNavController().navigate(action)
+                                                                } catch (e: Exception) {
+                                                                    e.printStackTrace()
+                                                                }
+                                                            }.addOnFailureListener { exception ->
+                                                                try {
+                                                                    Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                                                } catch (e: Exception) {
+                                                                    e.printStackTrace()
+                                                                }
                                                             }
-                                                        }.addOnFailureListener { exception ->
-                                                            try {
-                                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                                                            } catch (e: Exception) {
-                                                                e.printStackTrace()
-                                                            }
-                                                        }
+                                                    }
                                                 }
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
                                             }
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
+                                        }.addOnFailureListener { exception ->
+                                            try {
+                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
                                         }
-                                    }.addOnFailureListener { exception ->
-                                        try {
-                                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
-                                        }
+                                } else {
+                                    try {
+                                        Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
                                     }
-                            } else {
-                                try {
-                                    Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
                                 }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        }.addOnFailureListener { exception ->
+                            try {
+                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
-                    }.addOnFailureListener { exception ->
-                        try {
-                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+                }
             } else {
                 try {
                     Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()

@@ -46,6 +46,7 @@
     <!-- Uyarı ve Hata Mesajları -->
     <string name="buKullaniciAdiZatenKullaniliyor">This username is already in use!</string>
     <string name="lutfenBosAlanBirakmayiniz">Please do not leave any empty fields!</string>
+    <string name="parolaEnAzAltiKarakterOlmali">Password must be at least 6 characters!</string>
     <string name="hosgeldin">Welcome</string>
     <string name="kullaniciBilgileriYanlis">Incorrect user information!</string>
     <string name="kullaniciBulunamadi">User not found!</string>
