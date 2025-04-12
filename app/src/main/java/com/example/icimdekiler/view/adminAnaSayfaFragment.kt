@@ -30,11 +30,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.icimdekiler.R
-import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
-import com.example.icimdekiler.model.Urunler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
@@ -462,7 +459,6 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             }
     }
-
 
     private fun urunAdiAra() {
         try {

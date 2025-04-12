@@ -50,31 +50,35 @@ class adminTumUrunlerFragment : Fragment() {
             .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
             .limit(30)
             .addSnapshotListener { value, error ->
+                if (!isAdded || isDetached) return@addSnapshotListener
+
                 if (error != null) {
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                } else {
-                    if (value != null && !value.isEmpty) {
-                        urunListesi.clear()
-                        for (document in value.documents) {
-                            val documentId = document.id
-                            val barkodNo = document.getString("barkodNo") ?: ""
-                            val urunAdi = document.getString("urunAdi") ?: ""
-                            val icindekiler = document.getString("icindekiler") ?: ""
-                            val gorselUrl = document.getString("gorselUrl") ?: ""
+                    return@addSnapshotListener
+                }
 
+                if (value != null && !value.isEmpty) {
+                    urunListesi.clear()
+                    for (document in value.documents) {
+                        val documentId = document.id
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
+
+                        if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
                             val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                             urunListesi.add(indirilenUrun)
                         }
-
-                        context?.let { ctx ->
-                            binding?.let { bind ->
-                                val adapter = UrunlerAdapter(urunListesi, "admin")
-                                bind.urunlerRecyclerView.layoutManager = GridLayoutManager(ctx, 2)
-                                bind.urunlerRecyclerView.adapter = adapter
-                                adapter.notifyDataSetChanged()
-                            }
-                        }
                     }
+
+                    if (isAdded && !isDetached) {
+                        val adapter = UrunlerAdapter(urunListesi, "admin")
+                        binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                        binding.urunlerRecyclerView.adapter = adapter
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -82,14 +86,9 @@ class adminTumUrunlerFragment : Fragment() {
     private fun urunAra() {
         val urun = binding.urunAdiText.text.toString().trim().lowercase()
 
-        val sorgu = if (urun.isEmpty()) {
-            db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
-        } else {
-            db.collection("urunler")
-                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
-                .whereGreaterThanOrEqualTo("urunAdiLowerCase", urun) // arama kriterini ekle
-                .whereLessThanOrEqualTo("urunAdiLowerCase", urun + '\uf8ff') // tam eşleşme için
-        }
+        val sorgu =
+            if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
+            else db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
 
         sorgu.get()
             .addOnSuccessListener { documents ->
