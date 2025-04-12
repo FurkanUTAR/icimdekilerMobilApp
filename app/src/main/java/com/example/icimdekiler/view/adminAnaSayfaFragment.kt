@@ -37,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
@@ -49,6 +50,8 @@ class adminAnaSayfaFragment : Fragment() {
 
     private var _binding: FragmentAdminAnaSayfaBinding? = null
     private val binding get() = _binding!!
+
+    private var urunlerListener: ListenerRegistration? = null  // Dinleyiciyi saklamak için
 
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
@@ -433,29 +436,31 @@ class adminAnaSayfaFragment : Fragment() {
     }
 
     private fun urunleriAl() {
-        db.collection("urunler")
-            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
+        urunlerListener = db.collection("urunler")
+            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
             .limit(30)
             .addSnapshotListener { value, error ->
+                val bind = binding ?: return@addSnapshotListener  // Null kontrolü
+
                 if (error != null) {
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                } else {
-                    if (value != null && !value.isEmpty) {
-                        val urunAdlari = ArrayList<String>()  // AutoComplete için liste
+                    return@addSnapshotListener
+                }
 
-                        for (document in value.documents) {
-                            val urunAdi = document.getString("urunAdi") ?: ""
-                            urunAdlari.add(urunAdi)  // isimleri listeye ekle
-                        }
-
-                        context?.let { ctx ->
-                            binding.let { bind ->
-                                // AutoCompleteTextView Adapter tanımla
-                                val autoCompleteAdapter = ArrayAdapter(ctx, android.R.layout.simple_dropdown_item_1line, urunAdlari)
-                                bind.urunAdiText.setAdapter(autoCompleteAdapter)
-                            }
-                        }
+                if (value != null && !value.isEmpty) {
+                    val urunAdlari = ArrayList<String>()
+                    for (document in value.documents) {
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        urunAdlari.add(urunAdi)
                     }
+
+                    // AutoComplete Adapter
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        urunAdlari
+                    )
+                    bind.urunAdiText.setAdapter(adapter)
                 }
             }
     }
@@ -824,20 +829,9 @@ class adminAnaSayfaFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        try {
-            super.onDestroyView()
-            try {
-                _binding = null
-            } catch (e: Exception) {
-                Log.e("AdminAnaSayfa", "Binding cleanup error", e)
-            }
-            try {
-                cameraExecutor.shutdown()
-            } catch (e: Exception) {
-                Log.e("AdminAnaSayfa", "Camera executor shutdown error", e)
-            }
-        } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "onDestroyView error", e)
-        }
+        super.onDestroyView()
+        urunlerListener?.remove()  // Dinleyiciyi kaldır
+        _binding = null  // ViewBinding'i temizle
+        cameraExecutor.shutdown()  // Kamera executor'ı kapat
     }
 }
