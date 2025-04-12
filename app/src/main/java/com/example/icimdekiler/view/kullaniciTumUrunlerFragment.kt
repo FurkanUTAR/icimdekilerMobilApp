@@ -14,6 +14,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import java.util.Locale
 
 class kullaniciTumUrunlerFragment : Fragment() {
 
@@ -85,11 +86,17 @@ class kullaniciTumUrunlerFragment : Fragment() {
     }
 
     private fun urunAra() {
-        val urun = binding.urunAdiText.text.toString().trim().lowercase()
+        val urun = binding.urunAdiText.text.toString().trim()
+            .lowercase(Locale("tr","TR"))
+            .replace("ç", "c")
+            .replace("ğ", "g")
+            .replace("ı", "i")
+            .replace("ö", "o")
+            .replace("ş", "s")
+            .replace("ü", "u")
 
-        val sorgu =
-            if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
-            else db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+        val sorgu = db.collection("urunler")
+            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
 
         sorgu.get()
             .addOnSuccessListener { documents ->
@@ -101,7 +108,16 @@ class kullaniciTumUrunlerFragment : Fragment() {
                     val icindekiler = document.getString("icindekiler") ?: ""
                     val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                    if (urun.isEmpty() || urunAdi.lowercase().contains(urun)) {
+                    val urunAdiNormalized = urunAdi
+                        .lowercase(Locale("tr","TR"))
+                        .replace("ç", "c")
+                        .replace("ğ", "g")
+                        .replace("ı", "i")
+                        .replace("ö", "o")
+                        .replace("ş", "s")
+                        .replace("ü", "u")
+
+                    if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
                         val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                         urunListesi.add(indirilenUrun)
                     }
@@ -114,6 +130,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
                 Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
             }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

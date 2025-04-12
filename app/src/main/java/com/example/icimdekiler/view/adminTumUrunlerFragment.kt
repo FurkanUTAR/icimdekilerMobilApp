@@ -14,6 +14,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import java.util.Locale
 
 class adminTumUrunlerFragment : Fragment() {
 
@@ -84,7 +85,14 @@ class adminTumUrunlerFragment : Fragment() {
     }
 
     private fun urunAra() {
-        val urun = binding.urunAdiText.text.toString().trim().lowercase()
+        val urun = binding.urunAdiText.text.toString().trim()
+            .lowercase(Locale("tr","TR"))
+            .replace("ç", "c")
+            .replace("ğ", "g")
+            .replace("ı", "i")
+            .replace("ö", "o")
+            .replace("ş", "s")
+            .replace("ü", "u")
 
         val sorgu =
             if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
@@ -100,7 +108,16 @@ class adminTumUrunlerFragment : Fragment() {
                     val icindekiler = document.getString("icindekiler") ?: ""
                     val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                    if (urun.isEmpty() || urunAdi.lowercase().contains(urun)) {
+                    val urunAdiNormalized = urunAdi
+                        .lowercase(Locale("tr","TR"))
+                        .replace("ç", "c")
+                        .replace("ğ", "g")
+                        .replace("ı", "i")
+                        .replace("ö", "o")
+                        .replace("ş", "s")
+                        .replace("ü", "u")
+
+                    if (urun.isEmpty() || urunAdiNormalized.lowercase().contains(urun)) {
                         val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                         urunListesi.add(indirilenUrun)
                     }

@@ -43,6 +43,7 @@ import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -440,7 +441,7 @@ class adminAnaSayfaFragment : Fragment() {
             .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
             .limit(30)
             .addSnapshotListener { value, error ->
-                val bind = binding ?: return@addSnapshotListener  // Null kontrolü
+                val bind = binding // Null kontrolü
 
                 if (error != null) {
                     Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
@@ -455,11 +456,7 @@ class adminAnaSayfaFragment : Fragment() {
                     }
 
                     // AutoComplete Adapter
-                    val adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        urunAdlari
-                    )
+                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, urunAdlari)
                     bind.urunAdiText.setAdapter(adapter)
                 }
             }
@@ -467,7 +464,15 @@ class adminAnaSayfaFragment : Fragment() {
 
     private fun urunAdiAra() {
         try {
-            val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
+            val urunAdiLowerCase = binding.urunAdiText.text.toString()
+                .lowercase(Locale("tr","TR"))
+                .replace("ç", "c")
+                .replace("ğ", "g")
+                .replace("ı", "i")
+                .replace("ö", "o")
+                .replace("ş", "s")
+                .replace("ü", "u")
+                .trim()
 
             try {
                 db.collection("urunler")
@@ -505,11 +510,7 @@ class adminAnaSayfaFragment : Fragment() {
                                 }
                             } else {
                                 try {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        R.string.urunBulunamadi,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Toast error", e)
                                 }
@@ -520,11 +521,7 @@ class adminAnaSayfaFragment : Fragment() {
                     }
                     .addOnFailureListener { exception ->
                         try {
-                            Toast.makeText(
-                                requireContext(),
-                                exception.localizedMessage,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
                         } catch (e: Exception) {
                             Log.e("AdminAnaSayfa", "Toast error", e)
                         }

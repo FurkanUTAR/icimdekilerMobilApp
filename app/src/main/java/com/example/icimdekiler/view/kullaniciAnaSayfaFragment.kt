@@ -44,6 +44,7 @@ import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -409,11 +410,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         context?.let { ctx ->
                             binding.let { bind ->
                                 // AutoCompleteTextView Adapter tanımla
-                                val autoCompleteAdapter = ArrayAdapter(
-                                    ctx,
-                                    android.R.layout.simple_dropdown_item_1line,
-                                    urunAdlari
-                                )
+                                val autoCompleteAdapter = ArrayAdapter(ctx, android.R.layout.simple_list_item_1, urunAdlari)
                                 bind.urunAdiText.setAdapter(autoCompleteAdapter)
                             }
                         }
@@ -424,7 +421,15 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     private fun urunAdiAra() {
         try {
-            val urunAdiLowerCase = binding.urunAdiText.text.toString().lowercase().trim()
+            val urunAdiLowerCase = binding.urunAdiText.text.toString()
+                .lowercase(Locale("tr","TR"))
+                .replace("ç", "c")
+                .replace("ğ", "g")
+                .replace("ı", "i")
+                .replace("ö", "o")
+                .replace("ş", "s")
+                .replace("ü", "u")
+                .trim()
 
             db.collection("urunler")
                 .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
