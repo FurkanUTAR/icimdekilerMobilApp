@@ -328,7 +328,7 @@ class adminAnaSayfaFragment : Fragment() {
                             camera?.cameraControl?.enableTorch(isFlashOn)
 
                             // Buton metnini güncelle
-                            btnFlashToggle.text = if (isFlashOn) "${R.string.flasKapat}" else "${R.string.flasAc}"
+                            btnFlashToggle.text = if (isFlashOn) getString(R.string.flasKapat) else getString(R.string.flasAc)
                         }
 
                     } catch (e: Exception) {

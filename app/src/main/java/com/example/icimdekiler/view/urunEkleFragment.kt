@@ -47,6 +47,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.storage.ktx.storage
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.squareup.picasso.Picasso
+import java.text.Collator
+import java.util.Locale
 
 class urunEkleFragment : Fragment() {
 
@@ -99,11 +101,23 @@ class urunEkleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
+        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, icindekilerListesi)
         binding.icindekilerListView.adapter = icindekilerAdapter
 
+        val kategoriler = arrayOf("İçecek", "Süt ve Süt Ürünü", "Temel Gıda", "Atıştırmalık","Şeker")
+        val turkishLocale = Locale("tr", "TR")
+        val collator = Collator.getInstance(turkishLocale)
+        kategoriler.sortWith { a, b ->
+            collator.compare(a, b)
+        }
+        val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,kategoriler)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.kategoriSpinner.adapter=adapter
+
+        var durum = ""
+
         arguments?.let {
-            val durum = urunEkleFragmentArgs.fromBundle(it).durum
+            durum = urunEkleFragmentArgs.fromBundle(it).durum
             barkodNo = urunEkleFragmentArgs.fromBundle(it).barkodNo
             val urunAdi = urunEkleFragmentArgs.fromBundle(it).urunAdi
             val gelenIcindekiler = urunEkleFragmentArgs.fromBundle(it).icindekiler
@@ -112,12 +126,10 @@ class urunEkleFragment : Fragment() {
 
             if (durum == "yeni") {
                 binding.kaydetButton.isEnabled = true
-                binding.guncelleButton.isEnabled = false
                 binding.silButton.isEnabled = false
                 binding.barkodNoText.setText(barkodNo)
             } else {
-                binding.kaydetButton.isEnabled = false
-                binding.guncelleButton.isEnabled = true
+                binding.kaydetButton.isEnabled = true
                 binding.silButton.isEnabled = true
 
                 binding.barkodNoText.setText(barkodNo)
@@ -163,17 +175,17 @@ class urunEkleFragment : Fragment() {
         }
 
         binding.kaydetButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, value -> urunKaydet() }
-            alert.setNegativeButton(R.string.hayir, null).show()
-        }
-
-        binding.guncelleButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.guncellemekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, value -> urunGuncelle() }
-            alert.setNegativeButton(R.string.hayir, null).show()
+            if (durum == "yeni"){
+                val alert = AlertDialog.Builder(requireContext())
+                alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
+                alert.setPositiveButton(R.string.evet) { dialog, value -> urunKaydet() }
+                alert.setNegativeButton(R.string.hayir, null).show()
+            } else {
+                val alert = AlertDialog.Builder(requireContext())
+                alert.setTitle(R.string.guncellemekIstediginizdenEminMisiniz)
+                alert.setPositiveButton(R.string.evet) { dialog, value -> urunGuncelle() }
+                alert.setNegativeButton(R.string.hayir, null).show()
+            }
         }
 
         binding.silButton.setOnClickListener {
@@ -299,7 +311,7 @@ class urunEkleFragment : Fragment() {
                             camera?.cameraControl?.enableTorch(isFlashOn)
 
                             // Buton metnini güncelle
-                            btnFlashToggle.text = if (isFlashOn) "${R.string.flasKapat}" else "${R.string.flasAc}"
+                            btnFlashToggle.text = if (isFlashOn) getString(R.string.flasKapat) else getString(R.string.flasAc)
                         }
 
                     } catch (e: Exception) {
@@ -542,9 +554,10 @@ class urunEkleFragment : Fragment() {
                 .replace("ö", "o")
                 .replace("ş", "s")
                 .replace("ü", "u")
+            val kategori = binding.kategoriSpinner.selectedItem.toString()
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
-            if (barkodNo.isEmpty() || urunAdi.isEmpty() || birlesikIcindekiler.isEmpty()) {
+            if (barkodNo.isEmpty() || urunAdi.isEmpty() || kategori.isEmpty() || birlesikIcindekiler.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_SHORT).show()
                 return
             }
@@ -561,6 +574,7 @@ class urunEkleFragment : Fragment() {
                                 "urunAdi" to urunAdi,
                                 "urunAdiLowerCase" to urunAdiLowerCase,
                                 "barkodNo" to barkodNo,
+                                "kategori" to kategori,
                                 "icindekiler" to birlesikIcindekiler,
                                 "gorselUrl" to gorselUrl
                             )
@@ -609,6 +623,7 @@ class urunEkleFragment : Fragment() {
                 .replace("ö", "o")
                 .replace("ş", "s")
                 .replace("ü", "u")
+            val kategori = binding.kategoriSpinner.selectedItem.toString()
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
             if (barkodNo.isEmpty()) {
@@ -618,13 +633,14 @@ class urunEkleFragment : Fragment() {
 
             val guncellenenUrunMap: MutableMap<String, Any> = mutableMapOf(
                 "urunAdi" to urunAdi,
+                "urunAdiLowerCase" to urunAdiLowerCase,
                 "barkodNo" to barkodNo,
+                "kategori" to kategori,
                 "icindekiler" to birlesikIcindekiler,
-                "urunAdiLowerCase" to urunAdiLowerCase
             )
 
             val documentRef = db.collection("urunler").document(documentId)
-            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && birlesikIcindekiler.isNotEmpty()){
+            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && kategori.isNotEmpty() && birlesikIcindekiler.isNotEmpty()){
                 if (secilenGorsel != null) {
                     val gorselAdi = "${barkodNo}.jpg"
                     val gorselReferansi = storage.reference.child("images/$gorselAdi")
@@ -722,11 +738,15 @@ class urunEkleFragment : Fragment() {
                                 val urun = document.get("urun") as? String ?: continue
                                 icerikListesi.add(urun)
                             }
-                            icerikListesi.sort()
+                            val turkishLocale = Locale("tr", "TR")
+                            val collator = Collator.getInstance(turkishLocale)
+                            icerikListesi.sortWith { a, b ->
+                                collator.compare(a, b)
+                            }
 
                             // Fragment bağlanmış mı, kontrol etmeden adapter'ı set etme
                             if (isAdded) {
-                                icerikAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, android.R.id.text1, icerikListesi)
+                                icerikAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, icerikListesi)
                                 binding.icerikSpinner.adapter = icerikAdapter
                             }
                         }

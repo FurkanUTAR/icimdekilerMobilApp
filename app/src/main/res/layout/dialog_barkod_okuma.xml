@@ -37,7 +37,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="5dp"
-        android:text="Flash Aç/Kapat"
+        android:text="@string/flasAcKapat"
         app:layout_constraintBottom_toBottomOf="@+id/previewView"
         app:layout_constraintStart_toStartOf="@+id/previewView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

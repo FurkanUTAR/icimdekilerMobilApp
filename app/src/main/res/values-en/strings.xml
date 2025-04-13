@@ -27,6 +27,7 @@
     <string name="urunEkle">Add Product</string>
     <string name="icerikEkle">Add Content</string>
     <string name="tumUrunler">All Products</string>
+    <string name="flasAcKapat">Open/Close Flash</string>
     <string name="flasAc">Open Flash</string>
     <string name="flasKapat">Close Flash</string>
     <string name="kapat">Close</string>
@@ -35,6 +36,7 @@
     <string name="urunAdi">Product Name</string>
     <string name="icindekiler">Ingredients</string>
     <string name="icerik">Content</string>
+    <string name="kategori">Category</string>
     <string name="barkod">Barcode</string>
     <string name="aciklama">Description</string>
 

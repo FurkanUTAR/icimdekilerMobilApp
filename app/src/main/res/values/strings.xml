@@ -27,6 +27,7 @@
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
     <string name="tumUrunler">Tüm Ürünler</string>
+    <string name="flasAcKapat">Flaş Aç/Kapat</string>
     <string name="flasAc">Flaş Aç</string>
     <string name="flasKapat">Flaş Kapat</string>
     <string name="kapat">Kapat</string>
@@ -35,6 +36,7 @@
     <string name="urunAdi">Ürün Adı</string>
     <string name="icindekiler">İçindekiler</string>
     <string name="icerik">İçerik</string>
+    <string name="kategori">Kategori</string>
     <string name="barkod">Barkod</string>
     <string name="aciklama">Açıklama</string>
 
