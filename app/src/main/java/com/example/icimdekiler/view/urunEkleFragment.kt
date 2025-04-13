@@ -156,14 +156,14 @@ class urunEkleFragment : Fragment() {
             alert.setItems(secim) { dialog, which ->
                 if (which == 0) showBarcodeScannerDialog()
                 else {
-                    islem = "barkodOku"
+                    islem = "barkodOku" // Barkod okuma işlemi olarak işaretle
                     barkodOkuGaleri()
                 }
             }.show()
         }
 
         binding.gorselSecImageView.setOnClickListener {
-            islem = "gorselSec"
+            islem = "gorselSec" // Görsel seçme işlemi olarak işaretle
             barkodOkuGaleri()
         }
 
@@ -437,11 +437,12 @@ class urunEkleFragment : Fragment() {
                     if (result.resultCode == RESULT_OK) {
                         val imageUri = result.data?.data
                         if (imageUri != null) {
-                            secilenGorsel = imageUri
-                            val image = InputImage.fromFilePath(requireContext(), imageUri)
-                            val scanner = BarcodeScanning.getClient()
-
                             if (islem == "barkodOku") {
+                                // Sadece barkod okuma işlemi için
+                                secilenGorsel = null // Barkod okurken görseli değiştirme
+                                val image = InputImage.fromFilePath(requireContext(), imageUri)
+                                val scanner = BarcodeScanning.getClient()
+
                                 scanner.process(image)
                                     .addOnSuccessListener { barcodes ->
                                         try {
@@ -450,7 +451,7 @@ class urunEkleFragment : Fragment() {
                                                     val barkod = barcode.displayValue
                                                     if (barkod != null) {
                                                         binding.barkodNoText.setText(barkod)
-                                                        break // İlk barkodu alınca döngüden çık
+                                                        break
                                                     }
                                                 }
                                             } else {
@@ -465,6 +466,8 @@ class urunEkleFragment : Fragment() {
                                         Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                                     }
                             } else if (islem == "gorselSec") {
+                                // Sadece görsel seçme işlemi için
+                                secilenGorsel = imageUri
                                 try {
                                     if (Build.VERSION.SDK_INT >= 28) {
                                         val source = ImageDecoder.createSource(requireActivity().contentResolver, secilenGorsel!!)
@@ -488,23 +491,11 @@ class urunEkleFragment : Fragment() {
                             Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
                         }
                     }
+                    islem = "" // İşlem tamamlandıktan sonra sıfırla
                 } catch (e: Exception) {
                     Log.e("Gallery", "Galeriye erişim hatası", e)
                     Toast.makeText(requireContext(), "Galeriye erişim hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-                try {
-                    if (result) {
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        activityResultLauncherGallery.launch(intent)
-                    } else {
-                        Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Log.e("Gallery", "İzin işleme hatası", e)
-                    Toast.makeText(requireContext(), "İzin kontrolü hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    islem = "" // Hata durumunda da sıfırla
                 }
             }
         } catch (e: Exception) {
