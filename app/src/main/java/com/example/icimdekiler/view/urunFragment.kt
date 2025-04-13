@@ -47,7 +47,6 @@ class urunFragment : Fragment() {
                 val gelenIcindekiler = urunFragmentArgs.fromBundle(it).icindekiler
                 val gorselUrl = urunFragmentArgs.fromBundle(it).gorselUrl
 
-                binding.barkodNoText.text = barkodNo
                 binding.urunAdiText.text = urunAdi
 
                 val icindekiler = gelenIcindekiler.split(", ").map { it.trim() }

@@ -30,18 +30,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <TextView
-        android:id="@+id/barkodNoText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/barkod"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/gorselSecImageView"
-        app:layout_constraintStart_toStartOf="@+id/gorselSecImageView"
-        app:layout_constraintTop_toBottomOf="@+id/gorselSecImageView" />
-
-    <TextView
         android:id="@+id/urunAdiText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,9 +37,9 @@
         android:text="@string/urunAdi"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/barkodNoText"
-        app:layout_constraintStart_toStartOf="@+id/barkodNoText"
-        app:layout_constraintTop_toBottomOf="@+id/barkodNoText" />
+        app:layout_constraintEnd_toEndOf="@+id/gorselSecImageView"
+        app:layout_constraintStart_toStartOf="@+id/gorselSecImageView"
+        app:layout_constraintTop_toBottomOf="@+id/gorselSecImageView" />
 
     <TextView
         android:id="@+id/textView10"

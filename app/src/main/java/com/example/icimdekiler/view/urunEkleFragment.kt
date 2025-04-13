@@ -107,9 +107,7 @@ class urunEkleFragment : Fragment() {
         val kategoriler = arrayOf("İçecek", "Süt ve Süt Ürünü", "Temel Gıda", "Atıştırmalık","Şeker")
         val turkishLocale = Locale("tr", "TR")
         val collator = Collator.getInstance(turkishLocale)
-        kategoriler.sortWith { a, b ->
-            collator.compare(a, b)
-        }
+        kategoriler.sortWith { a, b -> collator.compare(a, b) }
         val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,kategoriler)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.kategoriSpinner.adapter=adapter
@@ -740,9 +738,7 @@ class urunEkleFragment : Fragment() {
                             }
                             val turkishLocale = Locale("tr", "TR")
                             val collator = Collator.getInstance(turkishLocale)
-                            icerikListesi.sortWith { a, b ->
-                                collator.compare(a, b)
-                            }
+                            icerikListesi.sortWith { a, b -> collator.compare(a, b) }
 
                             // Fragment bağlanmış mı, kontrol etmeden adapter'ı set etme
                             if (isAdded) {
