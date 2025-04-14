@@ -172,7 +172,7 @@ class adminTumUrunlerFragment : Fragment() {
                 binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                 binding.urunlerRecyclerView.adapter = adapter
             }.addOnFailureListener { error ->
-                // Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
             }
     }
 
