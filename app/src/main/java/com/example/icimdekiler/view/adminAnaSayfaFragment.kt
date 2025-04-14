@@ -216,16 +216,8 @@ class adminAnaSayfaFragment : Fragment() {
 
     private fun showBarcodeScannerDialog() {
         try {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        requireActivity(),
-                        Manifest.permission.CAMERA
-                    )
-                ) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
                     Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.izinVer) {
                             try {
@@ -383,11 +375,7 @@ class adminAnaSayfaFragment : Fragment() {
                     .addOnFailureListener { e ->
                         requireActivity().runOnUiThread {
                             try {
-                                Toast.makeText(
-                                    requireContext(),
-                                    e.localizedMessage,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                             } catch (e: Exception) {
                                 Log.e("AdminAnaSayfa", "Barcode failure error", e)
                             }
@@ -422,11 +410,7 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    Toast.makeText(
-                        requireContext(),
-                        "Kamera izni gerekiyor",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "${R.string.barkodOkumakIcinKamerayaErisimIzniGerekli}", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Log.e("AdminAnaSayfa", "Permission toast error", e)
                 }
@@ -552,9 +536,7 @@ class adminAnaSayfaFragment : Fragment() {
 
                                     try {
                                         val action = adminAnaSayfaFragmentDirections
-                                            .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                                "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
-                                            )
+                                            .actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
 
                                         if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
                                             findNavController().navigate(action)
@@ -568,9 +550,7 @@ class adminAnaSayfaFragment : Fragment() {
                             } else {
                                 try {
                                     val action = adminAnaSayfaFragmentDirections
-                                        .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                            "yeni", barkodNo, "", "", "", ""
-                                        )
+                                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "", "", "")
                                     if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
                                         findNavController().navigate(action)
                                     }
@@ -579,11 +559,7 @@ class adminAnaSayfaFragment : Fragment() {
                                 }
 
                                 try {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        R.string.urunBulunamadi,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Toast error", e)
                                 }
@@ -594,11 +570,7 @@ class adminAnaSayfaFragment : Fragment() {
                     }
                     .addOnFailureListener { exception ->
                         try {
-                            Toast.makeText(
-                                requireContext(),
-                                exception.localizedMessage,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
                         } catch (e: Exception) {
                             Log.e("AdminAnaSayfa", "Toast error", e)
                         }
