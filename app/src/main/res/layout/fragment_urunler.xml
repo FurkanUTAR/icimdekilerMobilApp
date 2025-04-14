@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.urunlerFragment">
+
+
+    <Button
+        android:id="@+id/tumUrunlerButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/tumUrunler"
+        app:layout_constraintBottom_toTopOf="@+id/iceceklerButton"
+        app:layout_constraintEnd_toStartOf="@+id/temelGidaButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/temelGidaButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/temelGida"
+        app:layout_constraintBottom_toTopOf="@+id/atistirmaliklarButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tumUrunlerButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/iceceklerButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="13dp"
+        android:text="@string/icecekler"
+        app:layout_constraintBottom_toTopOf="@+id/sutVeSutUrunleriButton"
+        app:layout_constraintEnd_toStartOf="@+id/atistirmaliklarButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tumUrunlerButton" />
+
+    <Button
+        android:id="@+id/atistirmaliklarButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="416dp"
+        android:text="@string/atistirmaliklar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iceceklerButton"
+        app:layout_constraintTop_toBottomOf="@+id/temelGidaButton" />
+
+    <Button
+        android:id="@+id/sutVeSutUrunleriButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="287dp"
+        android:text="@string/sutVeSutUrunleri"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/iceceklerButton"
+        app:layout_constraintStart_toStartOf="@+id/iceceklerButton"
+        app:layout_constraintTop_toBottomOf="@+id/iceceklerButton" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -169,7 +169,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
             binding.tumUrunlerButton.setOnClickListener {
                 try {
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
+                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunlerFragment()
                     findNavController().navigate(action)
                 } catch (e: Exception) {
                     e.printStackTrace()

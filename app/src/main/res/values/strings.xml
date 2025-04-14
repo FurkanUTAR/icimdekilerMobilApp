@@ -27,6 +27,10 @@
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
     <string name="tumUrunler">Tüm Ürünler</string>
+    <string name="icecekler">İçecekler</string>
+    <string name="atistirmaliklar">Atıştırmalıklar</string>
+    <string name="sutVeSutUrunleri">Süt ve Süt Ürünleri</string>
+    <string name="temelGida">Temel Gıda</string>
     <string name="flasAcKapat">Flaş Aç/Kapat</string>
     <string name="flasAc">Flaş Aç</string>
     <string name="flasKapat">Flaş Kapat</string>
@@ -46,6 +50,7 @@
     <string name="beniHatirla">Beni Hatırla</string>
 
     <!-- Uyarı ve Hata Mesajları -->
+    <string name="beklenmedikBirHataOlustu">An unexpected error occurred!</string>
     <string name="buKullaniciAdiZatenKullaniliyor">Bu kullanıcı adı zaten kullanılıyor!</string>
     <string name="lutfenBosAlanBirakmayiniz">Lütfen boş alan bırakmayınız!</string>
     <string name="parolaEnAzAltiKarakterOlmali">Parola en az 6 karakter olmalı!</string>
@@ -71,4 +76,6 @@
     <string name="kayitEtmekIstediginizdenEminMisiniz">Kayıt etmek istediğinizden emin misiniz?</string>
     <string name="urunDahaOnceKayitEdilmis">Bu ürün daha önce kayıt edilmiş!</string>
     <string name="gecersizBarkodNo">Geçersiz barkod no!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

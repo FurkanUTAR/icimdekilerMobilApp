@@ -202,13 +202,13 @@ class adminAnaSayfaFragment : Fragment() {
 
             binding.tumUrunlerButton.setOnClickListener {
                 try {
-                    val action = adminAnaSayfaFragmentDirections
-                        .actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment()
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunlerFragment()
                     findNavController().navigate(action)
                 } catch (e: Exception) {
                     Log.e("AdminAnaSayfa", "Navigation error", e)
                 }
             }
+
         } catch (e: Exception) {
             Log.e("AdminAnaSayfa", "View setup error", e)
         }
