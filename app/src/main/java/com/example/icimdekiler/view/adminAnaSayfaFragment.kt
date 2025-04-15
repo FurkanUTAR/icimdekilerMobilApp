@@ -200,7 +200,7 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             }
 
-            binding.tumUrunlerButton.setOnClickListener {
+            binding.urunlerButton.setOnClickListener {
                 try {
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunlerFragment()
                     findNavController().navigate(action)

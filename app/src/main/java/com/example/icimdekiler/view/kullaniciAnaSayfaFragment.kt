@@ -167,7 +167,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             }
 
-            binding.tumUrunlerButton.setOnClickListener {
+            binding.urunlerButton.setOnClickListener {
                 try {
                     val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunlerFragment()
                     findNavController().navigate(action)

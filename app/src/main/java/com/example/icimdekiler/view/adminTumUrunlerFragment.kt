@@ -49,7 +49,7 @@ class adminTumUrunlerFragment : Fragment() {
         }
 
         urunleriAl(kategori)
-        binding.araImage.setOnClickListener { urunAra() }
+        binding.araImage.setOnClickListener { urunAra(kategori) }
     }
 
     private fun urunleriAl(kategori : String) {
@@ -61,7 +61,7 @@ class adminTumUrunlerFragment : Fragment() {
                     if (!isAdded || isDetached) return@addSnapshotListener
 
                     if (error != null) {
-                        // Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                         return@addSnapshotListener
                     }
 
@@ -98,7 +98,7 @@ class adminTumUrunlerFragment : Fragment() {
                     if (!isAdded || isDetached) return@addSnapshotListener
 
                     if (error != null) {
-                        // Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                         return@addSnapshotListener
                     }
 
@@ -129,7 +129,7 @@ class adminTumUrunlerFragment : Fragment() {
         }
     }
 
-    private fun urunAra() {
+    private fun urunAra(kategori: String) {
         val urun = binding.urunAdiText.text.toString().trim()
             .lowercase(Locale("tr","TR"))
             .replace("ç", "c")
@@ -139,41 +139,77 @@ class adminTumUrunlerFragment : Fragment() {
             .replace("ş", "s")
             .replace("ü", "u")
 
-        val sorgu =
-            if (urun.isEmpty()) db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Eğer arama kutusu boşsa alfabetik sırayla tüm ürünleri getir
-            else db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+        if (kategori == "tumUrunler" || kategori.isEmpty()){
+            db.collection("urunler")
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+                .get()
+                .addOnSuccessListener { documents ->
+                    urunListesi.clear()
+                    for (document in documents) {
+                        val documentId = document.id
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
 
-        sorgu.get()
-            .addOnSuccessListener { documents ->
-                urunListesi.clear()
-                for (document in documents) {
-                    val documentId = document.id
-                    val barkodNo = document.getString("barkodNo") ?: ""
-                    val urunAdi = document.getString("urunAdi") ?: ""
-                    val icindekiler = document.getString("icindekiler") ?: ""
-                    val gorselUrl = document.getString("gorselUrl") ?: ""
+                        val urunAdiNormalized = urunAdi
+                            .lowercase(Locale("tr","TR"))
+                            .replace("ç", "c")
+                            .replace("ğ", "g")
+                            .replace("ı", "i")
+                            .replace("ö", "o")
+                            .replace("ş", "s")
+                            .replace("ü", "u")
 
-                    val urunAdiNormalized = urunAdi
-                        .lowercase(Locale("tr","TR"))
-                        .replace("ç", "c")
-                        .replace("ğ", "g")
-                        .replace("ı", "i")
-                        .replace("ö", "o")
-                        .replace("ş", "s")
-                        .replace("ü", "u")
-
-                    if (urun.isEmpty() || urunAdiNormalized.lowercase().contains(urun)) {
-                        val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                        urunListesi.add(indirilenUrun)
+                        if (urun.isEmpty() || urunAdiNormalized.lowercase().contains(urun)) {
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                            urunListesi.add(indirilenUrun)
+                        }
                     }
-                }
 
-                val adapter = UrunlerAdapter(urunListesi, "admin")
-                binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                binding.urunlerRecyclerView.adapter = adapter
-            }.addOnFailureListener { error ->
-                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-            }
+                    val adapter = UrunlerAdapter(urunListesi, "admin")
+                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.urunlerRecyclerView.adapter = adapter
+                }.addOnFailureListener { error ->
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+        } else {
+            db.collection("urunler")
+                .whereEqualTo("kategori",kategori)
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı sıralama ile arama
+                .get()
+                .addOnSuccessListener { documents ->
+                    urunListesi.clear()
+                    for (document in documents) {
+                        val documentId = document.id
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
+
+                        val urunAdiNormalized = urunAdi
+                            .lowercase(Locale("tr","TR"))
+                            .replace("ç", "c")
+                            .replace("ğ", "g")
+                            .replace("ı", "i")
+                            .replace("ö", "o")
+                            .replace("ş", "s")
+                            .replace("ü", "u")
+
+                        if (urun.isEmpty() || urunAdiNormalized.lowercase().contains(urun)) {
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                            urunListesi.add(indirilenUrun)
+                        }
+                    }
+
+                    val adapter = UrunlerAdapter(urunListesi, "admin")
+                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.urunlerRecyclerView.adapter = adapter
+                }.addOnFailureListener { error ->
+                    print(error.localizedMessage)
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+        }
     }
 
     override fun onDestroyView() {
