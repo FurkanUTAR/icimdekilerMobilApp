@@ -129,6 +129,11 @@ class adminAnaSayfaFragment : Fragment() {
                                         .show()
                                     true
                                 }
+                                R.id.ayarlar -> {
+                                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAyarlarFragment()
+                                    findNavController().navigate(action)
+                                    true
+                                }
                                 else -> false
                             }
                         } catch (e: Exception) {

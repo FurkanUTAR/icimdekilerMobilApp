@@ -76,6 +76,9 @@
         <action
             android:id="@+id/action_adminAnaSayfaFragment_to_urunlerFragment"
             app:destination="@id/urunlerFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_ayarlarFragment"
+            app:destination="@id/ayarlarFragment" />
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
@@ -166,4 +169,9 @@
             android:id="@+id/action_urunlerFragment_to_kullaniciTumUrunlerFragment"
             app:destination="@id/kullaniciTumUrunlerFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ayarlarFragment"
+        android:name="com.example.icimdekiler.view.ayarlarFragment"
+        android:label="fragment_ayarlar"
+        tools:layout="@layout/fragment_ayarlar" />
 </navigation>

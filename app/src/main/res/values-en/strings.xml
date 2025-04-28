@@ -13,6 +13,7 @@
     <string name="kayitOl">Sign Up</string>
     <string name="girisYap">Sign In</string>
     <string name="cikisYap">Log Out</string>
+    <string name="ayarlar">Settings</string>
     <string name="kaydet">Save</string>
     <string name="guncelle">Update</string>
     <string name="sil">Delete</string>

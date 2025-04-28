@@ -13,6 +13,7 @@
     <string name="kayitOl">Kayıt Ol</string>
     <string name="girisYap">Giriş Yap</string>
     <string name="cikisYap">Çıkış Yap</string>
+    <string name="ayarlar">Ayarlar</string>
     <string name="kaydet">Kaydet</string>
     <string name="guncelle">Güncelle</string>
     <string name="sil">Sil</string>
@@ -76,7 +77,7 @@
     <string name="urunBasariylaKayitEdildi">Ürün başarıyla kayıt edildi!</string>
     <string name="kayitEtmekIstediginizdenEminMisiniz">Kayıt etmek istediğinizden emin misiniz?</string>
     <string name="urunDahaOnceKayitEdilmis">Bu ürün daha önce kayıt edilmiş!</string>
-    <string name="gecersizBarkodNo">Geçersiz barkod no!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gecersizBarkodNo">Geçersiz barkod numarası!</string>
+    <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
+    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
 </resources>
