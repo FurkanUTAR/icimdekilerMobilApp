@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <EditText
-        android:id="@+id/isimSoyisimText"
+        android:id="@+id/kullaniciAdiText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@id/kullaniciAdiText" />
 
     <EditText
-        android:id="@+id/ePostaText"
+        android:id="@+id/kullaniciAdiText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -57,7 +57,7 @@
         android:textColorHint="#A5D6A7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/isimSoyisimText" />
+        app:layout_constraintTop_toBottomOf="@id/kullaniciAdiText" />
 
     <EditText
         android:id="@+id/telNoText"
@@ -71,10 +71,10 @@
         android:textColorHint="#A5D6A7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ePostaText" />
+        app:layout_constraintTop_toBottomOf="@id/kullaniciAdiText" />
 
     <EditText
-        android:id="@+id/parolaText"
+        android:id="@+id/kullaniciAdiText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -96,9 +96,9 @@
         android:text="@string/zatenHesabinVarMi"
         android:textColor="#B2DFDB"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="@+id/parolaText"
-        app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+        app:layout_constraintEnd_toEndOf="@+id/kullaniciAdiText"
+        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
 
     <TextView
         android:id="@+id/girisYapLabel"

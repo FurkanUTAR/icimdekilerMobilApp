@@ -15,6 +15,7 @@ import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
 import com.example.icimdekiler.databinding.FragmentAyarlarBinding
 import java.util.Locale
 import androidx.core.content.edit
+import androidx.navigation.findNavController
 
 class ayarlarFragment : Fragment() {
 
@@ -35,6 +36,11 @@ class ayarlarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.hesapButton.setOnClickListener {
+            val action = ayarlarFragmentDirections.actionAyarlarFragmentToHesapAyarlariFragment()
+            requireView().findNavController().navigate(action)
+        }
 
         binding.temaRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {

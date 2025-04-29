@@ -58,6 +58,9 @@
         <action
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunlerFragment"
             app:destination="@id/urunlerFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_ayarlarFragment"
+            app:destination="@id/ayarlarFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -173,5 +176,18 @@
         android:id="@+id/ayarlarFragment"
         android:name="com.example.icimdekiler.view.ayarlarFragment"
         android:label="fragment_ayarlar"
-        tools:layout="@layout/fragment_ayarlar" />
+        tools:layout="@layout/fragment_ayarlar" >
+        <action
+            android:id="@+id/action_ayarlarFragment_to_hesapAyarlariFragment"
+            app:destination="@id/hesapAyarlariFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/hesapAyarlariFragment"
+        android:name="com.example.icimdekiler.view.hesapAyarlariFragment"
+        android:label="fragment_hesap_ayarlari"
+        tools:layout="@layout/fragment_hesap_ayarlari" >
+        <action
+            android:id="@+id/action_hesapAyarlariFragment_to_splashFragment"
+            app:destination="@id/splashFragment" />
+    </fragment>
 </navigation>

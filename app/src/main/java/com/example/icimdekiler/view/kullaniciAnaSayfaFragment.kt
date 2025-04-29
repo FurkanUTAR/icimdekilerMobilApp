@@ -125,6 +125,11 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                         .show()
                                     true
                                 }
+                                R.id.ayarlar -> {
+                                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToAyarlarFragment()
+                                    findNavController().navigate(action)
+                                    true
+                                }
                                 else -> false
                             }
                         } catch (e: Exception) {
