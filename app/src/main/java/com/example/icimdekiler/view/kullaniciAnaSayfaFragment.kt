@@ -381,7 +381,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

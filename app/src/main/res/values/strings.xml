@@ -80,4 +80,5 @@
     <string name="gecersizBarkodNo">Geçersiz barkod numarası!</string>
     <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
     <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
+
 </resources>
