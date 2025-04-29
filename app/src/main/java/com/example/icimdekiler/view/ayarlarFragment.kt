@@ -16,6 +16,7 @@ import com.example.icimdekiler.databinding.FragmentAyarlarBinding
 import java.util.Locale
 import androidx.core.content.edit
 import androidx.navigation.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ayarlarFragment : Fragment() {
 
@@ -40,6 +41,13 @@ class ayarlarFragment : Fragment() {
         binding.hesapButton.setOnClickListener {
             val action = ayarlarFragmentDirections.actionAyarlarFragmentToHesapAyarlariFragment()
             requireView().findNavController().navigate(action)
+        }
+
+        binding.dilButton.setOnClickListener {
+            val dialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.dialog_choose_theme, null)
+            dialog.setContentView(view)
+            dialog.show()
         }
 
         binding.temaRadioGroup.setOnCheckedChangeListener { _, checkedId ->

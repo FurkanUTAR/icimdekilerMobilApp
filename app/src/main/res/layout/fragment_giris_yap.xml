@@ -30,18 +30,18 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-        android:id="@+id/kullaniciAdiText"
+        android:id="@+id/parolaText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="@string/parola"
         android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
-        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
+        app:layout_constraintStart_toStartOf="@+id/ePostaText"
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
 
     <EditText
-        android:id="@+id/kullaniciAdiText"
+        android:id="@+id/ePostaText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -58,8 +58,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="5dp"
         android:text="@string/halaKayitOlmadinMi"
-        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
-        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
+        app:layout_constraintStart_toStartOf="@+id/parolaText"
+        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
 
     <TextView
         android:id="@+id/kayitOlLabel"
