@@ -1,16 +1,22 @@
 package com.example.icimdekiler.view
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.findNavController
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentHesapAyarlariBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -52,22 +58,132 @@ class hesapAyarlariFragment : Fragment() {
             alert.setNegativeButton(R.string.hayir, null).show()
         }
 
-        binding.guncelleButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle("Hesap bilgilerini güncellemek istediğinizden emin misin?")
-            alert.setPositiveButton(R.string.evet) { dialog, value -> guncelle() }
-            alert.setNegativeButton(R.string.hayir, null).show()
+//        binding.guncelleButton.setOnClickListener {
+//            val alert = AlertDialog.Builder(requireContext())
+//            alert.setTitle("Hesap bilgilerini güncellemek istediğinizden emin misin?")
+//            alert.setPositiveButton(R.string.evet) { dialog, value -> guncelle() }
+//            alert.setNegativeButton(R.string.hayir, null).show()
+//        }
+
+        binding.parolaDegistirButton.setOnClickListener {
+            parolaGuncelle()
         }
     }
+
+    private fun parolaGuncelle() {
+        val currentUser = auth.currentUser
+        var parola = ""
+        var kullaniciUID = ""
+
+        if (currentUser != null) {
+            kullaniciUID = currentUser.uid
+
+            db.collection("kullaniciBilgileri")
+                .whereEqualTo("kullaniciUID", kullaniciUID)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val document = documents.documents.first()
+                        parola = document.getString("parola").toString()
+
+                        // Dialog'u parola çekildikten sonra açıyoruz
+                        showPasswordDialog(currentUser, parola, kullaniciUID)
+                    } else {
+                        Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println(e.localizedMessage)
+                }
+        }
+    }
+
+    private fun showPasswordDialog(currentUser: FirebaseUser, eskiParola: String, kullaniciUID: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
+        val guncelParolaEditText = view.findViewById<EditText>(R.id.guncelParolaText)
+        val yeniParolaEditText = view.findViewById<EditText>(R.id.yeniParolaText)
+        val parolaDogrulaEditText = view.findViewById<EditText>(R.id.parolaDogrulaText)
+        val guncelleButton = view.findViewById<Button>(R.id.parolaGuncelleButton)
+
+        // Başlangıçta disable
+        yeniParolaEditText.isEnabled = false
+        parolaDogrulaEditText.isEnabled = false
+        guncelleButton.isEnabled = false
+
+        // Her yazı değiştiğinde kontrol et
+        guncelParolaEditText.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val girilenParola = s.toString()
+                val eslesme = girilenParola == eskiParola
+                yeniParolaEditText.isEnabled = eslesme
+                parolaDogrulaEditText.isEnabled = eslesme
+                guncelleButton.isEnabled = eslesme
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        guncelleButton.setOnClickListener {
+            val yeniParola = yeniParolaEditText.text.toString()
+            val parolaDogrula = parolaDogrulaEditText.text.toString()
+
+            if (yeniParola.isNotEmpty() && yeniParola == parolaDogrula) {
+                // Önce Firebase Authentication şifresini güncelle
+                currentUser.updatePassword(yeniParola)
+                    .addOnSuccessListener {
+                        // Firestore'da da güncelle
+                        db.collection("kullaniciBilgileri")
+                            .whereEqualTo("kullaniciUID", kullaniciUID)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (!documents.isEmpty) {
+                                    val belge = documents.documents.first()
+                                    val documentId = belge.id
+
+                                    val guncellenenKullaniciMap: MutableMap<String, Any> = mutableMapOf(
+                                        "parola" to yeniParola
+                                    )
+
+                                    db.collection("kullaniciBilgileri").document(documentId)
+                                        .update(guncellenenKullaniciMap)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(requireContext(), "Parola başarıyla güncellendi", Toast.LENGTH_SHORT).show()
+                                            dialog.dismiss()
+                                        }.addOnFailureListener { e ->
+                                            println("Firestore güncelleme hatası: ${e.localizedMessage}")
+                                        }
+                                }
+                            }
+                    }.addOnFailureListener { e ->
+                        println("Authentication parola güncelleme hatası: ${e.localizedMessage}")
+                        Toast.makeText(requireContext(), "Authentication hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(requireContext(), "Yeni parolalar eşleşmiyor!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
+
+
+
+
+
+
 
     private fun guncelle(){
         val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
         val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
         val ePosta = binding.ePostaText.text.toString().trim()
         val telNo = binding.telNoText.text.toString().trim()
-        val parola = binding.parolaText.text.toString().trim()
 
-        if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
+        if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty()) {
             val currentUser = auth.currentUser
 
             if (currentUser != null) {
@@ -87,7 +203,6 @@ class hesapAyarlariFragment : Fragment() {
                                 "isimSoyisim" to isimSoyisim,
                                 "ePosta" to ePosta,
                                 "telNo" to telNo,
-                                "parola" to parola
                             )
 
                             // Firestore'daki belgeyi sil

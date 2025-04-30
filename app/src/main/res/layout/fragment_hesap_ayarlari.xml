@@ -7,21 +7,37 @@
     tools:context=".view.hesapAyarlariFragment">
 
 
-    <Button
-        android:id="@+id/hesabiSilButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Hesabı Sil"
-        app:layout_constraintEnd_toEndOf="@+id/guncelleButton"
-        app:layout_constraintStart_toStartOf="@+id/guncelleButton"
-        app:layout_constraintTop_toBottomOf="@+id/guncelleButton" />
+    <EditText
+        android:id="@+id/ePostaText"
+        android:layout_width="341dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/ePosta"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/isimSoyisimText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/isimSoyisimText"
+        app:layout_constraintTop_toBottomOf="@+id/isimSoyisimText" />
+
+    <EditText
+        android:id="@+id/isimSoyisimText"
+        android:layout_width="341dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/isimSoyisim"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/kullaniciAdiText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
 
     <EditText
         android:id="@+id/kullaniciAdiText"
         android:layout_width="341dp"
         android:layout_height="43dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="48dp"
         android:ems="10"
         android:hint="@string/kullaniciAdi"
         android:inputType="text"
@@ -33,50 +49,14 @@
         android:id="@+id/telNoText"
         android:layout_width="341dp"
         android:layout_height="43dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/telNo"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="@+id/ePostaText"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ePostaText"
         app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
-
-    <EditText
-        android:id="@+id/ePostaText"
-        android:layout_width="341dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/ePosta"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/isimSoyisimText"
-        app:layout_constraintStart_toStartOf="@+id/isimSoyisimText"
-        app:layout_constraintTop_toBottomOf="@+id/isimSoyisimText" />
-
-    <EditText
-        android:id="@+id/isimSoyisimText"
-        android:layout_width="341dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/isimSoyisim"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/kullaniciAdiText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
-        app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
-
-    <EditText
-        android:id="@+id/parolaText"
-        android:layout_width="341dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/parola"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/telNoText"
-        app:layout_constraintStart_toStartOf="@+id/telNoText"
-        app:layout_constraintTop_toBottomOf="@+id/telNoText" />
 
     <Button
         android:id="@+id/guncelleButton"
@@ -84,7 +64,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="@string/guncelle"
-        app:layout_constraintEnd_toEndOf="@+id/parolaText"
-        app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+        app:layout_constraintEnd_toEndOf="@+id/hesabiSilButton"
+        app:layout_constraintStart_toStartOf="@+id/hesabiSilButton"
+        app:layout_constraintTop_toBottomOf="@+id/parolaDegistirButton" />
+
+    <Button
+        android:id="@+id/hesabiSilButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Hesabı Sil"
+        app:layout_constraintEnd_toEndOf="@+id/kullaniciAdiText"
+        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        app:layout_constraintTop_toBottomOf="@+id/guncelleButton" />
+
+    <Button
+        android:id="@+id/parolaDegistirButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Parolayı Değiştir"
+        app:layout_constraintStart_toStartOf="@+id/telNoText"
+        app:layout_constraintTop_toBottomOf="@+id/telNoText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
