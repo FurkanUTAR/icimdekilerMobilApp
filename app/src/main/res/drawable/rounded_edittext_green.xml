@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#66BB6A"/> <!-- Yeşil arkaplan -->
+    <solid android:color="#eaf1e9"/> <!-- Yeşil arkaplan -->
     <corners android:radius="16dp"/> <!-- Yuvarlatılmış köşeler -->
     <stroke android:color="#4CAF50" android:width="2dp"/> <!-- Çerçeve -->
     <padding android:left="8dp" android:top="8dp" android:right="8dp" android:bottom="8dp"/>
