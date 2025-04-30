@@ -62,7 +62,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/tumUrunlerButton"
+        android:id="@+id/urunlerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -73,7 +73,7 @@
         android:drawablePadding="8dp"
         android:gravity="center|center_vertical"
         android:padding="16dp"
-        android:text="@string/tumUrunler"
+        android:text="@string/urunler"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

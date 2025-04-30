@@ -13,6 +13,7 @@
     <string name="kayitOl">Kayıt Ol</string>
     <string name="girisYap">Giriş Yap</string>
     <string name="cikisYap">Çıkış Yap</string>
+    <string name="ayarlar">Ayarlar</string>
     <string name="kaydet">Kaydet</string>
     <string name="guncelle">Güncelle</string>
     <string name="sil">Sil</string>
@@ -26,7 +27,13 @@
     <string name="secimYap">Seçim Yap</string>
     <string name="urunEkle">Ürün Ekle</string>
     <string name="icerikEkle">İçerik Ekle</string>
+    <string name="urunler">Ürünler</string>
     <string name="tumUrunler">Tüm Ürünler</string>
+    <string name="icecekler">İçecekler</string>
+    <string name="atistirmaliklar">Atıştırmalıklar</string>
+    <string name="sutVeSutUrunleri">Süt ve Süt Ürünleri</string>
+    <string name="temelGida">Temel Gıda</string>
+    <string name="flasAcKapat">Flaş Aç/Kapat</string>
     <string name="flasAc">Flaş Aç</string>
     <string name="flasKapat">Flaş Kapat</string>
     <string name="kapat">Kapat</string>
@@ -35,6 +42,7 @@
     <string name="urunAdi">Ürün Adı</string>
     <string name="icindekiler">İçindekiler</string>
     <string name="icerik">İçerik</string>
+    <string name="kategori">Kategori</string>
     <string name="barkod">Barkod</string>
     <string name="aciklama">Açıklama</string>
 
@@ -44,6 +52,7 @@
     <string name="beniHatirla">Beni Hatırla</string>
 
     <!-- Uyarı ve Hata Mesajları -->
+    <string name="beklenmedikBirHataOlustu">An unexpected error occurred!</string>
     <string name="buKullaniciAdiZatenKullaniliyor">Bu kullanıcı adı zaten kullanılıyor!</string>
     <string name="lutfenBosAlanBirakmayiniz">Lütfen boş alan bırakmayınız!</string>
     <string name="parolaEnAzAltiKarakterOlmali">Parola en az 6 karakter olmalı!</string>
@@ -68,5 +77,10 @@
     <string name="urunBasariylaKayitEdildi">Ürün başarıyla kayıt edildi!</string>
     <string name="kayitEtmekIstediginizdenEminMisiniz">Kayıt etmek istediğinizden emin misiniz?</string>
     <string name="urunDahaOnceKayitEdilmis">Bu ürün daha önce kayıt edilmiş!</string>
-    <string name="gecersizBarkodNo">Geçersiz barkod no!</string>
+    <string name="gecersizBarkodNo">Geçersiz barkod numarası!</string>
+    <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
+    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

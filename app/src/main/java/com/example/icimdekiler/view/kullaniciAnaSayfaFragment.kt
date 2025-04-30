@@ -125,6 +125,11 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                         .show()
                                     true
                                 }
+                                R.id.ayarlar -> {
+                                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToAyarlarFragment()
+                                    findNavController().navigate(action)
+                                    true
+                                }
                                 else -> false
                             }
                         } catch (e: Exception) {
@@ -167,9 +172,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             }
 
-            binding.tumUrunlerButton.setOnClickListener {
+            binding.urunlerButton.setOnClickListener {
                 try {
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment()
+                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunlerFragment()
                     findNavController().navigate(action)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -294,7 +299,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                             camera?.cameraControl?.enableTorch(isFlashOn)
 
                             // Buton metnini güncelle
-                            btnFlashToggle.text = if (isFlashOn) "${R.string.flasKapat}" else "${R.string.flasAc}"
+                            btnFlashToggle.text = if (isFlashOn) getString(R.string.flasKapat) else getString(R.string.flasAc)
                         }
 
                     } catch (e: Exception) {
@@ -381,7 +386,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

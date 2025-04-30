@@ -13,6 +13,7 @@
     <string name="kayitOl">Sign Up</string>
     <string name="girisYap">Sign In</string>
     <string name="cikisYap">Log Out</string>
+    <string name="ayarlar">Settings</string>
     <string name="kaydet">Save</string>
     <string name="guncelle">Update</string>
     <string name="sil">Delete</string>
@@ -26,7 +27,13 @@
     <string name="secimYap">Make a Selection</string>
     <string name="urunEkle">Add Product</string>
     <string name="icerikEkle">Add Content</string>
+    <string name="urunler">Products</string>
     <string name="tumUrunler">All Products</string>
+    <string name="icecekler">Drinks</string>
+    <string name="atistirmaliklar">Snacks</string>
+    <string name="sutVeSutUrunleri">Milk and Dairy Products</string>
+    <string name="temelGida">Basic Food</string>
+    <string name="flasAcKapat">Open/Close Flash</string>
     <string name="flasAc">Open Flash</string>
     <string name="flasKapat">Close Flash</string>
     <string name="kapat">Close</string>
@@ -35,6 +42,7 @@
     <string name="urunAdi">Product Name</string>
     <string name="icindekiler">Ingredients</string>
     <string name="icerik">Content</string>
+    <string name="kategori">Category</string>
     <string name="barkod">Barcode</string>
     <string name="aciklama">Description</string>
 
@@ -44,6 +52,7 @@
     <string name="beniHatirla">Remember Me</string>
 
     <!-- Uyarı ve Hata Mesajları -->
+    <string name="beklenmedikBirHataOlustu">This username is already in use!</string>
     <string name="buKullaniciAdiZatenKullaniliyor">This username is already in use!</string>
     <string name="lutfenBosAlanBirakmayiniz">Please do not leave any empty fields!</string>
     <string name="parolaEnAzAltiKarakterOlmali">Password must be at least 6 characters!</string>

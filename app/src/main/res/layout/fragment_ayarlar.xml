@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.ayarlarFragment">
+
+
+    <Button
+        android:id="@+id/hesapButton"
+        android:layout_width="237dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="50dp"
+        android:text="Hesap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/dilButton"
+        android:layout_width="239dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/atistirmaliklar"
+        app:layout_constraintEnd_toEndOf="@+id/temaRadioGroup"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="@+id/temaRadioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/temaRadioGroup" />
+
+    <RadioGroup
+        android:id="@+id/temaRadioGroup"
+        android:layout_width="161dp"
+        android:layout_height="165dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/hesapButton"
+        app:layout_constraintStart_toStartOf="@+id/hesapButton"
+        app:layout_constraintTop_toBottomOf="@+id/hesapButton">
+
+        <RadioButton
+            android:id="@+id/varsayilanRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Varsayılan" />
+
+        <RadioButton
+            android:id="@+id/koyuRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Koyu" />
+
+        <RadioButton
+            android:id="@+id/aydinlikRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aydınlık" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>

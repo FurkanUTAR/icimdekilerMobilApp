@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.icimdekiler.R
 import com.example.icimdekiler.adapter.UrunlerAdapter
 import com.example.icimdekiler.databinding.FragmentKullaniciTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
@@ -42,50 +43,95 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        urunleriAl()
 
-        binding.araImage.setOnClickListener { urunAra() }
+        var kategori = ""
+        arguments?.let {
+            kategori = kullaniciTumUrunlerFragmentArgs.fromBundle(it).kategori
+        }
+
+        urunleriAl(kategori)
+
+        binding.araImage.setOnClickListener { urunAra(kategori) }
     }
 
-    private fun urunleriAl() {
-        db.collection("urunler")
-            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-            .limit(30)
-            .addSnapshotListener { value, error ->
-                if (!isAdded || isDetached) return@addSnapshotListener
+    private fun urunleriAl(kategori : String) {
+        if (kategori == "tumUrunler" || kategori.isEmpty()){
+            db.collection("urunler")
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
+                .limit(30)
+                .addSnapshotListener { value, error ->
+                    if (!isAdded || isDetached) return@addSnapshotListener
 
-                if (error != null) {
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                    return@addSnapshotListener
-                }
+                    if (error != null) {
+                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        return@addSnapshotListener
+                    }
 
-                if (value != null && !value.isEmpty) {
-                    urunListesi.clear()
-                    for (document in value.documents) {
-                        val documentId = document.id
-                        val barkodNo = document.getString("barkodNo") ?: ""
-                        val urunAdi = document.getString("urunAdi") ?: ""
-                        val icindekiler = document.getString("icindekiler") ?: ""
-                        val gorselUrl = document.getString("gorselUrl") ?: ""
+                    if (value != null && !value.isEmpty) {
+                        urunListesi.clear()
+                        for (document in value.documents) {
+                            val documentId = document.id
+                            val barkodNo = document.getString("barkodNo") ?: ""
+                            val urunAdi = document.getString("urunAdi") ?: ""
+                            val icindekiler = document.getString("icindekiler") ?: ""
+                            val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                        if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                            urunListesi.add(indirilenUrun)
+                            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
+                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                                urunListesi.add(indirilenUrun)
+                            }
                         }
+
+                        if (isAdded && !isDetached) {
+                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                            binding.urunlerRecyclerView.adapter = adapter
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } else {
+            db.collection("urunler")
+                .whereEqualTo("kategori",kategori)
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
+                .limit(30)
+                .addSnapshotListener { value, error ->
+                    if (!isAdded || isDetached) return@addSnapshotListener
+
+                    if (error != null) {
+                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                        return@addSnapshotListener
                     }
 
-                    if (isAdded && !isDetached) {
-                        val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                        binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                        binding.urunlerRecyclerView.adapter = adapter
+                    if (value != null && !value.isEmpty) {
+                        urunListesi.clear()
+                        for (document in value.documents) {
+                            val documentId = document.id
+                            val barkodNo = document.getString("barkodNo") ?: ""
+                            val urunAdi = document.getString("urunAdi") ?: ""
+                            val icindekiler = document.getString("icindekiler") ?: ""
+                            val gorselUrl = document.getString("gorselUrl") ?: ""
+
+                            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
+                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                                urunListesi.add(indirilenUrun)
+                            }
+                        }
+
+                        if (isAdded && !isDetached) {
+                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                            binding.urunlerRecyclerView.adapter = adapter
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Ürün bulunamadı", Toast.LENGTH_SHORT).show()
                 }
-            }
+        }
     }
 
-    private fun urunAra() {
+    private fun urunAra(kategori: String) {
         val urun = binding.urunAdiText.text.toString().trim()
             .lowercase(Locale("tr","TR"))
             .replace("ç", "c")
@@ -95,42 +141,77 @@ class kullaniciTumUrunlerFragment : Fragment() {
             .replace("ş", "s")
             .replace("ü", "u")
 
-        val sorgu = db.collection("urunler")
-            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
+        if (kategori == "tumUrunler" || kategori.isEmpty()){
+            db.collection("urunler")
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener { documents ->
+                    urunListesi.clear()
+                    for (document in documents) {
+                        val documentId = document.id
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
 
-        sorgu.get()
-            .addOnSuccessListener { documents ->
-                urunListesi.clear()
-                for (document in documents) {
-                    val documentId = document.id
-                    val barkodNo = document.getString("barkodNo") ?: ""
-                    val urunAdi = document.getString("urunAdi") ?: ""
-                    val icindekiler = document.getString("icindekiler") ?: ""
-                    val gorselUrl = document.getString("gorselUrl") ?: ""
+                        val urunAdiNormalized = urunAdi
+                            .lowercase(Locale("tr","TR"))
+                            .replace("ç", "c")
+                            .replace("ğ", "g")
+                            .replace("ı", "i")
+                            .replace("ö", "o")
+                            .replace("ş", "s")
+                            .replace("ü", "u")
 
-                    val urunAdiNormalized = urunAdi
-                        .lowercase(Locale("tr","TR"))
-                        .replace("ç", "c")
-                        .replace("ğ", "g")
-                        .replace("ı", "i")
-                        .replace("ö", "o")
-                        .replace("ş", "s")
-                        .replace("ü", "u")
-
-                    if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
-                        val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                        urunListesi.add(indirilenUrun)
+                        if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                            urunListesi.add(indirilenUrun)
+                        }
                     }
+
+                    val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.urunlerRecyclerView.adapter = adapter
+                }.addOnFailureListener { error ->
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
                 }
+        } else {
+            db.collection("urunler")
+                .whereEqualTo("kategori",kategori)
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener { documents ->
+                    urunListesi.clear()
+                    for (document in documents) {
+                        val documentId = document.id
+                        val barkodNo = document.getString("barkodNo") ?: ""
+                        val urunAdi = document.getString("urunAdi") ?: ""
+                        val icindekiler = document.getString("icindekiler") ?: ""
+                        val gorselUrl = document.getString("gorselUrl") ?: ""
 
-                val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                binding.urunlerRecyclerView.adapter = adapter
-            }.addOnFailureListener { error ->
-                Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-            }
+                        val urunAdiNormalized = urunAdi
+                            .lowercase(Locale("tr","TR"))
+                            .replace("ç", "c")
+                            .replace("ğ", "g")
+                            .replace("ı", "i")
+                            .replace("ö", "o")
+                            .replace("ş", "s")
+                            .replace("ü", "u")
+
+                        if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
+                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                            urunListesi.add(indirilenUrun)
+                        }
+                    }
+
+                    val adapter = UrunlerAdapter(urunListesi, "kullanici")
+                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.urunlerRecyclerView.adapter = adapter
+                }.addOnFailureListener { error ->
+                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+        }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

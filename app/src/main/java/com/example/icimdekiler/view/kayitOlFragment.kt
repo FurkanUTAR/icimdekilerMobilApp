@@ -1,6 +1,8 @@
 package com.example.icimdekiler.view
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
 import com.example.icimdekiler.R
+import com.google.firebase.auth.actionCodeSettings
 
 class kayitOlFragment : Fragment() {
 
@@ -23,6 +26,25 @@ class kayitOlFragment : Fragment() {
     //Firebase
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val runnable = object : Runnable {
+        override fun run() {
+            kontrolEtVeYonlendir()
+            handler.postDelayed(this, 10000) // 10 saniyede bir kontrol
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        handler.post(runnable)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        handler.removeCallbacks(runnable)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,99 +84,92 @@ class kayitOlFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        kontrolEtVeYonlendir()
+    }
+
     fun kayitOl() {
-        try {
-            val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
-            val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
-            val ePosta = binding.ePostaText.text.toString().trim()
-            val telNo = binding.telNoText.text.toString().trim()
-            val parola = binding.parolaText.text.toString().trim()
+        val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
+        val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
+        val ePosta = binding.ePostaText.text.toString().trim()
+        val telNo = binding.telNoText.text.toString().trim()
+        val parola = binding.parolaText.text.toString().trim()
 
-            // Boş alan kontrolü yap
-            if (kullaniciAdi.isNotEmpty() && isimSoyisim.isNotEmpty() && ePosta.isNotEmpty() && telNo.isNotEmpty() && parola.isNotEmpty()) {
-                if (parola.length < 6) Toast.makeText(requireContext(), R.string.parolaEnAzAltiKarakterOlmali, Toast.LENGTH_SHORT).show()
-                else {
-                    // Aynı kullanıcı adına sahip başka bir kullanıcı var mı kontrol et
-                    db.collection("kullaniciBilgileri")
-                        .whereEqualTo("kullaniciAdi", kullaniciAdi)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            try {
-                                if (querySnapshot.isEmpty) {
-                                    // Aynı kullanıcı adı yok, kayıt işlemini başlat
-                                    auth.createUserWithEmailAndPassword(ePosta, parola)
-                                        .addOnCompleteListener { task ->
-                                            try {
-                                                if (task.isSuccessful) {
-                                                    val guncelKullanici = auth.currentUser
-                                                    if (guncelKullanici != null) {
-                                                        // Kullanıcı bilgilerini bir Map'e koy
-                                                        val kullaniciMap = hashMapOf<String, Any>()
-                                                        kullaniciMap["kullaniciAdi"] = kullaniciAdi
-                                                        kullaniciMap["isimSoyisim"] = isimSoyisim
-                                                        kullaniciMap["ePosta"] = ePosta
-                                                        kullaniciMap["telNo"] = telNo
-                                                        kullaniciMap["parola"] = parola
-                                                        kullaniciMap["isAdmin"] = false // Kullanıcı admin değil
-                                                        kullaniciMap["kullaniciUID"] = guncelKullanici.uid // Kullanıcı UID'sini ekle
+        if (kullaniciAdi.isEmpty() || isimSoyisim.isEmpty() || ePosta.isEmpty() || telNo.isEmpty() || parola.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
+            return
+        }
 
-                                                        // Kullanıcı bilgilerini Firestore'a kaydet
-                                                        db.collection("kullaniciBilgileri")
-                                                            .add(kullaniciMap) // Firestore'a ekle
-                                                            .addOnSuccessListener {
-                                                                try {
-                                                                    // Kullanıcı başarıyla kaydedildiyse, kullanıcı anasayfasına yönlendir
-                                                                    val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                                                                    requireView().findNavController().navigate(action)
-                                                                } catch (e: Exception) {
-                                                                    e.printStackTrace()
-                                                                }
-                                                            }.addOnFailureListener { exception ->
-                                                                try {
-                                                                    Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                                                                } catch (e: Exception) {
-                                                                    e.printStackTrace()
-                                                                }
-                                                            }
-                                                    }
+        if (parola.length < 6) {
+            Toast.makeText(requireContext(), R.string.parolaEnAzAltiKarakterOlmali, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        db.collection("kullaniciBilgileri")
+            .whereEqualTo("kullaniciAdi", kullaniciAdi)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
+                    return@addOnSuccessListener
+                }
+
+                Firebase.auth.createUserWithEmailAndPassword(ePosta, parola)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val user = auth.currentUser
+
+                            val kullaniciMap = hashMapOf(
+                                "kullaniciAdi" to kullaniciAdi,
+                                "isimSoyisim" to isimSoyisim,
+                                "ePosta" to ePosta,
+                                "telNo" to telNo,
+                                "parola" to parola,
+                                "isAdmin" to false,
+                                "kullaniciUID" to (user?.uid ?: "")
+                            )
+
+                            if (user != null){
+                                db.collection("kullaniciBilgileri")
+                                    .document(user.uid)
+                                    .set(kullaniciMap)
+                                    .addOnSuccessListener {
+                                        // Doğrulama maili gönder
+                                        user.sendEmailVerification()
+                                            .addOnCompleteListener { verifyTask ->
+                                                if (verifyTask.isSuccessful) {
+                                                    Toast.makeText(requireContext(), "Doğrulama e-postası gönderildi. Lütfen onaylayın!", Toast.LENGTH_LONG).show()
+                                                } else {
+                                                    Toast.makeText(requireContext(), "Doğrulama e-postası gönderilemedi: ${verifyTask.exception?.message}", Toast.LENGTH_LONG).show()
                                                 }
-                                            } catch (e: Exception) {
-                                                e.printStackTrace()
                                             }
-                                        }.addOnFailureListener { exception ->
-                                            try {
-                                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                                            } catch (e: Exception) {
-                                                e.printStackTrace()
-                                            }
-                                        }
-                                } else {
-                                    try {
-                                        Toast.makeText(requireContext(), R.string.buKullaniciAdiZatenKullaniliyor, Toast.LENGTH_LONG).show()
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
+                                    }.addOnFailureListener { exception ->
+                                        Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
                                     }
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
-                        }.addOnFailureListener { exception ->
-                            try {
-                                Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
+                        } else {
+                            Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_LONG).show()
                         }
-                }
-            } else {
-                try {
-                    Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                    }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), exception.message, Toast.LENGTH_LONG).show()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+    }
+
+    fun kontrolEtVeYonlendir() {
+        val user = Firebase.auth.currentUser
+        user?.reload()?.addOnSuccessListener {
+            if (user.isEmailVerified) {
+                Toast.makeText(requireContext(), R.string.dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz, Toast.LENGTH_SHORT).show()
+                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                requireView().findNavController().navigate(action)
+            } else {
+                Toast.makeText(requireContext(), R.string.lutfenePostaniziDogrulayin, Toast.LENGTH_LONG).show()
+            }
+        }?.addOnFailureListener {
+            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
         }
     }
 

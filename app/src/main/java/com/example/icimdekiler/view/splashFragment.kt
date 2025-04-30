@@ -32,8 +32,7 @@ class splashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,34 +44,38 @@ class splashFragment : Fragment() {
     fun kontrol(){
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            // Kullanıcı bilgileri Firestore'dan çek
             db.collection("kullaniciBilgileri")
                 .whereEqualTo("kullaniciUID", currentUser.uid)
                 .get()
                 .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val kullanici = documents.documents.first()
-                        val isAdmin = kullanici.getBoolean("isAdmin") ?: false
+                    if (isAdded && view != null) {
+                        if (!documents.isEmpty) {
+                            val kullanici = documents.documents.first()
+                            val isAdmin = kullanici.getBoolean("isAdmin") ?: false
 
-                        // Yönlendirme işlemi
-                        if (isAdmin){
-                            val action=splashFragmentDirections.actionSplashFragmentToAdminAnaSayfaFragment()
-                            requireView().findNavController().navigate(action)
+                            if (isAdmin){
+                                val action = splashFragmentDirections.actionSplashFragmentToAdminAnaSayfaFragment()
+                                requireView().findNavController().navigate(action)
+                            } else {
+                                val action = splashFragmentDirections.actionSplashFragmentToKullaniciAnaSayfaFragment()
+                                requireView().findNavController().navigate(action)
+                            }
                         } else {
-                            val action=splashFragmentDirections.actionSplashFragmentToKullaniciAnaSayfaFragment()
+                            val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
                             requireView().findNavController().navigate(action)
                         }
-                    } else {
+                    }
+                }.addOnFailureListener {
+                    if (isAdded && view != null) {
                         val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
                         requireView().findNavController().navigate(action)
                     }
-                }.addOnFailureListener {
-                    val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
-                    requireView().findNavController().navigate(action)
                 }
         } else {
-            val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
-            requireView().findNavController().navigate(action)
+            if (isAdded && view != null) {
+                val action = splashFragmentDirections.actionSplashFragmentToGirisYapFragment()
+                requireView().findNavController().navigate(action)
+            }
         }
     }
 

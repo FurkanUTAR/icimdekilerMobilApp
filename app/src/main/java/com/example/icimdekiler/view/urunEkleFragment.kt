@@ -47,6 +47,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.storage.ktx.storage
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.squareup.picasso.Picasso
+import java.text.Collator
+import java.util.Locale
 
 class urunEkleFragment : Fragment() {
 
@@ -99,11 +101,21 @@ class urunEkleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
+        icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, icindekilerListesi)
         binding.icindekilerListView.adapter = icindekilerAdapter
 
+        val kategoriler = arrayOf("İçecek", "Süt ve Süt Ürünü", "Temel Gıda", "Atıştırmalık","Şeker")
+        val turkishLocale = Locale("tr", "TR")
+        val collator = Collator.getInstance(turkishLocale)
+        kategoriler.sortWith { a, b -> collator.compare(a, b) }
+        val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,kategoriler)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.kategoriSpinner.adapter=adapter
+
+        var durum = ""
+
         arguments?.let {
-            val durum = urunEkleFragmentArgs.fromBundle(it).durum
+            durum = urunEkleFragmentArgs.fromBundle(it).durum
             barkodNo = urunEkleFragmentArgs.fromBundle(it).barkodNo
             val urunAdi = urunEkleFragmentArgs.fromBundle(it).urunAdi
             val gelenIcindekiler = urunEkleFragmentArgs.fromBundle(it).icindekiler
@@ -112,12 +124,10 @@ class urunEkleFragment : Fragment() {
 
             if (durum == "yeni") {
                 binding.kaydetButton.isEnabled = true
-                binding.guncelleButton.isEnabled = false
                 binding.silButton.isEnabled = false
                 binding.barkodNoText.setText(barkodNo)
             } else {
-                binding.kaydetButton.isEnabled = false
-                binding.guncelleButton.isEnabled = true
+                binding.kaydetButton.isEnabled = true
                 binding.silButton.isEnabled = true
 
                 binding.barkodNoText.setText(barkodNo)
@@ -146,14 +156,14 @@ class urunEkleFragment : Fragment() {
             alert.setItems(secim) { dialog, which ->
                 if (which == 0) showBarcodeScannerDialog()
                 else {
-                    islem = "barkodOku"
+                    islem = "barkodOku" // Barkod okuma işlemi olarak işaretle
                     barkodOkuGaleri()
                 }
             }.show()
         }
 
         binding.gorselSecImageView.setOnClickListener {
-            islem = "gorselSec"
+            islem = "gorselSec" // Görsel seçme işlemi olarak işaretle
             barkodOkuGaleri()
         }
 
@@ -163,17 +173,17 @@ class urunEkleFragment : Fragment() {
         }
 
         binding.kaydetButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, value -> urunKaydet() }
-            alert.setNegativeButton(R.string.hayir, null).show()
-        }
-
-        binding.guncelleButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.guncellemekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, value -> urunGuncelle() }
-            alert.setNegativeButton(R.string.hayir, null).show()
+            if (durum == "yeni"){
+                val alert = AlertDialog.Builder(requireContext())
+                alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
+                alert.setPositiveButton(R.string.evet) { dialog, value -> urunKaydet() }
+                alert.setNegativeButton(R.string.hayir, null).show()
+            } else {
+                val alert = AlertDialog.Builder(requireContext())
+                alert.setTitle(R.string.guncellemekIstediginizdenEminMisiniz)
+                alert.setPositiveButton(R.string.evet) { dialog, value -> urunGuncelle() }
+                alert.setNegativeButton(R.string.hayir, null).show()
+            }
         }
 
         binding.silButton.setOnClickListener {
@@ -299,7 +309,7 @@ class urunEkleFragment : Fragment() {
                             camera?.cameraControl?.enableTorch(isFlashOn)
 
                             // Buton metnini güncelle
-                            btnFlashToggle.text = if (isFlashOn) "${R.string.flasKapat}" else "${R.string.flasAc}"
+                            btnFlashToggle.text = if (isFlashOn) getString(R.string.flasKapat) else getString(R.string.flasAc)
                         }
 
                     } catch (e: Exception) {
@@ -427,11 +437,12 @@ class urunEkleFragment : Fragment() {
                     if (result.resultCode == RESULT_OK) {
                         val imageUri = result.data?.data
                         if (imageUri != null) {
-                            secilenGorsel = imageUri
-                            val image = InputImage.fromFilePath(requireContext(), imageUri)
-                            val scanner = BarcodeScanning.getClient()
-
                             if (islem == "barkodOku") {
+                                // Sadece barkod okuma işlemi için
+                                secilenGorsel = null // Barkod okurken görseli değiştirme
+                                val image = InputImage.fromFilePath(requireContext(), imageUri)
+                                val scanner = BarcodeScanning.getClient()
+
                                 scanner.process(image)
                                     .addOnSuccessListener { barcodes ->
                                         try {
@@ -440,7 +451,7 @@ class urunEkleFragment : Fragment() {
                                                     val barkod = barcode.displayValue
                                                     if (barkod != null) {
                                                         binding.barkodNoText.setText(barkod)
-                                                        break // İlk barkodu alınca döngüden çık
+                                                        break
                                                     }
                                                 }
                                             } else {
@@ -455,6 +466,8 @@ class urunEkleFragment : Fragment() {
                                         Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                                     }
                             } else if (islem == "gorselSec") {
+                                // Sadece görsel seçme işlemi için
+                                secilenGorsel = imageUri
                                 try {
                                     if (Build.VERSION.SDK_INT >= 28) {
                                         val source = ImageDecoder.createSource(requireActivity().contentResolver, secilenGorsel!!)
@@ -478,23 +491,11 @@ class urunEkleFragment : Fragment() {
                             Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
                         }
                     }
+                    islem = "" // İşlem tamamlandıktan sonra sıfırla
                 } catch (e: Exception) {
                     Log.e("Gallery", "Galeriye erişim hatası", e)
                     Toast.makeText(requireContext(), "Galeriye erişim hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-                try {
-                    if (result) {
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        activityResultLauncherGallery.launch(intent)
-                    } else {
-                        Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Log.e("Gallery", "İzin işleme hatası", e)
-                    Toast.makeText(requireContext(), "İzin kontrolü hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    islem = "" // Hata durumunda da sıfırla
                 }
             }
         } catch (e: Exception) {
@@ -542,9 +543,10 @@ class urunEkleFragment : Fragment() {
                 .replace("ö", "o")
                 .replace("ş", "s")
                 .replace("ü", "u")
+            val kategori = binding.kategoriSpinner.selectedItem.toString()
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
-            if (barkodNo.isEmpty() || urunAdi.isEmpty() || birlesikIcindekiler.isEmpty()) {
+            if (barkodNo.isEmpty() || urunAdi.isEmpty() || kategori.isEmpty() || birlesikIcindekiler.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_SHORT).show()
                 return
             }
@@ -561,6 +563,7 @@ class urunEkleFragment : Fragment() {
                                 "urunAdi" to urunAdi,
                                 "urunAdiLowerCase" to urunAdiLowerCase,
                                 "barkodNo" to barkodNo,
+                                "kategori" to kategori,
                                 "icindekiler" to birlesikIcindekiler,
                                 "gorselUrl" to gorselUrl
                             )
@@ -609,6 +612,7 @@ class urunEkleFragment : Fragment() {
                 .replace("ö", "o")
                 .replace("ş", "s")
                 .replace("ü", "u")
+            val kategori = binding.kategoriSpinner.selectedItem.toString()
             val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
             if (barkodNo.isEmpty()) {
@@ -618,13 +622,14 @@ class urunEkleFragment : Fragment() {
 
             val guncellenenUrunMap: MutableMap<String, Any> = mutableMapOf(
                 "urunAdi" to urunAdi,
+                "urunAdiLowerCase" to urunAdiLowerCase,
                 "barkodNo" to barkodNo,
+                "kategori" to kategori,
                 "icindekiler" to birlesikIcindekiler,
-                "urunAdiLowerCase" to urunAdiLowerCase
             )
 
             val documentRef = db.collection("urunler").document(documentId)
-            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && birlesikIcindekiler.isNotEmpty()){
+            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty() && kategori.isNotEmpty() && birlesikIcindekiler.isNotEmpty()){
                 if (secilenGorsel != null) {
                     val gorselAdi = "${barkodNo}.jpg"
                     val gorselReferansi = storage.reference.child("images/$gorselAdi")
@@ -722,11 +727,13 @@ class urunEkleFragment : Fragment() {
                                 val urun = document.get("urun") as? String ?: continue
                                 icerikListesi.add(urun)
                             }
-                            icerikListesi.sort()
+                            val turkishLocale = Locale("tr", "TR")
+                            val collator = Collator.getInstance(turkishLocale)
+                            icerikListesi.sortWith { a, b -> collator.compare(a, b) }
 
                             // Fragment bağlanmış mı, kontrol etmeden adapter'ı set etme
                             if (isAdded) {
-                                icerikAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, android.R.id.text1, icerikListesi)
+                                icerikAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, icerikListesi)
                                 binding.icerikSpinner.adapter = icerikAdapter
                             }
                         }

@@ -56,8 +56,11 @@
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunFragment"
             app:destination="@id/urunFragment" />
         <action
-            android:id="@+id/action_kullaniciAnaSayfaFragment_to_kullaniciTumUrunlerFragment"
-            app:destination="@id/kullaniciTumUrunlerFragment" />
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunlerFragment"
+            app:destination="@id/urunlerFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_ayarlarFragment"
+            app:destination="@id/ayarlarFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -68,14 +71,17 @@
             android:id="@+id/action_adminAnaSayfaFragment_to_girisYapFragment"
             app:destination="@id/girisYapFragment" />
         <action
-            android:id="@+id/action_adminAnaSayfaFragment_to_adminTumUrunlerFragment"
-            app:destination="@id/adminTumUrunlerFragment" />
-        <action
             android:id="@+id/action_adminAnaSayfaFragment_to_urunEkleFragment"
             app:destination="@id/urunEkleFragment" />
         <action
             android:id="@+id/action_adminAnaSayfaFragment_to_icerikEkleFragment"
             app:destination="@id/icerikEkleFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_urunlerFragment"
+            app:destination="@id/urunlerFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_ayarlarFragment"
+            app:destination="@id/ayarlarFragment" />
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
@@ -129,6 +135,10 @@
         <action
             android:id="@+id/action_adminTumUrunlerFragment_to_urunEkleFragment"
             app:destination="@id/urunEkleFragment" />
+        <argument
+            android:name="kategori"
+            app:argType="string"
+            android:defaultValue="tumUrunler" />
     </fragment>
     <fragment
         android:id="@+id/kullaniciTumUrunlerFragment"
@@ -137,6 +147,10 @@
         <action
             android:id="@+id/action_kullaniciTumUrunlerFragment_to_urunFragment"
             app:destination="@id/urunFragment" />
+        <argument
+            android:name="kategori"
+            app:argType="string"
+            android:defaultValue="tumUrunler" />
     </fragment>
     <argument
         android:name="durum"
@@ -146,4 +160,34 @@
         android:name="com.example.icimdekiler.view.icerikEkleFragment"
         android:label="fragment_icerik_ekle"
         tools:layout="@layout/fragment_icerik_ekle" />
+    <fragment
+        android:id="@+id/urunlerFragment"
+        android:name="com.example.icimdekiler.view.urunlerFragment"
+        android:label="fragment_urunler"
+        tools:layout="@layout/fragment_urunler" >
+        <action
+            android:id="@+id/action_urunlerFragment_to_adminTumUrunlerFragment"
+            app:destination="@id/adminTumUrunlerFragment" />
+        <action
+            android:id="@+id/action_urunlerFragment_to_kullaniciTumUrunlerFragment"
+            app:destination="@id/kullaniciTumUrunlerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ayarlarFragment"
+        android:name="com.example.icimdekiler.view.ayarlarFragment"
+        android:label="fragment_ayarlar"
+        tools:layout="@layout/fragment_ayarlar" >
+        <action
+            android:id="@+id/action_ayarlarFragment_to_hesapAyarlariFragment"
+            app:destination="@id/hesapAyarlariFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/hesapAyarlariFragment"
+        android:name="com.example.icimdekiler.view.hesapAyarlariFragment"
+        android:label="fragment_hesap_ayarlari"
+        tools:layout="@layout/fragment_hesap_ayarlari" >
+        <action
+            android:id="@+id/action_hesapAyarlariFragment_to_splashFragment"
+            app:destination="@id/splashFragment" />
+    </fragment>
 </navigation>
