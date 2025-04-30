@@ -150,7 +150,7 @@ class hesapAyarlariFragment : Fragment() {
                                     db.collection("kullaniciBilgileri").document(documentId)
                                         .update(guncellenenKullaniciMap)
                                         .addOnSuccessListener {
-                                            Toast.makeText(requireContext(), "Parola başarıyla güncellendi", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), R.string.parolabaşarıylagüncellendi, Toast.LENGTH_SHORT).show()
                                             dialog.dismiss()
                                         }.addOnFailureListener { e ->
                                             println("Firestore güncelleme hatası: ${e.localizedMessage}")
@@ -162,7 +162,7 @@ class hesapAyarlariFragment : Fragment() {
                         Toast.makeText(requireContext(), "Authentication hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                     }
             } else {
-                Toast.makeText(requireContext(), "Yeni parolalar eşleşmiyor!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.yeniparolalareşleşmiyor, Toast.LENGTH_SHORT).show()
             }
         }
 

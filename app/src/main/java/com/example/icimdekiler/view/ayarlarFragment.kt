@@ -114,6 +114,7 @@ class ayarlarFragment : Fragment() {
             varsayilanRadioButton.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
                     dialog.dismiss()
                 }
             }
