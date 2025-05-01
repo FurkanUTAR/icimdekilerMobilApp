@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.icerikEkleFragment">
 
     <!-- Logo (Sol Üst Köşe) -->
@@ -13,13 +12,11 @@
         android:id="@+id/logoImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/logo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="24dp"/>
-
-
+        android:layout_marginTop="24dp"
+        android:src="@drawable/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <!-- Ürün Adı -->
@@ -42,6 +39,7 @@
             android:id="@+id/urunAdiText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:foreground="@drawable/rounded_edittext_green"
             android:inputType="text"
             android:textColor="#212121" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -67,10 +65,11 @@
             android:id="@+id/aciklamaText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:foreground="@drawable/rounded_edittext_green"
             android:gravity="top|start"
             android:inputType="textMultiLine"
             android:minHeight="150dp"
-            android:textColor="#212121"/>
+            android:textColor="#212121" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Kaydet Butonu -->
@@ -83,13 +82,13 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#388E3C"
+        android:elevation="4dp"
         android:text="@string/kaydet"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:elevation="4dp"
         app:cornerRadius="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
