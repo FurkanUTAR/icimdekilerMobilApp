@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/aydinlik_arka_plan"
     android:padding="16dp"
     tools:context=".view.urunEkleFragment">
 
@@ -57,10 +56,10 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:src="@drawable/barcode_reader"
-        android:tint="@color/text_black"
         app:layout_constraintBottom_toBottomOf="@+id/barkodInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/barkodInputLayout" />
+        app:layout_constraintTop_toTopOf="@+id/barkodInputLayout"
+        app:tint="@color/text_black" />
 
     <!-- Product Name -->
     <com.google.android.material.textfield.TextInputLayout
@@ -136,7 +135,6 @@
         android:layout_height="36dp"
         android:layout_marginEnd="12dp"
         android:src="@drawable/add"
-        android:tint="@color/text_black"
         app:layout_constraintBottom_toBottomOf="@+id/icerikSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/icerikSpinner"

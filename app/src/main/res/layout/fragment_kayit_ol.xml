@@ -29,7 +29,6 @@
         android:background="@drawable/rounded_edittext_green"
         android:hint="@string/kullaniciAdi"
         android:padding="12dp"
-        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
@@ -42,7 +41,6 @@
         android:background="@drawable/rounded_edittext_green"
         android:hint="@string/isimSoyisim"
         android:padding="12dp"
-        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/kullaniciAdiText" />
@@ -56,7 +54,6 @@
         android:hint="@string/ePosta"
         android:inputType="textEmailAddress"
         android:padding="12dp"
-        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/isimSoyisimText" />
@@ -70,7 +67,6 @@
         android:hint="@string/telNo"
         android:inputType="phone"
         android:padding="12dp"
-        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +81,6 @@
         android:hint="@string/parola"
         android:inputType="textPassword"
         android:padding="12dp"
-        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/telNoText" />
@@ -111,6 +106,7 @@
         android:text="@string/girisYap"
         android:textColor="@color/text_black"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
@@ -119,9 +115,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:backgroundTint="#66BB6A"
+        android:backgroundTint="@color/primary_green"
         android:text="@string/kayitOl"
-        android:textColor="@android:color/white"
+        android:textColor="@color/text_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView" />
