@@ -1,43 +1,63 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/qrCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/transparent"
-    android:elevation="10dp"
-    android:padding="10dp">
+    android:layout_margin="16dp"
+    android:backgroundTint="#1F1F1F"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp">
 
-    <!-- Kamera görüntüsü -->
-    <androidx.camera.view.PreviewView
-        android:id="@+id/previewView"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:scaleType="fitCenter" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <!-- Kapat butonu -->
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/kapat"
-        app:layout_constraintTop_toBottomOf="@id/previewView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <!-- Kamera görüntüsü -->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="#2A2A2A"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:scaleType="fitCenter" />
 
-    <Button
-        android:id="@+id/btnFlashToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/flasAcKapat"
-        app:layout_constraintBottom_toBottomOf="@+id/previewView"
-        app:layout_constraintStart_toStartOf="@+id/previewView" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Flaş Aç/Kapat Butonu -->
+        <Button
+            android:id="@+id/btnFlashToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext_green"
+            android:backgroundTint="#4CAF50"
+            android:drawablePadding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="🔦"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/previewView" />
+
+        <!-- Kapat Butonu -->
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_edittext_green"
+            android:backgroundTint="#4CAF50"
+            android:text="@string/kapat"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnFlashToggle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

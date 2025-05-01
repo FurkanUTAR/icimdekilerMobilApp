@@ -5,41 +5,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.adminTumUrunlerFragment">
 
-    <!-- EditText ve ImageView'ı yan yana yerleştir -->
-    <EditText
-        android:id="@+id/urunAdiText"
+    <!-- Arama Çubuğu -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:hint="@string/urunAdi"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@id/urunlerRecyclerView"
-        app:layout_constraintEnd_toStartOf="@id/araImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/araImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="25dp"
-        android:src="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@id/urunAdiText"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_edittext_green"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@id/urunAdiText" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- RecyclerView -->
+        <EditText
+            android:id="@+id/urunAdiText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="Ürün ara..."
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:textColor="#212121"
+            android:textColorHint="#9E9E9E"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/araImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/search"
+            android:tint="@color/text_black" />
+    </LinearLayout>
+
+    <!-- Ürün Listesi -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/urunlerRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layoutBehavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

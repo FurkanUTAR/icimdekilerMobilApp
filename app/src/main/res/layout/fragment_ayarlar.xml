@@ -5,41 +5,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.ayarlarFragment">
 
-
-    <Button
-        android:id="@+id/hesapButton"
-        android:layout_width="237dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="50dp"
-        android:text="Hesap"
+    <!-- Header -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Ayarlar"
+        android:textColor="@color/text_black"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/dilButton"
-        android:layout_width="239dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="86dp"
-        android:layout_marginTop="86dp"
-        android:layout_marginEnd="86dp"
-        android:text="Dil"
+    <!-- Settings Options Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temaButton" />
+        app:layout_constraintTop_toBottomOf="@+id/titleText">
 
-    <Button
-        android:id="@+id/temaButton"
-        android:layout_width="229dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="98dp"
-        android:text="Tema Değiştirme"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/rounded_edittext_green"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- Account Setting -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/hesapButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:gravity="start|center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Hesap"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                app:icon="@drawable/ic_account"
+                app:iconGravity="start"
+                app:iconTint="#2E7D32" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#E0E0E0" />
+
+            <!-- Theme Setting -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/temaButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:gravity="start|center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Tema Değiştirme"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                app:icon="@drawable/ic_theme"
+                app:iconGravity="start"
+                app:iconTint="#2E7D32" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#E0E0E0" />
+
+            <!-- Language Setting -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dilButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:gravity="start|center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Dil"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                app:icon="@drawable/ic_language"
+                app:iconGravity="start"
+                app:iconTint="#2E7D32" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- App Version Info -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="v1.0.0"
+        android:textColor="#9E9E9E"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hesapButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

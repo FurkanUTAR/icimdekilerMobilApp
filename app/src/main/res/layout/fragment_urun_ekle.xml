@@ -1,137 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
+    android:padding="16dp"
     tools:context=".view.urunEkleFragment">
 
-    <Spinner
-        android:id="@+id/kategoriSpinner"
-        android:layout_width="215dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView5"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toTopOf="@+id/textView5" />
+    <!-- Product Image Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageCardView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/barkodNoText"
-        android:layout_width="257dp"
+        <ImageView
+            android:id="@+id/gorselSecImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="@string/product_image" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Barcode Section -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/barkodInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:ems="10"
+        android:layout_marginTop="16dp"
         android:hint="@string/barkod"
-        android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/urunAdiText"
-        app:layout_constraintStart_toStartOf="@+id/urunAdiText" />
+        app:layout_constraintEnd_toStartOf="@+id/barkodOkuImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageCardView">
 
-    <ImageView
-        android:id="@+id/ekleImage"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginBottom="3dp"
-        android:src="@drawable/add"
-        app:layout_constraintBottom_toBottomOf="@+id/icerikSpinner"
-        app:layout_constraintStart_toEndOf="@+id/icerikSpinner"
-        app:layout_constraintTop_toTopOf="@+id/icerikSpinner"
-        app:layout_constraintVertical_bias="0.333" />
-
-    <Spinner
-        android:id="@+id/icerikSpinner"
-        android:layout_width="215dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/icindekilerListView"
-        app:layout_constraintStart_toStartOf="@+id/kategoriSpinner" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="@string/icerik"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/icerikSpinner"
-        app:layout_constraintStart_toStartOf="@+id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@+id/icerikSpinner" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/barkodNoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_green"
+            android:inputType="number"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/barkodOkuImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/barcode_reader"
-        app:layout_constraintBottom_toBottomOf="@+id/barkodNoText"
-        app:layout_constraintEnd_toEndOf="@+id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@+id/barkodNoText" />
+        android:tint="@color/text_black"
+        app:layout_constraintBottom_toBottomOf="@+id/barkodInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/barkodInputLayout" />
 
-    <EditText
-        android:id="@+id/urunAdiText"
-        android:layout_width="300dp"
+    <!-- Product Name -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/urunAdiInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:ems="10"
+        android:layout_marginTop="16dp"
         android:hint="@string/urunAdi"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/barkodInputLayout">
 
-    <Button
-        android:id="@+id/kaydetButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="@string/kaydet"
-        app:layout_constraintBottom_toBottomOf="@+id/silButton"
-        app:layout_constraintStart_toEndOf="@+id/silButton" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/urunAdiText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_green"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/silButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
-        android:text="@string/sil"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.187"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ListView
-        android:id="@+id/icindekilerListView"
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_marginBottom="20dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/kaydetButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/gorselSecImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/barkodNoText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
-
+    <!-- Category Section -->
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="16dp"
         android:text="@string/kategori"
+        android:textColor="#2E7D32"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintStart_toStartOf="@+id/textView3" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urunAdiInputLayout" />
+
+    <Spinner
+        android:id="@+id/kategoriSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/rounded_edittext_green"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+    <!-- Ingredient Section -->
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/icerik"
+        android:textColor="#2E7D32"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <Spinner
+        android:id="@+id/icerikSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/rounded_edittext_green"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+        app:layout_constraintEnd_toStartOf="@+id/ekleImage"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
+
+    <ImageView
+        android:id="@+id/ekleImage"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/add"
+        android:tint="@color/text_black"
+        app:layout_constraintBottom_toBottomOf="@+id/icerikSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/icerikSpinner" />
+
+    <!-- Ingredients List -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <ListView
+            android:id="@+id/icindekilerListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_edittext_green"
+            android:divider="#E0E0E0"
+            android:dividerHeight="1dp"
+            android:padding="8dp" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Button Group -->
+    <LinearLayout
+        android:id="@+id/buttonGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/silButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/sil"
+            android:backgroundTint="@color/text_white"
+            android:textColor="#D32F2F" />
+
+        <Button
+            android:id="@+id/kaydetButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#2E7D32"
+            android:text="@string/kaydet"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
