@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:backgroundTint="#1F1F1F"
     app:cardCornerRadius="24dp"
     app:cardElevation="8dp">
 
@@ -30,20 +29,21 @@
             app:scaleType="fitCenter" />
 
         <!-- Flaş Aç/Kapat Butonu -->
-        <Button
+        <ImageButton
             android:id="@+id/btnFlashToggle"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_edittext_green"
             android:backgroundTint="#4CAF50"
             android:drawablePadding="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="🔦"
             android:textColor="#FFFFFF"
+            app:layout_constraintCircleRadius="60dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/previewView" />
+            app:layout_constraintTop_toBottomOf="@+id/previewView"
+            app:srcCompat="@drawable/flashlight_on" />
+
 
         <!-- Kapat Butonu -->
         <Button
@@ -51,13 +51,11 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/rounded_edittext_green"
             android:backgroundTint="#4CAF50"
             android:text="@string/kapat"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnFlashToggle" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
