@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/kayitOl"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:background="@drawable/rounded_edittext_green"
         android:hint="@string/kullaniciAdi"
         android:padding="12dp"
-        android:textColorHint="#A5D6A7"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
@@ -42,7 +42,7 @@
         android:background="@drawable/rounded_edittext_green"
         android:hint="@string/isimSoyisim"
         android:padding="12dp"
-        android:textColorHint="#A5D6A7"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/kullaniciAdiText" />
@@ -56,7 +56,7 @@
         android:hint="@string/ePosta"
         android:inputType="textEmailAddress"
         android:padding="12dp"
-        android:textColorHint="#A5D6A7"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/isimSoyisimText" />
@@ -70,8 +70,9 @@
         android:hint="@string/telNo"
         android:inputType="phone"
         android:padding="12dp"
-        android:textColorHint="#A5D6A7"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ePostaText" />
 
@@ -84,7 +85,7 @@
         android:hint="@string/parola"
         android:inputType="textPassword"
         android:padding="12dp"
-        android:textColorHint="#A5D6A7"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/telNoText" />
@@ -96,7 +97,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="45dp"
         android:text="@string/zatenHesabinVarMi"
-        android:textColor="#A5D6A7"
+        android:textColor="@color/text_black"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/parolaText"
         app:layout_constraintStart_toStartOf="@+id/parolaText"
@@ -108,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:text="@string/girisYap"
-        android:textColor="#B2DFDB"
+        android:textColor="@color/text_black"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
