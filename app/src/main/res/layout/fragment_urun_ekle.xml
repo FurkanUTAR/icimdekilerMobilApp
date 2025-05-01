@@ -27,8 +27,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
-            android:contentDescription="@string/product_image" />
+            android:src="@drawable/ic_launcher_background" />
     </androidx.cardview.widget.CardView>
 
     <!-- Barcode Section -->
@@ -130,18 +129,19 @@
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="@+id/textView3" />
 
+    <!-- Ingredients List -->
     <ImageView
         android:id="@+id/ekleImage"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
         android:src="@drawable/add"
         android:tint="@color/text_black"
         app:layout_constraintBottom_toBottomOf="@+id/icerikSpinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/icerikSpinner" />
+        app:layout_constraintTop_toTopOf="@+id/icerikSpinner"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Ingredients List -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
