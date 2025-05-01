@@ -17,7 +17,6 @@ import com.example.icimdekiler.databinding.FragmentHesapAyarlariBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -58,15 +57,11 @@ class hesapAyarlariFragment : Fragment() {
             alert.setNegativeButton(R.string.hayir, null).show()
         }
 
-//        binding.guncelleButton.setOnClickListener {
-//            val alert = AlertDialog.Builder(requireContext())
-//            alert.setTitle("Hesap bilgilerini güncellemek istediğinizden emin misin?")
-//            alert.setPositiveButton(R.string.evet) { dialog, value -> guncelle() }
-//            alert.setNegativeButton(R.string.hayir, null).show()
-//        }
-
         binding.parolaDegistirButton.setOnClickListener {
-            parolaGuncelle()
+            val alert = AlertDialog.Builder(requireContext())
+            alert.setTitle("Parolanı değiştirmek istediğinden emin misin?")
+            alert.setPositiveButton(R.string.evet) { dialog, value -> parolaGuncelle() }
+            alert.setNegativeButton(R.string.hayir, null).show()
         }
     }
 
@@ -143,12 +138,12 @@ class hesapAyarlariFragment : Fragment() {
                                     val belge = documents.documents.first()
                                     val documentId = belge.id
 
-                                    val guncellenenKullaniciMap: MutableMap<String, Any> = mutableMapOf(
+                                    val parolaGuncelleMap: MutableMap<String, Any> = mutableMapOf(
                                         "parola" to yeniParola
                                     )
 
                                     db.collection("kullaniciBilgileri").document(documentId)
-                                        .update(guncellenenKullaniciMap)
+                                        .update(parolaGuncelleMap)
                                         .addOnSuccessListener {
                                             Toast.makeText(requireContext(), "Parola başarıyla güncellendi", Toast.LENGTH_SHORT).show()
                                             dialog.dismiss()
@@ -169,13 +164,6 @@ class hesapAyarlariFragment : Fragment() {
         dialog.setContentView(view)
         dialog.show()
     }
-
-
-
-
-
-
-
 
     private fun guncelle(){
         val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()

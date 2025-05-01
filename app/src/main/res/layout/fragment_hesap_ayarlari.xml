@@ -56,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="@+id/ePostaText"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ePostaText"
-        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+        app:layout_constraintTop_toBottomOf="@+id/ePostaDegistirButton" />
 
     <Button
         android:id="@+id/guncelleButton"
@@ -86,4 +86,13 @@
         android:text="Parolayı Değiştir"
         app:layout_constraintStart_toStartOf="@+id/telNoText"
         app:layout_constraintTop_toBottomOf="@+id/telNoText" />
+
+    <Button
+        android:id="@+id/ePostaDegistirButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="E-Posta Değiştir"
+        app:layout_constraintStart_toStartOf="@+id/ePostaText"
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

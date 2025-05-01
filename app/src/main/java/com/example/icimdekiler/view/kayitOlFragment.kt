@@ -3,6 +3,7 @@ package com.example.icimdekiler.view
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
 import com.google.firebase.auth.actionCodeSettings
 
@@ -116,44 +118,24 @@ class kayitOlFragment : Fragment() {
                     return@addOnSuccessListener
                 }
 
-                Firebase.auth.createUserWithEmailAndPassword(ePosta, parola)
+                auth.createUserWithEmailAndPassword(ePosta, parola)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val user = auth.currentUser
-
-                            val kullaniciMap = hashMapOf(
-                                "kullaniciAdi" to kullaniciAdi,
-                                "isimSoyisim" to isimSoyisim,
-                                "ePosta" to ePosta,
-                                "telNo" to telNo,
-                                "parola" to parola,
-                                "isAdmin" to false,
-                                "kullaniciUID" to (user?.uid ?: "")
-                            )
-
-                            if (user != null){
-                                db.collection("kullaniciBilgileri")
-                                    .document(user.uid)
-                                    .set(kullaniciMap)
-                                    .addOnSuccessListener {
-                                        // Doğrulama maili gönder
-                                        user.sendEmailVerification()
-                                            .addOnCompleteListener { verifyTask ->
-                                                if (verifyTask.isSuccessful) {
-                                                    Toast.makeText(requireContext(), "Doğrulama e-postası gönderildi. Lütfen onaylayın!", Toast.LENGTH_LONG).show()
-                                                } else {
-                                                    Toast.makeText(requireContext(), "Doğrulama e-postası gönderilemedi: ${verifyTask.exception?.message}", Toast.LENGTH_LONG).show()
-                                                }
-                                            }
-                                    }.addOnFailureListener { exception ->
-                                        Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_LONG).show()
+                            user?.sendEmailVerification()
+                                ?.addOnCompleteListener { verifyTask ->
+                                    if (verifyTask.isSuccessful) {
+                                        Toast.makeText(requireContext(), "Doğrulama e-postası gönderildi. Lütfen e-postanızı onaylayın.", Toast.LENGTH_LONG).show()
+                                    } else {
+                                        Toast.makeText(requireContext(), "Doğrulama e-postası gönderilemedi: ${verifyTask.exception?.message}", Toast.LENGTH_LONG).show()
                                     }
-                            }
+                                }
                         } else {
                             Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_LONG).show()
                         }
                     }
-            }.addOnFailureListener { exception ->
+            }
+            .addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), exception.message, Toast.LENGTH_LONG).show()
             }
     }
@@ -162,9 +144,31 @@ class kayitOlFragment : Fragment() {
         val user = Firebase.auth.currentUser
         user?.reload()?.addOnSuccessListener {
             if (user.isEmailVerified) {
-                Toast.makeText(requireContext(), R.string.dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz, Toast.LENGTH_SHORT).show()
-                val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                requireView().findNavController().navigate(action)
+                val kullaniciMap = hashMapOf(
+                    "kullaniciAdi" to binding.kullaniciAdiText.text.toString().trim(),
+                    "isimSoyisim" to binding.isimSoyisimText.text.toString().trim(),
+                    "ePosta" to user.email,
+                    "telNo" to binding.telNoText.text.toString().trim(),
+                    "parola" to binding.parolaText.text.toString().trim(),
+                    "isAdmin" to false,
+                    "kullaniciUID" to user.uid
+                )
+
+                db.collection("kullaniciBilgileri")
+                    .document(user.uid)
+                    .set(kullaniciMap)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), R.string.dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz, Toast.LENGTH_SHORT).show()
+                        val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
+                        if (isAdded && view != null) {
+                            findNavController().navigate(action)
+                        } else {
+                            Log.e("KayitOlFragment", "Fragment ekli değil veya view null, navigate işlemi iptal edildi")
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_LONG).show()
+                    }
             } else {
                 Toast.makeText(requireContext(), R.string.lutfenePostaniziDogrulayin, Toast.LENGTH_LONG).show()
             }
@@ -172,6 +176,7 @@ class kayitOlFragment : Fragment() {
             Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
