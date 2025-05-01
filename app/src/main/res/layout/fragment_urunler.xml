@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iceceklerButton"
         app:layout_constraintTop_toBottomOf="@+id/temelGidaButton" />
-
+a
     <Button
         android:id="@+id/sutVeSutUrunleriButton"
         android:layout_width="0dp"

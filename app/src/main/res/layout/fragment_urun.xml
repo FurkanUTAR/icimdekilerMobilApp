@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="16dp"
     tools:context=".view.urunFragment">
 
-    <ImageView
-        android:id="@+id/gorselSecImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="50dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+    <!-- Circular Product Image with Border -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageContainer"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        android:layout_marginTop="24dp">
 
-    <ListView
-        android:id="@+id/icindekilerListView"
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        <ImageView
+            android:id="@+id/gorselSecImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="@string/product_image"
+            android:adjustViewBounds="true"/>
+    </androidx.cardview.widget.CardView>
 
+    <!-- Product Name -->
     <TextView
         android:id="@+id/urunAdiText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:text="@string/urunAdi"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/gorselSecImageView"
-        app:layout_constraintStart_toStartOf="@+id/gorselSecImageView"
-        app:layout_constraintTop_toBottomOf="@+id/gorselSecImageView" />
+        android:textColor="#333333"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageContainer" />
 
+    <!-- Ingredients Title -->
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         android:text="@string/icindekiler"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/icindekilerListView"
+        android:textColor="#333333"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
+
+    <!-- Ingredients List -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        android:layout_marginTop="8dp">
+
+        <ListView
+            android:id="@+id/icindekilerListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_edittext_green"
+            android:divider="#EEEEEE"
+            android:dividerHeight="1dp"
+            android:padding="8dp"/>
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
