@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.icerikEkleFragment">
 
     <!-- Logo (Sol Üst Köşe) -->
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:id="@+id/logoImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="24dp"
-        android:src="@drawable/logo"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo" />
+    </androidx.cardview.widget.CardView>
 
     <!-- Ürün Adı -->
     <com.google.android.material.textfield.TextInputLayout
@@ -39,8 +49,9 @@
             android:id="@+id/urunAdiText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_green"
             android:inputType="text"
-            android:textColor="#212121" />
+            android:textColor="@color/text_black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Açıklama -->
@@ -67,6 +78,7 @@
             android:layout_height="match_parent"
             android:gravity="top|start"
             android:inputType="textMultiLine"
+            android:background="@drawable/rounded_edittext_green"
             android:minHeight="150dp"
             android:textColor="#212121" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -77,10 +89,9 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="#388E3C"
+        android:backgroundTint="@color/primary_green"
         android:elevation="4dp"
         android:text="@string/kaydet"
         android:textColor="#FFFFFF"
