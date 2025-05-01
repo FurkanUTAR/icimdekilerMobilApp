@@ -53,6 +53,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp"
         android:hint="@string/aciklama"
         app:boxStrokeColor="#388E3C"
         app:hintTextColor="#81C784"

@@ -78,4 +78,8 @@
     <string name="kayitEtmekIstediginizdenEminMisiniz">Are you sure you want to save this?</string>
     <string name="urunDahaOnceKayitEdilmis">This product has already been registered!</string>
     <string name="gecersizBarkodNo">Invalid barcode number!</string>
+    <string name="lutfenePostaniziDogrulayin">Please verify your email!</string>
+    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Verification complete! You are redirected to the home page.</string>
+    <string name="parolabaşarıylagüncellendi">Password updated successfully!</string>
+    <string name="yeniparolalareşleşmiyor">Passwords do not match!</string>
 </resources>

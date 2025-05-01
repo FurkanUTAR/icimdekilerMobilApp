@@ -80,9 +80,6 @@
     <string name="gecersizBarkodNo">Geçersiz barkod numarası!</string>
     <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
     <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
-    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi</string>
-    <string name="yeniparolalareşleşmiyor">Yeni Parolalar Eşleşmiyor!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi!</string>
+    <string name="yeniparolalareşleşmiyor">Parolalar Eşleşmiyor!</string>
 </resources>
