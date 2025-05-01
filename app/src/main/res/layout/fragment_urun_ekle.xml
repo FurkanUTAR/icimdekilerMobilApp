@@ -179,8 +179,8 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:text="@string/sil"
-            android:backgroundTint="@color/text_white"
-            android:textColor="#D32F2F" />
+            android:backgroundTint="#D32F2F"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/kaydetButton"
