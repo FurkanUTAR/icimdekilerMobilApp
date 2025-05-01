@@ -1,31 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:background="@drawable/rounded_edittext_green"
+    android:layout_margin="8dp"
+    android:padding="16dp">
 
-    <!-- ImageView -->
-    <ImageView
-    android:id="@+id/recyclerViewUrunGorselImage"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_marginTop="10dp"
-    android:src="@drawable/ic_launcher_background"
-    android:layout_gravity="center_horizontal" />
+    <!-- Product Image with Circular Mask -->
 
-    <!-- TextView -->
+    <!-- Circular Product Image with Border -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageContainer"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/recyclerViewUrunGorselImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:adjustViewBounds="true"/>
+    </androidx.cardview.widget.CardView>
+
+
+    <!-- Product Name -->
     <TextView
-    android:id="@+id/recyclerViewUrunAdiText"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="25dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="25dp"
-    android:text="@string/urunAdi"
-    android:gravity="center_horizontal" />
+        android:id="@+id/recyclerViewUrunAdiText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/urunAdi"
+        android:background="@drawable/rounded_edittext_green"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
 </LinearLayout>

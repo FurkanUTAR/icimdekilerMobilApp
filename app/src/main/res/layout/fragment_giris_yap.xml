@@ -10,18 +10,25 @@
     tools:context=".view.girisYapFragment">
 
     <!-- Logo Placeholder (Add your actual logo) -->
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:id="@+id/logo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/cerceve_xml"
-        android:padding="4dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/logo"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo"
+            android:adjustViewBounds="true"/>
+    </androidx.cardview.widget.CardView>
 
     <EditText
         android:id="@+id/kullaniciAdiText"
@@ -73,7 +80,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="@color/primary_green"
+        android:backgroundTint="#66BB6A"
         android:text="@string/girisYap"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
