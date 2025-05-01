@@ -5,71 +5,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
+    android:padding="24dp"
     tools:context=".view.girisYapFragment">
 
-    <EditText
-        android:id="@+id/kullaniciAdiText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="190dp"
-        android:ems="10"
-        android:hint="@string/kullaniciAdi"
-        android:inputType="text"
+    <!-- Logo Placeholder (Add your actual logo) -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/logo"
+        android:scaleType="centerCrop"
+        android:background="@drawable/cerceve_xml"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/girisYapButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/girisYap"
+    <EditText
+        android:id="@+id/kullaniciAdiText"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/rounded_edittext_green"
+        android:ems="10"
+        android:hint="@string/kullaniciAdi"
+        android:inputType="text"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <EditText
-        android:id="@+id/parolaText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/parola"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="@+id/ePostaText"
-        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     <EditText
         android:id="@+id/ePostaText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_edittext_green"
         android:ems="10"
         android:hint="@string/ePosta"
         android:inputType="textEmailAddress"
-        app:layout_constraintStart_toStartOf="@+id/kullaniciAdiText"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
+
+    <EditText
+        android:id="@+id/parolaText"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_edittext_green"
+        android:ems="10"
+        android:hint="@string/parola"
+        android:inputType="textPassword"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+
+    <Button
+        android:id="@+id/girisYapButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_edittext_green"
+        android:text="@string/girisYap"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="24dp"
         android:text="@string/halaKayitOlmadinMi"
-        app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+        android:textColor="#6C757D"
+        app:layout_constraintEnd_toStartOf="@+id/kayitOlLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/girisYapButton" />
 
     <TextView
         android:id="@+id/kayitOlLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
         android:text="@string/kayitOl"
-        android:textColor="#3B76FF"
+        android:textColor="@color/primary_green"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/kullaniciAdiText" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

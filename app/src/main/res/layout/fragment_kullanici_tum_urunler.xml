@@ -5,44 +5,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.adminTumUrunlerFragment">
 
-    <!-- EditText ve ImageView'ı yan yana yerleştir -->
-    <EditText
-        android:id="@+id/urunAdiText"
+    <!-- Search Card -->
+    <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:hint="@string/urunAdi"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@id/urunlerRecyclerView"
-        app:layout_constraintEnd_toStartOf="@id/araImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/araImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="25dp"
-        android:src="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@id/urunAdiText"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@id/urunAdiText" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- RecyclerView -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/rounded_edittext_green"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <!-- Search Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/searchLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/urunAdi"
+                app:boxStrokeColor="#2E7D32"
+                app:endIconMode="clear_text"
+                app:endIconTint="#2E7D32"
+                app:layout_constraintBottom_toBottomOf="@id/searchButton"
+                app:layout_constraintEnd_toStartOf="@id/searchButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/searchButton">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/urunAdiText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Search Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/searchButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:icon="@drawable/search"
+                app:iconGravity="textStart"
+                app:iconSize="24dp"
+                app:iconTint="#2E7D32"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Product List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/urunlerRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/urunAdiText" />
+        app:layout_constraintTop_toBottomOf="@id/searchLayout" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
