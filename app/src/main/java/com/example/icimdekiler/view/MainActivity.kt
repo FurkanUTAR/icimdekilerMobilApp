@@ -18,9 +18,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Sistem barlarını şeffaf yap ama sadece destekliyorsa
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        }
+
         //Tema rengini hatırlama kodları
         val sharedPreferences = getSharedPreferences("TemaAyar", Context.MODE_PRIVATE)
         val secilenTema = sharedPreferences.getInt("secilenTema", AppCompatDelegate.MODE_NIGHT_NO)
+
+
 
         AppCompatDelegate.setDefaultNightMode(secilenTema)
 
