@@ -18,6 +18,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Tema rengini hatırlama kodları
+        val sharedPreferences = getSharedPreferences("TemaAyar", Context.MODE_PRIVATE)
+        val secilenTema = sharedPreferences.getInt("secilenTema", AppCompatDelegate.MODE_NIGHT_NO)
+
+        AppCompatDelegate.setDefaultNightMode(secilenTema)
+
         applySavedLanguage() // Önce dili uygula
 
         setContentView(R.layout.activity_main) // Sonra layout'u yükle
