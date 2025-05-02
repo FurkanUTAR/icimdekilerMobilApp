@@ -8,79 +8,57 @@
     android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.adminTumUrunlerFragment">
 
-    <!-- Search Card -->
-    <androidx.cardview.widget.CardView
+    <!-- Arama Çubuğu -->
+    <LinearLayout
+        android:id="@+id/urunAraLinear"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_edittext_green"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:background="@drawable/rounded_edittext_green"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
+        <EditText
+            android:id="@+id/urunAdiText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="Ürün ara..."
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:textColor="#212121"
+            android:textColorHint="#9E9E9E"
+            android:textSize="16sp" />
 
-            <!-- Search Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/searchLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/urunAdi"
-                app:boxStrokeColor="#2E7D32"
-                app:endIconMode="clear_text"
-                app:endIconTint="#2E7D32"
-                app:layout_constraintBottom_toBottomOf="@id/araImageView"
-                app:layout_constraintEnd_toStartOf="@id/araImageView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/araImageView">
+        <ImageView
+            android:id="@+id/araImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/search"
+            />
+    </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/urunAdiText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Search Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/araImageView"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                app:icon="@drawable/search"
-                app:iconGravity="textStart"
-                app:iconSize="24dp"
-                app:iconTint="#2E7D32"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Product List -->
+    <!-- Ürün Listesi -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/urunlerRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchLayout" />
-
-
+        app:layout_constraintTop_toBottomOf="@id/urunAraLinear" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

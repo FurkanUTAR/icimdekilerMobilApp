@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@drawable/aydinlik_arka_plan"
     android:padding="16dp"
     tools:context=".view.urunFragment">
 
@@ -65,7 +65,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="250dp"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="17dp"
         app:cardElevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/rounded_edittext_green"
-            android:divider="#EEEEEE"
+            android:divider="#E0E0E0"
             android:dividerHeight="1dp"
             android:padding="8dp" />
     </androidx.cardview.widget.CardView>

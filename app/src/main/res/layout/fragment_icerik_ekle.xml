@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@drawable/aydinlik_arka_plan"
     tools:context=".view.icerikEkleFragment">
 
     <!-- Logo (Sol Üst Köşe) -->
@@ -43,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textColor="#212121" />
+            android:textColor="#212121"
+            android:background="@drawable/rounded_edittext_green"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Açıklama -->
@@ -70,7 +71,8 @@
             android:gravity="top|start"
             android:inputType="textMultiLine"
             android:minHeight="150dp"
-            android:textColor="#212121"/>
+            android:textColor="#212121"
+            android:background="@drawable/rounded_edittext_green"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Kaydet Butonu -->

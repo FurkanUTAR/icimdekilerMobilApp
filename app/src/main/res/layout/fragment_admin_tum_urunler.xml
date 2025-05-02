@@ -44,8 +44,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
-            android:src="@drawable/search"
-            android:tint="@color/text_black" />
+            android:src="@drawable/search" />
     </LinearLayout>
 
     <!-- Ürün Listesi -->

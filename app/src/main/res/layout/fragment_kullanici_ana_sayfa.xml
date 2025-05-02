@@ -4,27 +4,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/aydinlik_arka_plan"
     android:layout_height="match_parent"
-    tools:context=".view.kullaniciAnaSayfaFragment">
+    tools:context=".view.adminAnaSayfaFragment">
 
-    <Button
-        android:id="@+id/urunlerButton"
-        android:layout_width="match_parent"
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/popupMenu"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/barcode_reader"
-        android:drawablePadding="8dp"
-        android:gravity="center|center_vertical"
-        android:padding="16dp"
-        android:text="@string/urunler"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:onClick="kayit"
+        android:src="@drawable/menu"
+        app:backgroundTint="@color/border_green"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <AutoCompleteTextView
+        android:id="@+id/urunAdiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/urunAdi"
+        android:completionThreshold="1"
+        android:background="@drawable/rounded_edittext_green"
+        app:layout_constraintEnd_toEndOf="@+id/barkodOkuImageView"
+        app:layout_constraintTop_toBottomOf="@+id/barkodOkuImageView"
+        android:layout_margin="8dp" />
+
+    <ImageView
+        android:id="@+id/araImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="3dp"
+        android:src="@drawable/search"
+        android:background="@drawable/rounded_edittext_green"
+        app:layout_constraintBottom_toBottomOf="@+id/urunAdiText"
+        app:layout_constraintStart_toEndOf="@+id/urunAdiText"
+        app:layout_constraintTop_toTopOf="@+id/urunAdiText" />
+
 
     <ImageView
         android:id="@+id/barkodOkuImageView"
@@ -36,39 +56,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/araImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@+id/urunAdiText"
-        app:layout_constraintStart_toEndOf="@+id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@+id/urunAdiText"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <AutoCompleteTextView
-        android:id="@+id/urunAdiText"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/urunlerButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="@string/urunAdi"
-        android:completionThreshold="1"
-        app:layout_constraintEnd_toEndOf="@+id/barkodOkuImageView"
-        app:layout_constraintTop_toBottomOf="@+id/barkodOkuImageView"
-        android:layout_margin="8dp"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/popupMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:onClick="kayit"
-        android:src="@drawable/menu"
+        android:backgroundTint="@color/primary_green"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:drawableLeft="@drawable/barcode_reader"
+        android:drawablePadding="8dp"
+        android:gravity="center|center_vertical"
+        android:padding="16dp"
+        android:text="@string/urunler"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

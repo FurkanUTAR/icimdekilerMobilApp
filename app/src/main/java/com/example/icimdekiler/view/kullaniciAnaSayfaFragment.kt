@@ -164,7 +164,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             }
 
-            binding.araImageView.setOnClickListener {
+            binding.araImage.setOnClickListener {
                 try {
                     urunAdiAra()
                 } catch (e: Exception) {
