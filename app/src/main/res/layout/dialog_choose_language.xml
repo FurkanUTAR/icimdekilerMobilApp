@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Varsayılan" />
+            android:text="@string/varsayilan" />
 
         <RadioButton
             android:id="@+id/turkceRadioButton"
@@ -32,14 +32,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Türkçe(tr)" />
+            android:text="@string/turkce" />
 
         <RadioButton
             android:id="@+id/ingilizceRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_edittext_green"
-            android:text="İngilizce(en)" />
+            android:text="@string/ingilizce" />
 
     </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

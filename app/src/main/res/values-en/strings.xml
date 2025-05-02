@@ -14,6 +14,7 @@
     <string name="girisYap">Sign In</string>
     <string name="cikisYap">Log Out</string>
     <string name="ayarlar">Settings</string>
+    <string name="hesapAyarlari">Account Settings</string>
     <string name="kaydet">Save</string>
     <string name="guncelle">Update</string>
     <string name="sil">Delete</string>
@@ -34,6 +35,16 @@
     <string name="atistirmaliklar">Snacks</string>
     <string name="sutVeSutUrunleri">Milk and Dairy Products</string>
     <string name="temelGida">Basic Food</string>
+    <string name="parolayiDegistir">Change Password</string>
+    <string name="temaDegistirme">Change Theme</string>
+    <string name="dil">Language</string>
+    4<string name="hesabiSil">Delete Account</string>
+    <string name="hesap">Account</string>
+    <string name="varsayilan">Default</string>
+    <string name="turkce">Turkish(tr)</string>
+    <string name="ingilizce">English(en)</string>
+    <string name="aydinlik">Light</string>
+    <string name="karanlik">Dark</string>
     <string name="flasAcKapat">Open/Close Flash</string>
     <string name="flasAc">Open Flash</string>
     <string name="flasKapat">Close Flash</string>

@@ -30,7 +30,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_edittext_green"
             android:buttonTint="@color/text_black"
-            android:text="Varsayılan"
+            android:text="@string/varsayilan"
             android:textSize="16sp" />
 
         <RadioButton
@@ -40,7 +40,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_edittext_green"
             android:buttonTint="@color/text_black"
-            android:text="Karanlık"
+            android:text="@string/karanlik"
             android:textSize="16sp" />
 
         <RadioButton
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_edittext_green"
             android:buttonTint="@color/text_black"
-            android:text="Aydınlık"
+            android:text="@string/aydinlik"
             android:textSize="16sp" />
     </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

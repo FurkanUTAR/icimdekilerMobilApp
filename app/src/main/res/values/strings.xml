@@ -14,6 +14,7 @@
     <string name="girisYap">Giriş Yap</string>
     <string name="cikisYap">Çıkış Yap</string>
     <string name="ayarlar">Ayarlar</string>
+    <string name="hesapAyarlari">Hesap Ayarları</string>
     <string name="kaydet">Kaydet</string>
     <string name="guncelle">Güncelle</string>
     <string name="sil">Sil</string>
@@ -34,6 +35,16 @@
     <string name="atistirmaliklar">Atıştırmalıklar</string>
     <string name="sutVeSutUrunleri">Süt ve Süt Ürünleri</string>
     <string name="temelGida">Temel Gıda</string>
+    <string name="parolayiDegistir">Parolayı Değiştir</string>
+    <string name="temaDegistirme">Tema Değiştirme</string>
+    <string name="dil">Dil</string>
+    <string name="hesabiSil">Hesabı Sil</string>
+    <string name="hesap">Hesap</string>
+    <string name="varsayilan">Varsayılan</string>
+    <string name="turkce">Türkçe(tr)</string>
+    <string name="ingilizce">İngilizce(en)</string>
+    <string name="aydinlik">Aydınlık</string>
+    <string name="karanlik">Karanlık</string>
     <string name="flasAcKapat">Flaş Aç/Kapat</string>
     <string name="flasAc">Flaş Aç</string>
     <string name="flasKapat">Flaş Kapat</string>
