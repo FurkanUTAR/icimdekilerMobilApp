@@ -51,7 +51,7 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
         urunleriAl(kategori)
 
-        binding.araImage.setOnClickListener { urunAra(kategori) }
+        binding.araImageView.setOnClickListener { urunAra(kategori) }
     }
 
     private fun urunleriAl(kategori : String) {

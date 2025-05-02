@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,25 +11,14 @@
     <!-- First Row (2 items) -->
     <androidx.cardview.widget.CardView
         android:id="@+id/tumUrunlerButton"
-        android:layout_width="157dp"
-        android:layout_height="140dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="163dp"
+        android:layout_height="142dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/temelGidaButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/tumUrunlerIcon"
-            android:layout_width="197dp"
-            android:layout_height="241dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/tumUrunler"
-            android:scaleType="fitCenter"
-            android:src="@drawable/tum_urunler" />
     </androidx.cardview.widget.CardView>
 
     <!-- Second Row (2 items) -->
@@ -43,11 +31,10 @@
         app:cardElevation="4dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tumUrunlerButton"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/temelGidaIcon"
+            android:id="@+id/temelGida"
             android:layout_width="210dp"
             android:layout_height="227dp"
             android:layout_gravity="center"
@@ -56,102 +43,55 @@
             android:src="@drawable/temel_gida" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Third Row (1 item - centered) -->
     <androidx.cardview.widget.CardView
         android:id="@+id/iceceklerButton"
-        android:layout_width="160dp"
-        android:layout_height="135dp"
+        android:layout_width="163dp"
+        android:layout_height="142dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/atistirmaliklarButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tumUrunlerButton">
+        app:layout_constraintEnd_toEndOf="@+id/temelGidaButton"
+        app:layout_constraintTop_toBottomOf="@+id/temelGidaButton">
 
         <ImageView
-            android:id="@+id/iceceklerIcon"
+            android:id="@+id/sutVeSutUrunleriImageView"
             android:layout_width="255dp"
             android:layout_height="246dp"
             android:layout_gravity="center"
             android:contentDescription="@string/icecekler"
             android:scaleType="fitCenter"
             android:src="@drawable/icecekler" />
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- Third Row (1 item - centered) -->
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/atistirmaliklarButton"
-        android:layout_width="154dp"
-        android:layout_height="137dp"
-        android:layout_marginTop="12dp"
-        app:cardBackgroundColor="@color/primary_green"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iceceklerButton"
-        app:layout_constraintTop_toBottomOf="@+id/temelGidaButton">
-
-        <ImageView
-            android:id="@+id/atistirmaliklarIcon"
-            android:layout_width="201dp"
-            android:layout_height="279dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/atistirmaliklar"
-            android:scaleType="fitCenter"
-            android:src="@drawable/atıstırmalık" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/sutVeSutUrunleriButton"
-        android:layout_width="158dp"
-        android:layout_height="160dp"
+        android:layout_width="163dp"
+        android:layout_height="142dp"
+        android:layout_marginTop="10dp"
+        app:cardBackgroundColor="@color/primary_green"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tumUrunlerButton"
+        app:layout_constraintWidth_percent="0.5">
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Third Row (1 item - centered) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/atistirmaliklarButton"
+        android:layout_width="163dp"
+        android:layout_height="142dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iceceklerButton"
-        app:layout_constraintWidth_percent="0.5">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/sutVeSutUrunleriIcon"
-                android:layout_width="319dp"
-                android:layout_height="460dp"
-                android:contentDescription="@string/sutVeSutUrunleri"
-                android:scaleType="fitCenter"
-                android:src="@drawable/sut_urunleri"
-                app:layout_constraintBottom_toTopOf="@+id/sutVeSutUrunleriText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.75"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.472" />
-
-            <TextView
-                android:id="@+id/sutVeSutUrunleriText"
-                android:layout_width="137dp"
-                android:layout_height="28dp"
-                android:layout_marginBottom="16dp"
-                android:text="Süt ve Süt Ürünleri"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="@+id/sutVeSutUrunleriButton"
+        app:layout_constraintTop_toBottomOf="@+id/sutVeSutUrunleriButton">
 
     </androidx.cardview.widget.CardView>
 

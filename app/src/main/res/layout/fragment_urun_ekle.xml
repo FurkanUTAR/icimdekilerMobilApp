@@ -27,8 +27,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
-            android:contentDescription="@string/product_image" />
+            android:src="@drawable/ic_launcher_background" />
     </androidx.cardview.widget.CardView>
 
     <!-- Barcode Section -->

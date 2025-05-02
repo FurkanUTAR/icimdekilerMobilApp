@@ -569,7 +569,7 @@ class urunEkleFragment : Fragment() {
                             )
 
                             db.collection("urunler")
-                                .whereEqualTo("urunAdiLowerCase", urunAdiLowerCase)
+                                .whereEqualTo("barkodNo", barkodNo)
                                 .get()
                                 .addOnSuccessListener { querySnapshot ->
                                     if (querySnapshot.isEmpty) {

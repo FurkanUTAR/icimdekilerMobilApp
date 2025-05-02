@@ -10,7 +10,7 @@
 
     <!-- Arama Çubuğu -->
     <LinearLayout
-
+        android:id="@+id/urunAraLinear"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -56,10 +56,9 @@
         android:layout_marginTop="12dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        app:layoutBehavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/urunAdiText" />
+        app:layout_constraintTop_toBottomOf="@id/urunAraLinear" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

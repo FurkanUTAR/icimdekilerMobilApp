@@ -79,7 +79,7 @@
             android:background="@drawable/rounded_edittext_green"
             android:divider="#EEEEEE"
             android:dividerHeight="1dp"
-            android:padding="8dp"/>
+            android:padding="8dp" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

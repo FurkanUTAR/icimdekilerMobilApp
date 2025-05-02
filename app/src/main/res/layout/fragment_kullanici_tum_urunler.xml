@@ -37,10 +37,10 @@
                 app:boxStrokeColor="#2E7D32"
                 app:endIconMode="clear_text"
                 app:endIconTint="#2E7D32"
-                app:layout_constraintBottom_toBottomOf="@id/searchButton"
-                app:layout_constraintEnd_toStartOf="@id/searchButton"
+                app:layout_constraintBottom_toBottomOf="@id/araImageView"
+                app:layout_constraintEnd_toStartOf="@id/araImageView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/searchButton">
+                app:layout_constraintTop_toTopOf="@id/araImageView">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/urunAdiText"
@@ -53,7 +53,7 @@
 
             <!-- Search Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/searchButton"
+                android:id="@+id/araImageView"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
