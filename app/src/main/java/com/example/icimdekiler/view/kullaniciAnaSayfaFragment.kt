@@ -31,6 +31,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentKullaniciAnaSayfaBinding
@@ -172,16 +173,48 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             }
 
-            binding.urunlerButton.setOnClickListener {
-                try {
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunlerFragment()
-                    findNavController().navigate(action)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+            binding.tumUrunlerButton.setOnClickListener { kontrol("tumUrunler") }
+
+            binding.iceceklerButton.setOnClickListener { kontrol("İçecek") }
+
+            binding.atistirmaliklarButton.setOnClickListener { kontrol("Atıştırmalık") }
+
+            binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
+
+            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünleri") }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    fun kontrol(kategori : String){
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // Kullanıcı bilgileri Firestore'dan çek
+            db.collection("kullaniciBilgileri")
+                .whereEqualTo("kullaniciUID", currentUser.uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val kullanici = documents.documents.first()
+                        val isAdmin = kullanici.getBoolean("isAdmin") ?: false
+
+                        // Yönlendirme işlemi
+                        if (isAdmin){
+                            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment(kategori)
+                            requireView().findNavController().navigate(action)
+                        } else {
+                            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+                            requireView().findNavController().navigate(action)
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
         }
     }
 

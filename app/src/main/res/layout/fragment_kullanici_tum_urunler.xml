@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:ems="10"
-            android:hint="Ürün ara..."
+            android:hint="@string/urunAra"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:paddingStart="16dp"

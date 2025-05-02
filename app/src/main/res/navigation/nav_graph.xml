@@ -56,11 +56,11 @@
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunFragment"
             app:destination="@id/urunFragment" />
         <action
-            android:id="@+id/action_kullaniciAnaSayfaFragment_to_urunlerFragment"
-            app:destination="@id/urunlerFragment" />
-        <action
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_ayarlarFragment"
             app:destination="@id/ayarlarFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_kullaniciTumUrunlerFragment"
+            app:destination="@id/kullaniciTumUrunlerFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -77,11 +77,11 @@
             android:id="@+id/action_adminAnaSayfaFragment_to_icerikEkleFragment"
             app:destination="@id/icerikEkleFragment" />
         <action
-            android:id="@+id/action_adminAnaSayfaFragment_to_urunlerFragment"
-            app:destination="@id/urunlerFragment" />
-        <action
             android:id="@+id/action_adminAnaSayfaFragment_to_ayarlarFragment"
             app:destination="@id/ayarlarFragment" />
+        <action
+            android:id="@+id/action_adminAnaSayfaFragment_to_adminTumUrunlerFragment"
+            app:destination="@id/adminTumUrunlerFragment" />
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
@@ -160,18 +160,6 @@
         android:name="com.example.icimdekiler.view.icerikEkleFragment"
         android:label="fragment_icerik_ekle"
         tools:layout="@layout/fragment_icerik_ekle" />
-    <fragment
-        android:id="@+id/urunlerFragment"
-        android:name="com.example.icimdekiler.view.urunlerFragment"
-        android:label="fragment_urunler"
-        tools:layout="@layout/fragment_urunler" >
-        <action
-            android:id="@+id/action_urunlerFragment_to_adminTumUrunlerFragment"
-            app:destination="@id/adminTumUrunlerFragment" />
-        <action
-            android:id="@+id/action_urunlerFragment_to_kullaniciTumUrunlerFragment"
-            app:destination="@id/kullaniciTumUrunlerFragment" />
-    </fragment>
     <fragment
         android:id="@+id/ayarlarFragment"
         android:name="com.example.icimdekiler.view.ayarlarFragment"

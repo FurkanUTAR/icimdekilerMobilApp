@@ -125,7 +125,7 @@ class kayitOlFragment : Fragment() {
                             user?.sendEmailVerification()
                                 ?.addOnCompleteListener { verifyTask ->
                                     if (verifyTask.isSuccessful) {
-                                        Toast.makeText(requireContext(), "Doğrulama e-postası gönderildi. Lütfen e-postanızı onaylayın.", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(requireContext(), R.string.lutfenePostaniziDogrulayin, Toast.LENGTH_LONG).show()
                                     } else {
                                         Toast.makeText(requireContext(), "Doğrulama e-postası gönderilemedi: ${verifyTask.exception?.message}", Toast.LENGTH_LONG).show()
                                     }

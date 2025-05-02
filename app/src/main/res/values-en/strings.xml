@@ -26,6 +26,7 @@
     <string name="galeri">Gallery</string>
     <string name="secimYap">Make a Selection</string>
     <string name="urunEkle">Add Product</string>
+    <string name="urunAra">Search Product</string>
     <string name="icerikEkle">Add Content</string>
     <string name="urunler">Products</string>
     <string name="tumUrunler">All Products</string>
@@ -78,4 +79,8 @@
     <string name="kayitEtmekIstediginizdenEminMisiniz">Are you sure you want to save this?</string>
     <string name="urunDahaOnceKayitEdilmis">This product has already been registered!</string>
     <string name="gecersizBarkodNo">Invalid barcode number!</string>
+    <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
+    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
+    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi</string>
+    <string name="yeniparolalareşleşmiyor">Yeni Parolalar Eşleşmiyor!</string>
 </resources>

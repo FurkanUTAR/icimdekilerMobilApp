@@ -41,6 +41,7 @@ class urunlerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /*
         binding.tumUrunlerButton.setOnClickListener { kontrol("tumUrunler") }
 
         binding.iceceklerButton.setOnClickListener { kontrol("İçecek") }
@@ -50,8 +51,10 @@ class urunlerFragment : Fragment() {
         binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
 
         binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünleri") }
+       */
     }
 
+    /*
     fun kontrol(kategori : String){
         val currentUser = auth.currentUser
         if (currentUser != null) {
@@ -82,7 +85,7 @@ class urunlerFragment : Fragment() {
             Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
         }
     }
-
+         */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
