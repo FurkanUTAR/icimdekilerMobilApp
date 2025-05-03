@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -104,7 +105,7 @@ class urunEkleFragment : Fragment() {
         icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, icindekilerListesi)
         binding.icindekilerListView.adapter = icindekilerAdapter
 
-        val kategoriler = arrayOf("İçecek", "Süt ve Süt Ürünü", "Temel Gıda", "Atıştırmalık","Şeker")
+        val kategoriler = arrayOf("İçecek", "Süt ve Süt Ürünü", "Temel Gıda", "Atıştırmalık")
         val turkishLocale = Locale("tr", "TR")
         val collator = Collator.getInstance(turkishLocale)
         kategoriler.sortWith { a, b -> collator.compare(a, b) }
@@ -385,56 +386,105 @@ class urunEkleFragment : Fragment() {
                     startCamera(previewView, dialog, btnFlashToggle)
                 }
             } else {
-                Toast.makeText(requireContext(), "Kamera izni gerekiyor", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.kameraIzniVerilmedi, Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.e("CameraX", "İzin işleme hatası", e)
-            Toast.makeText(requireContext(), "İzin kontrolü hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun barkodOkuGaleri() {
         try {
-            if(Build.VERSION.SDK_INT >= 33){
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
-                        Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.izinVer) {
-                                permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                            }.show()
+            if (Build.VERSION.SDK_INT >= 33) {
+                try {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                        try {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
+                                try {
+                                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                                        .setAction(R.string.izinVer) {
+                                            try {
+                                                permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                            }
+                                        }.show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Snackbar error", e)
+                                }
+                            } else {
+                                try {
+                                    permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Permission check error", e)
+                        }
                     } else {
-                        permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                        try {
+                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            activityResultLauncherGallery.launch(intent)
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Gallery intent error", e)
+                        }
                     }
-                } else {
-                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                    activityResultLauncherGallery.launch(intent)
+                } catch (e: Exception) {
+                    Log.e("AdminAnaSayfa", "Android 13+ permission check error", e)
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                        Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.izinVer) {
-                                permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            }.show()
+                try {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        try {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                try {
+                                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
+                                        .setAction(R.string.izinVer) {
+                                            try {
+                                                permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            } catch (e: Exception) {
+                                                Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                            }
+                                        }.show()
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Snackbar error", e)
+                                }
+                            } else {
+                                try {
+                                    permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                } catch (e: Exception) {
+                                    Log.e("AdminAnaSayfa", "Permission launch error", e)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Permission check error", e)
+                        }
                     } else {
-                        permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        try {
+                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            activityResultLauncherGallery.launch(intent)
+                        } catch (e: Exception) {
+                            Log.e("AdminAnaSayfa", "Gallery intent error", e)
+                        }
                     }
-                } else {
-                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                    activityResultLauncherGallery.launch(intent)
+                } catch (e: Exception) {
+                    Log.e("AdminAnaSayfa", "Pre-Android 13 permission check error", e)
                 }
             }
         } catch (e: Exception) {
-            Log.e("Gallery", "Galeriye erişim hatası", e)
-            Toast.makeText(requireContext(), "Galeriye erişim hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Log.e("AdminAnaSayfa", "Gallery barcode processing error", e)
         }
     }
+
+
 
     private fun registerLauncherGallery() {
         try {
             activityResultLauncherGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 try {
-                    if (result.resultCode == RESULT_OK) {
+                    if (result.resultCode == AppCompatActivity.RESULT_OK) {
                         val imageUri = result.data?.data
                         if (imageUri != null) {
                             if (islem == "barkodOku") {
@@ -450,6 +500,7 @@ class urunEkleFragment : Fragment() {
                                                 for (barcode in barcodes) {
                                                     val barkod = barcode.displayValue
                                                     if (barkod != null) {
+                                                        barkodNo = barkod
                                                         binding.barkodNoText.setText(barkod)
                                                         break
                                                     }
@@ -458,7 +509,7 @@ class urunEkleFragment : Fragment() {
                                                 Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                                             }
                                         } catch (e: Exception) {
-                                            Log.e("Gallery", "Barkod işleme hatası", e)
+                                            Log.e("ÜrünEkle", "Barkod işleme hatası", e)
                                             Toast.makeText(requireContext(), "Barkod işleme hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                                         }
                                     }
@@ -483,7 +534,7 @@ class urunEkleFragment : Fragment() {
                                         secilenBitmap = resizeBitmapWithAspectRatio(secilenBitmap!!, targetWidth, targetHeight)
                                     }
                                 } catch (e: Exception) {
-                                    Log.e("Gallery", "Görsel işleme hatası", e)
+                                    Log.e("ÜrünEkle", "Görsel işleme hatası", e)
                                     Toast.makeText(requireContext(), "Görsel işleme hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -493,14 +544,28 @@ class urunEkleFragment : Fragment() {
                     }
                     islem = "" // İşlem tamamlandıktan sonra sıfırla
                 } catch (e: Exception) {
-                    Log.e("Gallery", "Galeriye erişim hatası", e)
+                    Log.e("ÜrünEkle", "Galeriye erişim hatası", e)
                     Toast.makeText(requireContext(), "Galeriye erişim hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                     islem = "" // Hata durumunda da sıfırla
                 }
             }
+
+            permissionLauncherGallery = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+                try {
+                    if (result) {
+                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        activityResultLauncherGallery.launch(intent)
+                    } else {
+                        Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ÜrünEkle", "İzin işleme hatası", e)
+                    Toast.makeText(requireContext(), "İzin işleme hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                }
+            }
         } catch (e: Exception) {
-            Log.e("Gallery", "Galeri launcher hatası", e)
-            Toast.makeText(requireContext(), "Galeri başlatma hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Log.e("ÜrünEkle", "Launcher kayıt hatası", e)
+            Toast.makeText(requireContext(), "Launcher kayıt hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -526,7 +591,7 @@ class urunEkleFragment : Fragment() {
             // Bitmap'i yeniden boyutlandır
             return bitmap.scale(finalWidth, finalHeight)
         } catch (e: Exception) {
-            Log.e("Gallery", "Resim boyutlandırma hatası", e)
+            Log.e("ÜrünEkle", "Resim boyutlandırma hatası", e)
             Toast.makeText(requireContext(), "Resim boyutlandırma hatası: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             return bitmap // Hata durumunda orijinal resmi döndür
         }

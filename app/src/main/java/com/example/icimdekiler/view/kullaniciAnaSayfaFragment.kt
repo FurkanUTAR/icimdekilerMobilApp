@@ -220,21 +220,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     private fun showBarcodeScannerDialog() {
         try {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        requireActivity(),
-                        Manifest.permission.CAMERA
-                    )
-                ) {
-                    Snackbar.make(
-                        requireView(),
-                        R.string.barkodOkumakIcinKamerayaErisimIzniGerekli,
-                        Snackbar.LENGTH_INDEFINITE
-                    )
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
+                    Snackbar.make(requireView(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.izinVer) {
                             try {
                                 requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)

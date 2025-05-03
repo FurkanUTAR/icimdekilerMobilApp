@@ -448,7 +448,7 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    Toast.makeText(requireContext(), "${R.string.barkodOkumakIcinKamerayaErisimIzniGerekli}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.barkodOkumakIcinKamerayaErisimIzniGerekli, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Log.e("AdminAnaSayfa", "Permission toast error", e)
                 }
@@ -625,23 +625,11 @@ class adminAnaSayfaFragment : Fragment() {
         try {
             if (Build.VERSION.SDK_INT >= 33) {
                 try {
-                    if (ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.READ_MEDIA_IMAGES
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                         try {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                                    requireActivity(),
-                                    Manifest.permission.READ_MEDIA_IMAGES
-                                )
-                            ) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
                                 try {
-                                    Snackbar.make(
-                                        requireView(),
-                                        R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli,
-                                        Snackbar.LENGTH_INDEFINITE
-                                    )
+                                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R.string.izinVer) {
                                             try {
                                                 permissionLauncherGallery.launch(Manifest.permission.READ_MEDIA_IMAGES)
@@ -675,23 +663,11 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    if (ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         try {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                                    requireActivity(),
-                                    Manifest.permission.READ_EXTERNAL_STORAGE
-                                )
-                            ) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 try {
-                                    Snackbar.make(
-                                        requireView(),
-                                        R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli,
-                                        Snackbar.LENGTH_INDEFINITE
-                                    )
+                                    Snackbar.make(requireView(), R.string.barkodOkumakIcinGaleriyeErisimIzniGerekli, Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R.string.izinVer) {
                                             try {
                                                 permissionLauncherGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -759,11 +735,7 @@ class adminAnaSayfaFragment : Fragment() {
                                                     }
                                                 } else {
                                                     try {
-                                                        Toast.makeText(
-                                                            requireContext(),
-                                                            R.string.barkodOkunamadi,
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
+                                                        Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
                                                     } catch (e: Exception) {
                                                         Log.e("AdminAnaSayfa", "Toast error", e)
                                                     }
@@ -774,11 +746,7 @@ class adminAnaSayfaFragment : Fragment() {
                                         }
                                         .addOnFailureListener { e ->
                                             try {
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    e.localizedMessage,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                                             } catch (e: Exception) {
                                                 Log.e("AdminAnaSayfa", "Toast error", e)
                                             }
@@ -788,11 +756,7 @@ class adminAnaSayfaFragment : Fragment() {
                                 }
                             } else {
                                 try {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        R.string.gorselBulunamadi,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Toast error", e)
                                 }
@@ -817,11 +781,7 @@ class adminAnaSayfaFragment : Fragment() {
                         }
                     } else {
                         try {
-                            Toast.makeText(
-                                requireContext(),
-                                R.string.galeriIzniVerilmedi,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(requireContext(), R.string.galeriIzniVerilmedi, Toast.LENGTH_SHORT).show()
                         } catch (e: Exception) {
                             Log.e("AdminAnaSayfa", "Toast error", e)
                         }
