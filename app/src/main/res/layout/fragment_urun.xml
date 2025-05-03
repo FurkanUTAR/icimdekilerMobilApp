@@ -37,13 +37,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="@string/urunAdi"
+        android:textColor="@color/text_black"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="#333333"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageContainer"
+        app:layout_constraintStart_toStartOf="@+id/imageContainer"
         app:layout_constraintTop_toBottomOf="@+id/imageContainer" />
 
     <!-- Ingredients Title -->
@@ -52,25 +52,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:paddingBottom="8dp"
         android:text="@string/icindekiler"
+        android:textColor="@color/text_black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#333333"
-        android:paddingBottom="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/urunAdiText" />
 
     <!-- Ingredients List -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="17dp"
         app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
-        android:layout_marginTop="8dp">
+        app:layout_constraintTop_toBottomOf="@+id/textView10">
 
         <ListView
             android:id="@+id/icindekilerListView"
