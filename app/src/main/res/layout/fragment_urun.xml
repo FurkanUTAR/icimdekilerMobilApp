@@ -16,7 +16,7 @@
         android:layout_height="120dp"
         app:cardCornerRadius="60dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="#FFFFFF"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/insert_photo"
             android:adjustViewBounds="true"/>
     </androidx.cardview.widget.CardView>
 
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/rounded_edittext_green"
-            android:divider="#E0E0E0"
+            android:divider="@color/black"
             android:dividerHeight="1dp"
             android:padding="8dp" />
     </androidx.cardview.widget.CardView>

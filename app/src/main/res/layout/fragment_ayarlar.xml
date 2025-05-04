@@ -54,18 +54,17 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="@string/hesap"
-                android:textColor="#212121"
+                android:textColor="@color/text_black"
                 android:textSize="16sp"
-
                 app:iconGravity="start"
-                app:iconTint="#2E7D32" />
+                app:iconTint="@color/primary_green" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="#E0E0E0" />
+                android:background="@color/black" />
 
             <!-- Theme Setting -->
             <com.google.android.material.button.MaterialButton
@@ -79,17 +78,17 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="@string/temaDegistirme"
-                android:textColor="#212121"
+                android:textColor="@color/text_black"
                 android:textSize="16sp"
                 app:iconGravity="start"
-                app:iconTint="#2E7D32" />
+                app:iconTint="@color/primary_green" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="#E0E0E0" />
+                android:background="@color/black" />
 
             <!-- Language Setting -->
             <com.google.android.material.button.MaterialButton
@@ -103,10 +102,10 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="@string/dil"
-                android:textColor="#212121"
+                android:textColor="@color/text_black"
                 android:textSize="16sp"
                 app:iconGravity="start"
-                app:iconTint="#2E7D32" />
+                app:iconTint="@color/primary_green" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

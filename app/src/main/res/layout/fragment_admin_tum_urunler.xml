@@ -35,8 +35,7 @@
             android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
-            android:textColor="#212121"
-            android:textColorHint="#9E9E9E"
+            android:textColor="@color/text_black"
             android:textSize="16sp" />
 
         <ImageView

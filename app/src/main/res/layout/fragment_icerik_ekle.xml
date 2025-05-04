@@ -19,9 +19,6 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="24dp"/>
 
-
-
-
     <!-- Ürün Adı -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/urunAdiLayout"
@@ -32,8 +29,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/urunAdi"
-        app:boxStrokeColor="#388E3C"
-        app:hintTextColor="#81C784"
+        app:boxStrokeColor="@color/primary_green"
+        app:hintTextColor="@color/secondary_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logoImage">
@@ -43,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textColor="#212121"
+            android:textColor="@color/text_black"
             android:background="@drawable/rounded_edittext_green"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -57,8 +54,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/aciklama"
-        app:boxStrokeColor="#388E3C"
-        app:hintTextColor="#81C784"
+        app:boxStrokeColor="@color/primary_green"
+        app:hintTextColor="@color/secondary_green"
         app:layout_constraintBottom_toTopOf="@id/kaydetButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +68,7 @@
             android:gravity="top|start"
             android:inputType="textMultiLine"
             android:minHeight="150dp"
-            android:textColor="#212121"
+            android:textColor="@color/text_black"
             android:background="@drawable/rounded_edittext_green"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,9 +81,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="#388E3C"
+        android:backgroundTint="@color/primary_green"
         android:text="@string/kaydet"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:elevation="4dp"
         app:cornerRadius="24dp"

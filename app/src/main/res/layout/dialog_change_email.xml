@@ -15,6 +15,7 @@
         android:layout_marginEnd="10dp"
         android:ems="10"
         android:inputType="text"
+        android:background="@drawable/rounded_edittext_green"
         android:hint="@string/ePosta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="İlerle"
+        android:text="@string/ilerle"
         app:layout_constraintEnd_toEndOf="@+id/ePostaText"
-        app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
+        app:layout_constraintTop_toBottomOf="@+id/ePostaText"
+        android:backgroundTint="@color/primary_green" />
 </androidx.constraintlayout.widget.ConstraintLayout>

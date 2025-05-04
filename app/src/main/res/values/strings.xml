@@ -36,6 +36,10 @@
     <string name="sutVeSutUrunleri">Süt ve Süt Ürünleri</string>
     <string name="temelGida">Temel Gıda</string>
     <string name="parolayiDegistir">Parolayı Değiştir</string>
+    <string name="guncelParola">Güncel Parola</string>
+    <string name="yeniParola">Yeni Parola</string>
+    <string name="parolayiDogrula">Parolayı Doğrula</string>
+    <string name="parolayiGuncelle">Parolayı Güncelle</string>
     <string name="temaDegistirme">Tema Değiştirme</string>
     <string name="dil">Dil</string>
     <string name="hesabiSil">Hesabı Sil</string>
@@ -49,6 +53,7 @@
     <string name="flasAc">Flaş Aç</string>
     <string name="flasKapat">Flaş Kapat</string>
     <string name="kapat">Kapat</string>
+    <string name="ilerle">İlerle</string>
 
     <!-- Başlıklar -->
     <string name="urunAdi">Ürün Adı</string>
