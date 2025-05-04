@@ -181,7 +181,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
             binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
 
-            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünleri") }
+            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünü") }
         } catch (e: Exception) {
             e.printStackTrace()
         }

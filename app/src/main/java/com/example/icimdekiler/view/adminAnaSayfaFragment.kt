@@ -214,7 +214,7 @@ class adminAnaSayfaFragment : Fragment() {
 
             binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
 
-            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünleri") }
+            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünü") }
 
         } catch (e: Exception) {
             Log.e("AdminAnaSayfa", "View setup error", e)
