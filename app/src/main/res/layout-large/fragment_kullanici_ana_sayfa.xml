@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,46 +11,63 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/popupMenu"
-        android:layout_width="99dp"
-        android:layout_height="112dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_margin="10dp"
-        android:clickable="true"
-        android:onClick="kayit"
+        android:contentDescription="@null"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/menu"
-        android:textAlignment="center"
         app:backgroundTint="@color/border_green"
+        app:fabCustomSize="120dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="80dp" />
 
-    <AutoCompleteTextView
-        android:id="@+id/urunAdiText"
-        android:layout_width="wrap_content"
+    <!-- Arama Çubuğu -->
+    <LinearLayout
+        android:id="@+id/urunAraLinear"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_edittext_green"
-        android:completionThreshold="1"
-        android:ems="10"
-        android:hint="@string/urunAdi"
-        app:layout_constraintEnd_toEndOf="@+id/barkodOkuImageView"
-        app:layout_constraintTop_toBottomOf="@+id/barkodOkuImageView" />
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barkodOkuImageView">
 
-    <ImageView
-        android:id="@+id/araImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="3dp"
-        android:background="@drawable/rounded_edittext_green"
-        android:src="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@+id/urunAdiText"
-        app:layout_constraintStart_toEndOf="@+id/urunAdiText"
-        app:layout_constraintTop_toTopOf="@+id/urunAdiText" />
+        <AutoCompleteTextView
+            android:id="@+id/urunAdiText"
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/urunAra"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="40sp" />
+
+        <ImageView
+            android:id="@+id/araImage"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:padding="12dp"
+            android:src="@drawable/search" />
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/barkodOkuImageView"
-        android:layout_width="259dp"
-        android:layout_height="199dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="85dp"
         android:src="@drawable/barcode_reader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,15 +76,15 @@
     <!-- Tüm Ürünler -->
     <androidx.cardview.widget.CardView
         android:id="@+id/tumUrunlerButton"
-        android:layout_width="163dp"
-        android:layout_height="142dp"
+        android:layout_width="450dp"
+        android:layout_height="380dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/urunAdiText">
+        app:layout_constraintTop_toBottomOf="@+id/urunAraLinear">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -74,29 +92,28 @@
 
             <ImageView
                 android:id="@+id/tumUrunlerImageView"
-                android:layout_width="240dp"
-                android:layout_height="207dp"
+                android:layout_width="532dp"
+                android:layout_height="491dp"
                 android:contentDescription="@string/tumUrunler"
                 android:scaleType="fitCenter"
                 android:src="@drawable/tum_urunler"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.506"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.492" />
+                app:layout_constraintVertical_bias="0.333" />
 
             <TextView
                 android:id="@+id/tumUrunlerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/tumUrunler"
                 android:textAlignment="center"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -107,15 +124,14 @@
     <!-- Temel Gıda -->
     <androidx.cardview.widget.CardView
         android:id="@+id/temelGidaButton"
-        android:layout_width="163dp"
-        android:layout_height="142dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="450dp"
+        android:layout_height="380dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/urunAdiText">
+        app:layout_constraintTop_toTopOf="@+id/tumUrunlerButton">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -123,8 +139,8 @@
 
             <ImageView
                 android:id="@+id/temelGidaImageView"
-                android:layout_width="244dp"
-                android:layout_height="320dp"
+                android:layout_width="602dp"
+                android:layout_height="583dp"
                 android:contentDescription="@string/temelGida"
                 android:scaleType="fitCenter"
                 android:src="@drawable/temel_gida"
@@ -139,13 +155,13 @@
                 android:id="@+id/temelGidaText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/temelGida"
                 android:textAlignment="center"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -156,14 +172,13 @@
     <!-- Süt ve Süt Ürünleri -->
     <androidx.cardview.widget.CardView
         android:id="@+id/sutVeSutUrunleriButton"
-        android:layout_width="163dp"
-        android:layout_height="142dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="450dp"
+        android:layout_height="380dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintStart_toStartOf="@+id/tumUrunlerButton"
-        app:layout_constraintTop_toBottomOf="@+id/tumUrunlerButton">
+        app:layout_constraintTop_toTopOf="@+id/iceceklerButton">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -171,28 +186,29 @@
 
             <ImageView
                 android:id="@+id/sutVeSutUrunleriImageView"
-                android:layout_width="303dp"
-                android:layout_height="326dp"
+                android:layout_width="747dp"
+                android:layout_height="709dp"
                 android:contentDescription="@string/sutVeSutUrunleri"
                 android:scaleType="fitCenter"
                 android:src="@drawable/sut_urunleri"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.592" />
+                app:layout_constraintVertical_bias="0.528" />
 
             <TextView
                 android:id="@+id/sutVeSutUrunleriText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/sutVeSutUrunleri"
                 android:textAlignment="center"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -203,8 +219,8 @@
     <!-- İçecekler -->
     <androidx.cardview.widget.CardView
         android:id="@+id/iceceklerButton"
-        android:layout_width="163dp"
-        android:layout_height="142dp"
+        android:layout_width="450dp"
+        android:layout_height="380dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
@@ -218,8 +234,8 @@
 
             <ImageView
                 android:id="@+id/iceceklerImageView"
-                android:layout_width="290dp"
-                android:layout_height="322dp"
+                android:layout_width="608dp"
+                android:layout_height="655dp"
                 android:contentDescription="@string/icecekler"
                 android:scaleType="fitCenter"
                 android:src="@drawable/icecekler"
@@ -234,13 +250,13 @@
                 android:id="@+id/iceceklerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/icecekler"
                 android:textAlignment="center"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -251,8 +267,8 @@
     <!-- Atıştırmalıklar -->
     <androidx.cardview.widget.CardView
         android:id="@+id/atistirmaliklarButton"
-        android:layout_width="163dp"
-        android:layout_height="142dp"
+        android:layout_width="450dp"
+        android:layout_height="380dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/primary_green"
         app:cardCornerRadius="16dp"
@@ -266,8 +282,8 @@
 
             <ImageView
                 android:id="@+id/atistirmaliklarImageView"
-                android:layout_width="274dp"
-                android:layout_height="270dp"
+                android:layout_width="639dp"
+                android:layout_height="602dp"
                 android:contentDescription="@string/atistirmaliklar"
                 android:scaleType="fitCenter"
                 android:src="@drawable/atistirmalik"
@@ -282,13 +298,13 @@
                 android:id="@+id/atistirmaliklarText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/atistirmaliklar"
                 android:textAlignment="center"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

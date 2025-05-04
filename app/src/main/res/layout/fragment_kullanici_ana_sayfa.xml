@@ -11,13 +11,17 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/popupMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/menu"
         app:backgroundTint="@color/border_green"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="80dp"
+        app:fabCustomSize="100dp"
+        android:contentDescription="@null"/>
 
     <ImageView
         android:id="@+id/barkodOkuImageView"

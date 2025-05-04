@@ -11,10 +11,10 @@
     <!-- Logo Placeholder (Add your actual logo) -->
     <androidx.cardview.widget.CardView
         android:id="@+id/logo"
-        android:layout_width="320dp"
-        android:layout_height="320dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginTop="24dp"
-        app:cardBackgroundColor="#FFFFFF"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="60dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
     <EditText
         android:id="@+id/kullaniciAdiText"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/rounded_edittext_green"
         android:ems="10"
@@ -40,7 +40,7 @@
         android:inputType="text"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
@@ -48,7 +48,7 @@
     <EditText
         android:id="@+id/ePostaText"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_edittext_green"
         android:ems="10"
@@ -56,7 +56,7 @@
         android:inputType="textEmailAddress"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kullaniciAdiText" />
@@ -64,7 +64,7 @@
     <EditText
         android:id="@+id/parolaText"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_edittext_green"
         android:ems="10"
@@ -72,7 +72,7 @@
         android:inputType="textPassword"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ePostaText" />
@@ -80,46 +80,46 @@
     <Button
         android:id="@+id/girisYapButton"
         android:layout_width="360dp"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#66BB6A"
+        android:backgroundTint="@color/secondary_green"
         android:text="@string/girisYap"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="@+id/parolaText"
         app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/kayitOlLinear" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="318dp"
-        android:layout_height="33dp"
+    <LinearLayout
+        android:id="@+id/kayitOlLinear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="45dp"
-        android:text="@string/halaKayitOlmadinMi"
-        android:textColor="@color/text_black"
-        android:textSize="30sp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/parolaText"
         app:layout_constraintStart_toStartOf="@+id/parolaText"
-        app:layout_constraintTop_toBottomOf="@+id/parolaText" />
+        app:layout_constraintTop_toBottomOf="@+id/parolaText">
 
-    <TextView
-        android:id="@+id/kayitOlLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="@string/kayitOl"
-        android:textColor="@color/text_black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/halaKayitOlmadinMi"
+            android:textColor="@color/text_black"
+            android:textSize="40sp" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="30sp" />
+        <TextView
+            android:id="@+id/kayitOlLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/kayitOl"
+            android:textColor="@color/text_black"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
