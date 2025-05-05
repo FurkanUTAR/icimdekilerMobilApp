@@ -17,19 +17,17 @@ import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
-import com.google.firebase.auth.actionCodeSettings
 
 class kayitOlFragment : Fragment() {
 
-    //Binding
     private var _binding: FragmentKayitOlBinding? = null
     private val binding get() = _binding!!
 
-    //Firebase
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
     private val handler = Handler(Looper.getMainLooper())
+    private var isRedirected = false // ✅ eklendi: yönlendirme kontrolü
 
     private val runnable = object : Runnable {
         override fun run() {
@@ -58,37 +56,23 @@ class kayitOlFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentKayitOlBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        try {
-            binding.kayitOlButton.setOnClickListener {
-                try {
-                    kayitOl()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+        binding.kayitOlButton.setOnClickListener {
+            kayitOl()
+        }
 
-            binding.girisYapLabel.setOnClickListener {
-                try {
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        binding.girisYapLabel.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
     override fun onResume() {
         super.onResume()
-
         kontrolEtVeYonlendir()
     }
 
@@ -141,6 +125,11 @@ class kayitOlFragment : Fragment() {
     }
 
     fun kontrolEtVeYonlendir() {
+        if (isRedirected) {
+            Log.d("KayitOlFragment", "Zaten yönlendirildi, tekrar kontrol etmiyor.")
+            return
+        }
+
         val user = Firebase.auth.currentUser
         user?.reload()?.addOnSuccessListener {
             if (user.isEmailVerified) {
@@ -158,12 +147,12 @@ class kayitOlFragment : Fragment() {
                     .document(user.uid)
                     .set(kullaniciMap)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), R.string.dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz, Toast.LENGTH_SHORT).show()
-                        val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
-                        if (isAdded && view != null) {
+                        if (!isRedirected) {
+                            isRedirected = true // ✅ yönlendirildi
+                            handler.removeCallbacks(runnable) // ✅ handler iptal
+                            Toast.makeText(requireContext(), R.string.dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz, Toast.LENGTH_SHORT).show()
+                            val action = kayitOlFragmentDirections.actionKayitOlFragmentToKullaniciAnaSayfaFragment()
                             findNavController().navigate(action)
-                        } else {
-                            Log.e("KayitOlFragment", "Fragment ekli değil veya view null, navigate işlemi iptal edildi")
                         }
                     }
                     .addOnFailureListener { e ->
@@ -177,9 +166,9 @@ class kayitOlFragment : Fragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
+        handler.removeCallbacks(runnable) // ✅ ek güvenlik için handler iptal
         _binding = null
     }
 }

@@ -58,7 +58,6 @@ class kullaniciTumUrunlerFragment : Fragment() {
         if (kategori == "tumUrunler" || kategori.isEmpty()){
             db.collection("urunler")
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .limit(30)
                 .addSnapshotListener { value, error ->
                     if (!isAdded || isDetached) return@addSnapshotListener
 
@@ -81,6 +80,8 @@ class kullaniciTumUrunlerFragment : Fragment() {
                                 urunListesi.add(indirilenUrun)
                             }
                         }
+
+                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
 
                         if (isAdded && !isDetached) {
                             val adapter = UrunlerAdapter(urunListesi, "kullanici")
@@ -95,7 +96,6 @@ class kullaniciTumUrunlerFragment : Fragment() {
             db.collection("urunler")
                 .whereEqualTo("kategori",kategori)
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .limit(30)
                 .addSnapshotListener { value, error ->
                     if (!isAdded || isDetached) return@addSnapshotListener
 
@@ -118,6 +118,8 @@ class kullaniciTumUrunlerFragment : Fragment() {
                                 urunListesi.add(indirilenUrun)
                             }
                         }
+
+                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
 
                         if (isAdded && !isDetached) {
                             val adapter = UrunlerAdapter(urunListesi, "kullanici")

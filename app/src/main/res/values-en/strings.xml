@@ -62,6 +62,7 @@
     <string name="kategori">Category</string>
     <string name="barkod">Barcode</string>
     <string name="aciklama">Description</string>
+    <string name="urunSayisi">Product Count</string>
 
     <!-- Diğer Metinler -->
     <string name="halaKayitOlmadinMi">Not registered yet?</string>
@@ -95,8 +96,10 @@
     <string name="kayitEtmekIstediginizdenEminMisiniz">Are you sure you want to save this?</string>
     <string name="urunDahaOnceKayitEdilmis">This product has already been registered!</string>
     <string name="gecersizBarkodNo">Invalid barcode number!</string>
-    <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
-    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
-    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi</string>
-    <string name="yeniparolalareşleşmiyor">Yeni Parolalar Eşleşmiyor!</string>
+    <string name="lutfenePostaniziDogrulayin">Please verify your email!</string>
+    <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Verification complete! You are redirected to the home page.</string>
+    <string name="parolabaşarıylagüncellendi">Password updated successfully!</string>
+    <string name="yeniparolalareşleşmiyor">New Passwords Do not Match!</string>
+    <string name="gelistirmeAsamasında">In development!</string>
+
 </resources>

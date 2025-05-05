@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.example.icimdekiler.R
@@ -43,8 +44,9 @@ class ayarlarFragment : Fragment() {
 
     private fun setupNavigation() {
         binding.hesapButton.setOnClickListener {
-            val action = ayarlarFragmentDirections.actionAyarlarFragmentToHesapAyarlariFragment()
-            requireView().findNavController().navigate(action)
+//            val action = ayarlarFragmentDirections.actionAyarlarFragmentToHesapAyarlariFragment()
+//            requireView().findNavController().navigate(action)
+            Toast.makeText(requireContext(), R.string.gelistirmeAsamasında, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -108,6 +110,7 @@ class ayarlarFragment : Fragment() {
             showThemeSelectionDialog()
         }
     }
+    
     private fun showThemeSelectionDialog(){
         val dialog = BottomSheetDialog(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.dialog_choose_theme, null)

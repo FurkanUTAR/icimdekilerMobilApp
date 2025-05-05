@@ -62,6 +62,7 @@
     <string name="kategori">Kategori</string>
     <string name="barkod">Barkod</string>
     <string name="aciklama">Açıklama</string>
+    <string name="urunSayisi">Ürün Sayısı</string>
 
     <!-- Diğer Metinler -->
     <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>
@@ -97,6 +98,7 @@
     <string name="gecersizBarkodNo">Geçersiz barkod numarası!</string>
     <string name="lutfenePostaniziDogrulayin">Lütfen e-postanızı doğrulayın!</string>
     <string name="dogrulamaTamamlandiAnaSayfayaYonlendiriliyorsunuz">Doğrulama tamamlandı! Ana sayfaya yönlendiriliyorsunuz.</string>
-    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi</string>
+    <string name="parolabaşarıylagüncellendi">Parola başarıyla güncellendi!</string>
     <string name="yeniparolalareşleşmiyor">Yeni Parolalar Eşleşmiyor!</string>
+    <string name="gelistirmeAsamasında">Geliştirme aşamasında!</string>
 </resources>

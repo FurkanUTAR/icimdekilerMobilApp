@@ -49,6 +49,7 @@ class adminTumUrunlerFragment : Fragment() {
         }
 
         urunleriAl(kategori)
+
         binding.araImage.setOnClickListener { urunAra(kategori) }
     }
 
@@ -56,7 +57,6 @@ class adminTumUrunlerFragment : Fragment() {
         if (kategori == "tumUrunler" || kategori.isEmpty()){
             db.collection("urunler")
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .limit(30)
                 .addSnapshotListener { value, error ->
                     if (!isAdded || isDetached) return@addSnapshotListener
 
@@ -79,6 +79,8 @@ class adminTumUrunlerFragment : Fragment() {
                                 urunListesi.add(indirilenUrun)
                             }
                         }
+
+                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
 
                         if (isAdded && !isDetached) {
                             val adapter = UrunlerAdapter(urunListesi, "admin")
@@ -93,7 +95,6 @@ class adminTumUrunlerFragment : Fragment() {
             db.collection("urunler")
                 .whereEqualTo("kategori",kategori)
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .limit(30)
                 .addSnapshotListener { value, error ->
                     if (!isAdded || isDetached) return@addSnapshotListener
 
@@ -116,6 +117,8 @@ class adminTumUrunlerFragment : Fragment() {
                                 urunListesi.add(indirilenUrun)
                             }
                         }
+
+                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
 
                         if (isAdded && !isDetached) {
                             val adapter = UrunlerAdapter(urunListesi, "admin")
