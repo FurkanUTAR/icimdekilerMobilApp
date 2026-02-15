@@ -6,18 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import com.example.icimdekiler.databinding.FragmentGirisYapBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
+import com.example.icimdekiler.ui.MainScreen
+import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 
 class girisYapFragment : Fragment() {
-
-    private var _binding: FragmentGirisYapBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
@@ -33,12 +35,32 @@ class girisYapFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentGirisYapBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+    ): View {
+        // XML'i (binding) tamamen devreden çıkarıp ComposeView kullanıyoruz
+        return ComposeView(requireContext()).apply {
+            setContent {
+                IcimdekilerTheme() {
+                    // Senin oluşturduğun tasarım fonksiyonu (Resimdeki isme göre)
+                    MainScreen(
+                        onGirisTiklandi = { kullaniciAdi, ePosta, parola ->
+                            // Compose'dan gelen verilerle login fonksiyonunu çağırıyoruz
+                            girisYap(ePosta, parola)
+                        },
+                        onKayitOlTiklandi = {
+                            // Navigasyon işlemi
+                            try {
+                                val action = girisYapFragmentDirections.actionGirisYapFragmentToKayitOlFragment()
+                                findNavController().navigate(action)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
-
+/*
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -60,11 +82,10 @@ class girisYapFragment : Fragment() {
         }
     }
 
-    private fun girisYap() {
-        try {
-            val ePosta = binding.ePostaText.text.toString().trim()
-            val parola = binding.parolaText.text.toString().trim()
+ */
 
+    private fun girisYap(ePosta: String, parola: String) {
+        try {
             if (ePosta.isNotEmpty() && parola.isNotEmpty()) {
                 auth.signInWithEmailAndPassword(ePosta, parola)
                     .addOnCompleteListener { task ->
@@ -73,8 +94,6 @@ class girisYapFragment : Fragment() {
                                 val guncelKullanici = auth.currentUser
                                 if (guncelKullanici != null) {
                                     db.collection("kullaniciBilgileri")
-                                        .whereEqualTo("ePosta", ePosta)
-                                        .whereEqualTo("parola", parola)
                                         .whereEqualTo("kullaniciUID", guncelKullanici.uid)
                                         .get()
                                         .addOnSuccessListener { documents ->
@@ -87,14 +106,11 @@ class girisYapFragment : Fragment() {
                                                     if (isAdded) {
                                                         val navController = view?.findNavController()
                                                         if (isAdmin) {
-                                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment()
-                                                            navController?.navigate(action)
-                                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} Admin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                            findNavController().navigate(girisYapFragmentDirections.actionGirisYapFragmentToAdminAnaSayfaFragment())
                                                         } else {
-                                                            val action = girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment()
-                                                            navController?.navigate(action)
-                                                            Toast.makeText(requireContext(), "${getString(R.string.hosgeldin)} $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                            findNavController().navigate(girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment())
                                                         }
+                                                        Toast.makeText(requireContext(), "Hoş geldin $kullaniciAdi", Toast.LENGTH_SHORT).show()
                                                     }
                                                 } else {
                                                     Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
@@ -129,6 +145,5 @@ class girisYapFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }
