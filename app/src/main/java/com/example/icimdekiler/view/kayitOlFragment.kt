@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import com.example.icimdekiler.databinding.FragmentKayitOlBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -17,17 +18,18 @@ import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
+import com.example.icimdekiler.ui.KayitOlScreen
+import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 
 class kayitOlFragment : Fragment() {
-
-    private var _binding: FragmentKayitOlBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
     private val handler = Handler(Looper.getMainLooper())
     private var isRedirected = false // ✅ eklendi: yönlendirme kontrolü
+
+    private var tempKullaniciBilgileri: Map<String, String>? = null
 
     private val runnable = object : Runnable {
         override fun run() {
@@ -54,11 +56,36 @@ class kayitOlFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentKayitOlBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent{
+                IcimdekilerTheme() {
+                    KayitOlScreen(
+                        kayitOlTiklandi = {kullaniciAdi,isimSoyisim,ePosta,telNo,parola ->
+
+                            tempKullaniciBilgileri = mapOf(
+                                "kullaniciAdi" to kullaniciAdi,
+                                "isimSoyisim" to isimSoyisim,
+                                "telNo" to telNo,
+                                "parola" to parola
+                            )
+
+                            kayitOl(kullaniciAdi,isimSoyisim,ePosta,telNo,parola)
+                        },
+                        girisYapTiklandi = {
+                            try {
+                                findNavController().popBackStack()
+                            } catch (e: Exception){
+                                e.printStackTrace()
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
 
+    /*
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -70,18 +97,14 @@ class kayitOlFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
+    */
 
     override fun onResume() {
         super.onResume()
-        kontrolEtVeYonlendir()
+       kontrolEtVeYonlendir()
     }
 
-    fun kayitOl() {
-        val kullaniciAdi = binding.kullaniciAdiText.text.toString().trim()
-        val isimSoyisim = binding.isimSoyisimText.text.toString().trim()
-        val ePosta = binding.ePostaText.text.toString().trim()
-        val telNo = binding.telNoText.text.toString().trim()
-        val parola = binding.parolaText.text.toString().trim()
+    fun kayitOl(kullaniciAdi: String, isimSoyisim: String, ePosta: String, telNo: String, parola:String) {
 
         if (kullaniciAdi.isEmpty() || isimSoyisim.isEmpty() || ePosta.isEmpty() || telNo.isEmpty() || parola.isEmpty()) {
             Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_LONG).show()
@@ -125,20 +148,17 @@ class kayitOlFragment : Fragment() {
     }
 
     fun kontrolEtVeYonlendir() {
-        if (isRedirected) {
-            Log.d("KayitOlFragment", "Zaten yönlendirildi, tekrar kontrol etmiyor.")
-            return
-        }
+        if (isRedirected) return
 
         val user = Firebase.auth.currentUser
         user?.reload()?.addOnSuccessListener {
-            if (user.isEmailVerified) {
+            if (user.isEmailVerified && tempKullaniciBilgileri != null) {
                 val kullaniciMap = hashMapOf(
-                    "kullaniciAdi" to binding.kullaniciAdiText.text.toString().trim(),
-                    "isimSoyisim" to binding.isimSoyisimText.text.toString().trim(),
+                    "kullaniciAdi" to tempKullaniciBilgileri!!["kullaniciAdi"]?.trim(),
+                    "isimSoyisim" to tempKullaniciBilgileri!!["isimSoyisim"]?.trim(),
                     "ePosta" to user.email,
-                    "telNo" to binding.telNoText.text.toString().trim(),
-                    "parola" to binding.parolaText.text.toString().trim(),
+                    "telNo" to tempKullaniciBilgileri!!["telNo"]?.trim(),
+                    "parola" to tempKullaniciBilgileri!!["parola"]?.trim(),
                     "isAdmin" to false,
                     "kullaniciUID" to user.uid
                 )
@@ -169,6 +189,5 @@ class kayitOlFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacks(runnable) // ✅ ek güvenlik için handler iptal
-        _binding = null
     }
 }

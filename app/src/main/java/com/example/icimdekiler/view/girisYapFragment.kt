@@ -16,7 +16,7 @@ import com.google.firebase.firestore.firestore
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
-import com.example.icimdekiler.ui.MainScreen
+import com.example.icimdekiler.ui.GirisYapScreen
 import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 
 class girisYapFragment : Fragment() {
@@ -41,12 +41,12 @@ class girisYapFragment : Fragment() {
             setContent {
                 IcimdekilerTheme() {
                     // Senin oluşturduğun tasarım fonksiyonu (Resimdeki isme göre)
-                    MainScreen(
-                        onGirisTiklandi = { kullaniciAdi, ePosta, parola ->
+                    GirisYapScreen(
+                        girisYapTiklandi = { kullaniciAdi, ePosta, parola ->
                             // Compose'dan gelen verilerle login fonksiyonunu çağırıyoruz
                             girisYap(ePosta, parola)
                         },
-                        onKayitOlTiklandi = {
+                        kayitOlTiklandi = {
                             // Navigasyon işlemi
                             try {
                                 val action = girisYapFragmentDirections.actionGirisYapFragmentToKayitOlFragment()
