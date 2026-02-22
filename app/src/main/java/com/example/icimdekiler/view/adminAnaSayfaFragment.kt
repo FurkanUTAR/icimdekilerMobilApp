@@ -7,6 +7,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,14 +37,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
-import com.example.icimdekiler.databinding.FragmentAdminAnaSayfaBinding
+import com.example.icimdekiler.ui.AdminAnaSayfaScreen
+import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -50,10 +54,8 @@ import java.util.concurrent.Executors
 
 class adminAnaSayfaFragment : Fragment() {
 
-    private var _binding: FragmentAdminAnaSayfaBinding? = null
-    private val binding get() = _binding!!
+    private var urunAdi by mutableStateOf("")
 
-    private var urunlerListener: ListenerRegistration? = null  // Dinleyiciyi saklamak için
 
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
@@ -84,141 +86,104 @@ class adminAnaSayfaFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        try {
-            _binding = FragmentAdminAnaSayfaBinding.inflate(inflater, container, false)
-            return binding.root
-        } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "View creation error", e)
-            return null
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                IcimdekilerTheme {
+                    AdminAnaSayfaScreen(
+                        urunAdi = urunAdi,
+                        onUrunAdiChange = { urunAdi = it },
+                        onSearchClick = { urunAdiAra() },
+                        onAddClick = { showAddOptionsDialog() },
+                        onBarcodeClick = { showBarcodeOptionsDialog() },
+                        onMenuClick = { showPopupMenu() },
+                        onTumUrunlerClick = { kontrol("tumUrunler") },
+                        onAtistirmalikClick = { kontrol("Atıştırmalık") },
+                        onTemelGidaClick = { kontrol("Temel Gıda") },
+                        onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
+                        onIceceklerClick = { kontrol("İçecek") },
+                        onSignOutConfirm = {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle(R.string.cikisYap)
+                                .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
+                                .setPositiveButton(R.string.evet) { _, _ ->
+                                    auth.signOut()
+                                    findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment)
+                                }
+                                .setNegativeButton(R.string.iptal, null)
+                                .show()
+                        },
+                        onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)}
+                    )
+                }
+            }
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        try {
-            urunleriAl()
-
-            binding.popupMenu.setOnClickListener { v ->
-                try {
-                    val popupMenu = PopupMenu(v.context, v)
-                    popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-                    popupMenu.setOnMenuItemClickListener { item ->
-                        try {
-                            when (item.itemId) {
-                                R.id.cikisYap -> {
-                                    AlertDialog.Builder(v.context)
-                                        .setTitle(R.string.cikisYap)
-                                        .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                                        .setPositiveButton(R.string.evet) { dialog, value ->
-                                            try {
-                                                auth.signOut()
-                                                findNavController().navigate(
-                                                    R.id.action_adminAnaSayfaFragment_to_girisYapFragment,
-                                                    null,
-                                                    NavOptions.Builder()
-                                                        .setPopUpTo(R.id.adminAnaSayfaFragment, true)
-                                                        .setLaunchSingleTop(true)
-                                                        .build()
-                                                )
-                                            } catch (e: Exception) {
-                                                Log.e("AdminAnaSayfa", "Logout error", e)
-                                            }
-                                        }
-                                        .setNegativeButton(R.string.iptal, null)
-                                        .show()
-                                    true
-                                }
-                                R.id.ayarlar -> {
-                                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAyarlarFragment()
-                                    findNavController().navigate(action)
-                                    true
-                                }
-                                else -> false
-                            }
-                        } catch (e: Exception) {
-                            Log.e("AdminAnaSayfa", "Popup menu error", e)
-                            false
+    private fun showPopupMenu() {
+        val anchor = view ?: return
+        val popupMenu = PopupMenu(requireContext(), anchor)
+        popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.cikisYap -> {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.cikisYap)
+                        .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
+                        .setPositiveButton(R.string.evet) { _, _ ->
+                            auth.signOut()
+                            findNavController().navigate(
+                                R.id.action_adminAnaSayfaFragment_to_girisYapFragment,
+                                null,
+                                NavOptions.Builder()
+                                    .setPopUpTo(R.id.adminAnaSayfaFragment, true)
+                                    .setLaunchSingleTop(true)
+                                    .build()
+                            )
                         }
-                    }
-                    popupMenu.show()
-                } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Popup menu error", e)
+                        .setNegativeButton(R.string.iptal, null)
+                        .show()
+                    true
                 }
-            }
 
-            binding.barkodOkuImageView.setOnClickListener {
-                try {
-                    val secim = arrayOf(
-                        getString(R.string.kamera),
-                        getString(R.string.galeri)
-                    )
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.secimYap)
-                        .setItems(secim) { dialog, which ->
-                            try {
-                                if (which == 0) showBarcodeScannerDialog()
-                                else barkodOkuGaleri()
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Barcode option error", e)
-                            }
-                        }.show()
-                } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Barcode dialog error", e)
+                R.id.ayarlar -> {
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAyarlarFragment()
+                    findNavController().navigate(action)
+                    true
                 }
+
+                else -> false
             }
-
-            binding.araImage.setOnClickListener {
-                try {
-                    urunAdiAra()
-                } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Search error", e)
-                }
-            }
-
-            binding.ekleImage.setOnClickListener {
-                try {
-                    val secim = arrayOf(
-                        getString(R.string.urunEkle),
-                        getString(R.string.icerikEkle)
-                    )
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.secimYap)
-                        .setItems(secim) { dialog, which ->
-                            try {
-                                if (which == 0) {
-                                    val action = adminAnaSayfaFragmentDirections
-                                        .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                            "yeni", "", "", "", "", "")
-                                    findNavController().navigate(action)
-                                } else {
-                                    val action = adminAnaSayfaFragmentDirections
-                                        .actionAdminAnaSayfaFragmentToIcerikEkleFragment()
-                                    findNavController().navigate(action)
-                                }
-                            } catch (e: Exception) {
-                                Log.e("AdminAnaSayfa", "Add option error", e)
-                            }
-                        }.show()
-                } catch (e: Exception) {
-                    Log.e("AdminAnaSayfa", "Add dialog error", e)
-                }
-            }
-
-            binding.tumUrunlerButton.setOnClickListener { kontrol("tumUrunler") }
-
-            binding.iceceklerButton.setOnClickListener { kontrol("İçecek") }
-
-            binding.atistirmaliklarButton.setOnClickListener { kontrol("Atıştırmalık") }
-
-            binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
-
-            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünü") }
-
-        } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "View setup error", e)
         }
+        popupMenu.show()
+    }
+
+    private fun showBarcodeOptionsDialog() {
+        val secim = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.secimYap)
+            .setItems(secim) { _, which ->
+                if (which == 0) showBarcodeScannerDialog() else barkodOkuGaleri()
+            }
+            .show()
+    }
+
+    private fun showAddOptionsDialog() {
+        val secim = arrayOf(getString(R.string.urunEkle), getString(R.string.icerikEkle))
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.secimYap)
+            .setItems(secim) { _, which ->
+                if (which == 0) {
+                    val action = adminAnaSayfaFragmentDirections
+                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", "", "", "", "", "")
+                    findNavController().navigate(action)
+                } else {
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToIcerikEkleFragment()
+                    findNavController().navigate(action)
+                }
+            }
+            .show()
     }
 
     fun kontrol(kategori : String){
@@ -234,21 +199,23 @@ class adminAnaSayfaFragment : Fragment() {
                         val isAdmin = kullanici.getBoolean("isAdmin") ?: false
 
                         // Yönlendirme işlemi
-                        if (isAdmin){
-                            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment(kategori)
+                        if (isAdmin) {
+                            val action =
+                                adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment(kategori)
                             requireView().findNavController().navigate(action)
                         } else {
-                            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+                            val action =
+                                kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
                             requireView().findNavController().navigate(action)
                         }
                     } else {
-                        Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.beklenmedikBirHataOlustu,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }.addOnFailureListener {
-                    Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
                 }
-        } else {
-            Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -458,35 +425,9 @@ class adminAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun urunleriAl() {
-        urunlerListener = db.collection("urunler")
-            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
-            .limit(30)
-            .addSnapshotListener { value, error ->
-                val bind = binding // Null kontrolü
-
-                if (error != null) {
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                    return@addSnapshotListener
-                }
-
-                if (value != null && !value.isEmpty) {
-                    val urunAdlari = ArrayList<String>()
-                    for (document in value.documents) {
-                        val urunAdi = document.getString("urunAdi") ?: ""
-                        urunAdlari.add(urunAdi)
-                    }
-
-                    // AutoComplete Adapter
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, urunAdlari)
-                    bind.urunAdiText.setAdapter(adapter)
-                }
-            }
-    }
-
     private fun urunAdiAra() {
         try {
-            val urunAdiLowerCase = binding.urunAdiText.text.toString()
+            val urunAdiLowerCase = urunAdi
                 .lowercase(Locale("tr","TR"))
                 .replace("ç", "c")
                 .replace("ğ", "g")
@@ -797,8 +738,6 @@ class adminAnaSayfaFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        urunlerListener?.remove()  // Dinleyiciyi kaldır
-        _binding = null  // ViewBinding'i temizle
         cameraExecutor.shutdown()  // Kamera executor'ı kapat
     }
 }

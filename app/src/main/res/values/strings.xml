@@ -26,6 +26,8 @@
     <string name="kamera">Kamera</string>
     <string name="galeri">Galeri</string>
     <string name="secimYap">Seçim Yap</string>
+    <string name="menu">Menü</string>
+    <string name="barkodOku">Barkod Oku</string>
     <string name="urunEkle">Ürün Ekle</string>
     <string name="urunAra">Ürün Ara</string>
     <string name="icerikEkle">İçerik Ekle</string>
