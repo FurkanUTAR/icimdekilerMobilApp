@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.icimdekiler.view.splashFragment"
+        android:name="com.furkanutar.icimdekiler.view.splashFragment"
         android:label="splashFragment" >
         <action
             android:id="@+id/action_splashFragment_to_girisYapFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/girisYapFragment"
-        android:name="com.example.icimdekiler.view.girisYapFragment"
+        android:name="com.furkanutar.icimdekiler.view.girisYapFragment"
         android:label="fragment_giris_yap"
         tools:layout="@layout/fragment_giris_yap" >
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/kayitOlFragment"
-        android:name="com.example.icimdekiler.view.kayitOlFragment"
+        android:name="com.furkanutar.icimdekiler.view.kayitOlFragment"
         android:label="fragment_kayit_ol"
         tools:layout="@layout/fragment_kayit_ol" >
         <action
@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/kullaniciAnaSayfaFragment"
-        android:name="com.example.icimdekiler.view.kullaniciAnaSayfaFragment"
+        android:name="com.furkanutar.icimdekiler.view.kullaniciAnaSayfaFragment"
         android:label="fragment_kullanici_ana_sayfa"
         tools:layout="@layout/fragment_kullanici_ana_sayfa" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
-        android:name="com.example.icimdekiler.view.adminAnaSayfaFragment"
+        android:name="com.furkanutar.icimdekiler.view.adminAnaSayfaFragment"
         android:label="fragment_admin_ana_sayfa"
         tools:layout="@layout/fragment_admin_ana_sayfa" >
         <action
@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/urunEkleFragment"
-        android:name="com.example.icimdekiler.view.urunEkleFragment"
+        android:name="com.furkanutar.icimdekiler.view.urunEkleFragment"
         android:label="fragment_urun_ekle"
         tools:layout="@layout/fragment_urun_ekle" >
         <argument
@@ -112,7 +112,7 @@
     </fragment>
     <fragment
         android:id="@+id/urunFragment"
-        android:name="com.example.icimdekiler.view.urunFragment"
+        android:name="com.furkanutar.icimdekiler.view.urunFragment"
         android:label="fragment_urun"
         tools:layout="@layout/fragment_urun" >
         <argument
@@ -129,7 +129,7 @@
     </fragment>
     <fragment
         android:id="@+id/adminTumUrunlerFragment"
-        android:name="com.example.icimdekiler.view.adminTumUrunlerFragment"
+        android:name="com.furkanutar.icimdekiler.view.adminTumUrunlerFragment"
         android:label="fragment_admin_tum_urunler"
         tools:layout="@layout/fragment_admin_tum_urunler" >
         <action
@@ -142,7 +142,7 @@
     </fragment>
     <fragment
         android:id="@+id/kullaniciTumUrunlerFragment"
-        android:name="com.example.icimdekiler.view.kullaniciTumUrunlerFragment"
+        android:name="com.furkanutar.icimdekiler.view.kullaniciTumUrunlerFragment"
         android:label="kullaniciTumUrunlerFragment" >
         <action
             android:id="@+id/action_kullaniciTumUrunlerFragment_to_urunFragment"
@@ -157,12 +157,12 @@
         app:argType="string" />
     <fragment
         android:id="@+id/icerikEkleFragment"
-        android:name="com.example.icimdekiler.view.icerikEkleFragment"
+        android:name="com.furkanutar.icimdekiler.view.icerikEkleFragment"
         android:label="fragment_icerik_ekle"
         tools:layout="@layout/fragment_icerik_ekle" />
     <fragment
         android:id="@+id/ayarlarFragment"
-        android:name="com.example.icimdekiler.view.ayarlarFragment"
+        android:name="com.furkanutar.icimdekiler.view.ayarlarFragment"
         android:label="fragment_ayarlar"
         tools:layout="@layout/fragment_ayarlar" >
         <action
@@ -171,7 +171,7 @@
     </fragment>
     <fragment
         android:id="@+id/hesapAyarlariFragment"
-        android:name="com.example.icimdekiler.view.hesapAyarlariFragment"
+        android:name="com.furkanutar.icimdekiler.view.hesapAyarlariFragment"
         android:label="fragment_hesap_ayarlari"
         tools:layout="@layout/fragment_hesap_ayarlari" >
         <action

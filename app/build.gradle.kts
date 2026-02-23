@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.icimdekiler"
+    namespace = "com.furkanutar.icimdekiler"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.icimdekiler"
+        applicationId = "com.furkanutar.icimdekiler"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
