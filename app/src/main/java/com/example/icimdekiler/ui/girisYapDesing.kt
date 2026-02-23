@@ -24,6 +24,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -43,38 +45,24 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.icimdekiler.R
 import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            IcimdekilerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        GirisYapScreen(girisYapTiklandi = {_,_,_ ->}, kayitOlTiklandi = {})
-                    }
-                }
-            }
-        }
-    }
-}
-
-
 @Composable
 fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTiklandi: () -> Unit) {
     var kullaniciAdi = remember{ mutableStateOf("") }
     var ePosta = remember{ mutableStateOf("") }
     var parola = remember{ mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -83,8 +71,6 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         // --- LOGO ---
         Card(
             modifier = Modifier
@@ -133,20 +119,41 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // --- PAROLA ---
-        OutlinedTextField(
-            value = parola.value ,
-            onValueChange = { parola.value = it },
-            placeholder = { Text(stringResource(R.string.parola)) },
-            modifier = Modifier.fillMaxWidth().height(62.dp),
-            shape = RoundedCornerShape(12.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            // --- PAROLA ---
+            OutlinedTextField(
+                value = parola.value ,
+                onValueChange = { parola.value = it },
+                placeholder = { Text(stringResource(R.string.parola)) },
+                modifier = Modifier.fillMaxWidth().height(62.dp),
+                shape = RoundedCornerShape(12.dp),
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isPasswordVisible) R.drawable.visibility_on
+                                else  R.drawable.visibility_off
+                            ),
+                            contentDescription = if (isPasswordVisible) "Şifreyi Gizle" else "Şifreyi Göster"
+                        )
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
+                singleLine = true
             )
-        )
+        }
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -198,7 +205,7 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
 @Composable
 fun previewGirisYapScreen() {
     IcimdekilerTheme {
-        GirisYapScreen(girisYapTiklandi = {_,_,_ ->}, kayitOlTiklandi = {})
+        GirisYapScreen({_,_,_ ->}, {})
     }
 }
 
