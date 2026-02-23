@@ -49,14 +49,14 @@ import androidx.compose.ui.unit.sp
 import com.example.icimdekiler.R
 import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 
-data class AdminCategory(
+data class KullaniciCategory(
     val titleRes: Int,
     val imageRes: Int,
     val onClick: () -> Unit,
 )
 
 @Composable
-fun AdminAnaSayfaScreen(
+fun KullaniciAnaSayfaScreen(
     urunAdi: String,
     onUrunAdiChange: (String) -> Unit,
     onSearchClick: () -> Unit,
@@ -183,19 +183,6 @@ fun AdminAnaSayfaScreen(
                     ),
                     singleLine = true
                 )
-
-                IconButton(
-                    onClick = onAddClick,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add),
-                        contentDescription = stringResource(R.string.urunEkle),
-                        tint = Color.White
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -208,7 +195,7 @@ fun AdminAnaSayfaScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(categories) { category ->
-                    AdminCategoryCard(category = category)
+                    KullaniciCategoryCard(category = category)
                 }
             }
         }
@@ -216,7 +203,7 @@ fun AdminAnaSayfaScreen(
 }
 
 @Composable
-private fun AdminCategoryCard(category: AdminCategory) {
+private fun KullaniciCategoryCard(category: AdminCategory) {
     Card(
         onClick = category.onClick,
         modifier = Modifier
@@ -250,9 +237,9 @@ private fun AdminCategoryCard(category: AdminCategory) {
 
 @Preview(showBackground = true)
 @Composable
-fun AdminAnaSayfaPreview() {
+fun KullaniciAnaSayfaPreview() {
     IcimdekilerTheme() {
-        AdminAnaSayfaScreen(
+        KullaniciAnaSayfaScreen(
             urunAdi = "",
             onUrunAdiChange = {},
             onSearchClick = {},

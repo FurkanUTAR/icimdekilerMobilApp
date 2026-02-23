@@ -28,6 +28,11 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
@@ -35,6 +40,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentKullaniciAnaSayfaBinding
+import com.example.icimdekiler.ui.AdminAnaSayfaScreen
+import com.example.icimdekiler.ui.KullaniciAnaSayfaScreen
+import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
@@ -51,8 +59,7 @@ import java.util.concurrent.Executors
 
 class kullaniciAnaSayfaFragment : Fragment() {
 
-    private var _binding: FragmentKullaniciAnaSayfaBinding? = null
-    private val binding get() = _binding!!
+    private var urunAdi by mutableStateOf("")
 
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
@@ -83,108 +90,65 @@ class kullaniciAnaSayfaFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        try {
-            _binding = FragmentKullaniciAnaSayfaBinding.inflate(inflater, container, false)
-            return binding.root
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                IcimdekilerTheme {
+                    KullaniciAnaSayfaScreen(
+                        urunAdi = urunAdi,
+                        onUrunAdiChange = { urunAdi = it },
+                        onSearchClick = { urunAdiAra() },
+                        onAddClick = { showAddOptionsDialog() },
+                        onBarcodeClick = { showBarcodeOptionsDialog() },
+                        onTumUrunlerClick = { kontrol("tumUrunler") },
+                        onAtistirmalikClick = { kontrol("Atıştırmalık") },
+                        onTemelGidaClick = { kontrol("Temel Gıda") },
+                        onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
+                        onIceceklerClick = { kontrol("İçecek") },
+                        onSignOutConfirm = {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle(R.string.cikisYap)
+                                .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
+                                .setPositiveButton(R.string.evet) { _, _ ->
+                                    auth.signOut()
+                                    findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment)
+                                }
+                                .setNegativeButton(R.string.iptal, null)
+                                .show()
+                        },
+                        onAyarlarClick = {findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_ayarlarFragment)}
+                    )
+                }
+            }
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun showBarcodeOptionsDialog() {
+        val secim = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.secimYap)
+            .setItems(secim) { _, which ->
+                if (which == 0) showBarcodeScannerDialog() else barkodOkuGaleri()
+            }
+            .show()
+    }
 
-        try {
-            urunleriAl()
-
-            binding.popupMenu.setOnClickListener { v ->
-                try {
-                    val popupMenu = PopupMenu(v.context, v)
-                    popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-                    popupMenu.setOnMenuItemClickListener { item ->
-                        try {
-                            when (item.itemId) {
-                                R.id.cikisYap -> {
-                                    AlertDialog.Builder(v.context)
-                                        .setTitle(R.string.cikisYap)
-                                        .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                                        .setPositiveButton(R.string.evet) { dialog, value ->
-                                            try {
-                                                auth.signOut()
-                                                findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment, null, NavOptions.Builder()
-                                                    .setPopUpTo(R.id.kullaniciAnaSayfaFragment, true)
-                                                    .setLaunchSingleTop(true)
-                                                    .build()
-                                                )
-                                            } catch (e: Exception) {
-                                                e.printStackTrace()
-                                            }
-                                        }
-                                        .setNegativeButton(R.string.iptal, null)
-                                        .show()
-                                    true
-                                }
-                                R.id.ayarlar -> {
-                                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToAyarlarFragment()
-                                    findNavController().navigate(action)
-                                    true
-                                }
-                                else -> false
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            false
-                        }
-                    }
-                    popupMenu.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+    private fun showAddOptionsDialog() {
+        val secim = arrayOf(getString(R.string.urunEkle), getString(R.string.icerikEkle))
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.secimYap)
+            .setItems(secim) { _, which ->
+                if (which == 0) {
+                    val action = adminAnaSayfaFragmentDirections
+                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", "", "", "", "", "")
+                    findNavController().navigate(action)
+                } else {
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToIcerikEkleFragment()
+                    findNavController().navigate(action)
                 }
             }
-
-            binding.barkodOkuImageView.setOnClickListener {
-                try {
-                    val secim = arrayOf(
-                        getString(R.string.kamera),
-                        getString(R.string.galeri)
-                    )
-                    val alert = AlertDialog.Builder(requireContext())
-                    alert.setTitle(R.string.secimYap)
-                    alert.setItems(secim){ dialog, which ->
-                        try {
-                            if(which==0) showBarcodeScannerDialog()
-                            else barkodOkuGaleri()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            binding.araImage.setOnClickListener {
-                try {
-                    urunAdiAra()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            binding.tumUrunlerButton.setOnClickListener { kontrol("tumUrunler") }
-
-            binding.iceceklerButton.setOnClickListener { kontrol("İçecek") }
-
-            binding.atistirmaliklarButton.setOnClickListener { kontrol("Atıştırmalık") }
-
-            binding.temelGidaButton.setOnClickListener { kontrol("Temel Gıda") }
-
-            binding.sutVeSutUrunleriButton.setOnClickListener { kontrol("Süt ve Süt Ürünü") }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+            .show()
     }
 
     fun kontrol(kategori : String){
@@ -417,37 +381,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
         }
     }
 
-    private fun urunleriAl() {
-        db.collection("urunler")
-            .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-            .limit(30)
-            .addSnapshotListener { value, error ->
-                if (error != null) {
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                } else {
-                    if (value != null && !value.isEmpty) {
-                        val urunAdlari = ArrayList<String>()  // AutoComplete için liste
-
-                        for (document in value.documents) {
-                            val urunAdi = document.getString("urunAdi") ?: ""
-                            urunAdlari.add(urunAdi)  // isimleri listeye ekle
-                        }
-
-                        context?.let { ctx ->
-                            binding.let { bind ->
-                                // AutoCompleteTextView Adapter tanımla
-                                val autoCompleteAdapter = ArrayAdapter(ctx, android.R.layout.simple_list_item_1, urunAdlari)
-                                bind.urunAdiText.setAdapter(autoCompleteAdapter)
-                            }
-                        }
-                    }
-                }
-            }
-    }
-
     private fun urunAdiAra() {
         try {
-            val urunAdiLowerCase = binding.urunAdiText.text.toString()
+            val urunAdiLowerCase = urunAdi
                 .lowercase(Locale("tr","TR"))
                 .replace("ç", "c")
                 .replace("ğ", "g")
@@ -681,7 +617,6 @@ class kullaniciAnaSayfaFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         try {
-            _binding = null
             cameraExecutor.shutdown()
         } catch (e: Exception) {
             e.printStackTrace()

@@ -97,7 +97,6 @@ class adminAnaSayfaFragment : Fragment() {
                         onSearchClick = { urunAdiAra() },
                         onAddClick = { showAddOptionsDialog() },
                         onBarcodeClick = { showBarcodeOptionsDialog() },
-                        onMenuClick = { showPopupMenu() },
                         onTumUrunlerClick = { kontrol("tumUrunler") },
                         onAtistirmalikClick = { kontrol("Atıştırmalık") },
                         onTemelGidaClick = { kontrol("Temel Gıda") },
@@ -119,44 +118,6 @@ class adminAnaSayfaFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun showPopupMenu() {
-        val anchor = view ?: return
-        val popupMenu = PopupMenu(requireContext(), anchor)
-        popupMenu.menuInflater.inflate(R.menu.menu_fab, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.cikisYap -> {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.cikisYap)
-                        .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                        .setPositiveButton(R.string.evet) { _, _ ->
-                            auth.signOut()
-                            findNavController().navigate(
-                                R.id.action_adminAnaSayfaFragment_to_girisYapFragment,
-                                null,
-                                NavOptions.Builder()
-                                    .setPopUpTo(R.id.adminAnaSayfaFragment, true)
-                                    .setLaunchSingleTop(true)
-                                    .build()
-                            )
-                        }
-                        .setNegativeButton(R.string.iptal, null)
-                        .show()
-                    true
-                }
-
-                R.id.ayarlar -> {
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAyarlarFragment()
-                    findNavController().navigate(action)
-                    true
-                }
-
-                else -> false
-            }
-        }
-        popupMenu.show()
     }
 
     private fun showBarcodeOptionsDialog() {
@@ -209,11 +170,7 @@ class adminAnaSayfaFragment : Fragment() {
                             requireView().findNavController().navigate(action)
                         }
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.beklenmedikBirHataOlustu,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
                     }
                 }
         }
