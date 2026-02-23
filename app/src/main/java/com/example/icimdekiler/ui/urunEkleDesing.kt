@@ -102,7 +102,7 @@ fun UrunEkleScreen(
                 .size(120.dp)
                 .clickable { onGorselSecClick() },
             shape = CircleShape,
-            shadowElevation = 4.dp,
+            shadowElevation = 6.dp,
             color = Color.White,
             border = BorderStroke(2.dp, Color(0xFF4CAF50)) // Vurgu için yeşil çerçeve
         ) {

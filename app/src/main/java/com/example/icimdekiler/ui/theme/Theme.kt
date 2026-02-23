@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = SoftEmerald,
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     secondary = MintGreen,
     background = DarkBackground,
     surface = DarkSurface,
@@ -20,7 +20,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = EmeraldGreen,
-    onPrimary = Color.White,
+    onPrimary = Color.Black,
     secondary = DeepForest,
     background = LightBackground,
     surface = LightSurface,

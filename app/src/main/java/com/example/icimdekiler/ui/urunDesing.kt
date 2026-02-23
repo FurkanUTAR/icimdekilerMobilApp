@@ -48,15 +48,15 @@ fun UrunScreen(
             Surface(
                 modifier = Modifier.size(120.dp),
                 shape = CircleShape,
-                border = BorderStroke(2.dp, Color.LightGray),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary), // Vurgu için yeşil çerçeve
                 shadowElevation = 6.dp,
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 AsyncImage(
                     model = gorselUrl,
                     contentDescription = urunAdi,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().clip(CircleShape),
                     error = painterResource(id = R.drawable.insert_photo),
                     placeholder = painterResource(id = R.drawable.insert_photo)
                 )
@@ -90,7 +90,7 @@ fun UrunScreen(
                 shape = RoundedCornerShape(17.dp),
                 elevation = CardDefaults.cardElevation(2.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, Color(0xFF4CAF50))
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(icindekilerListesi) { madde ->
