@@ -1,3 +1,4 @@
+
 package com.example.icimdekiler.view
 
 import android.os.Bundle
@@ -6,217 +7,126 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.navigation.fragment.findNavController
 import com.example.icimdekiler.R
-import com.example.icimdekiler.adapter.UrunlerAdapter
-import com.example.icimdekiler.databinding.FragmentKullaniciTumUrunlerBinding
 import com.example.icimdekiler.model.Urunler
-import com.google.firebase.Firebase
+import com.example.icimdekiler.ui.KullaniciTumUrunlerScreen
+import com.example.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.firestore
 import java.util.Locale
 
 class kullaniciTumUrunlerFragment : Fragment() {
 
-    //Binding
-    private var _binding: FragmentKullaniciTumUrunlerBinding? = null
-    private val binding get() = _binding!!
-
-    //Firebase
     private val db = FirebaseFirestore.getInstance()
 
-    private var urunListesi = ArrayList<Urunler>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    // Compose'un dinleyeceği stateful liste
+    private var urunListesiState = mutableStateOf<List<Urunler>>(emptyList())
+    private var kategori = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentKullaniciTumUrunlerBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        var kategori = ""
+        // SafeArgs ile kategori bilgisini al
         arguments?.let {
             kategori = kullaniciTumUrunlerFragmentArgs.fromBundle(it).kategori
         }
 
+        // İlk veri yüklemesi
         urunleriAl(kategori)
 
-        binding.araImageView.setOnClickListener { urunAra(kategori) }
-    }
-
-    private fun urunleriAl(kategori : String) {
-        if (kategori == "tumUrunler" || kategori.isEmpty()){
-            db.collection("urunler")
-                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .addSnapshotListener { value, error ->
-                    if (!isAdded || isDetached) return@addSnapshotListener
-
-                    if (error != null) {
-                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                        return@addSnapshotListener
-                    }
-
-                    if (value != null && !value.isEmpty) {
-                        urunListesi.clear()
-                        for (document in value.documents) {
-                            val documentId = document.id
-                            val barkodNo = document.getString("barkodNo") ?: ""
-                            val urunAdi = document.getString("urunAdi") ?: ""
-                            val icindekiler = document.getString("icindekiler") ?: ""
-                            val gorselUrl = document.getString("gorselUrl") ?: ""
-
-                            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
-                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                                urunListesi.add(indirilenUrun)
-                            }
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                IcimdekilerTheme {
+                    KullaniciTumUrunlerScreen(
+                        urunListesi = urunListesiState.value,
+                        onSearchClick = { arananKelime ->
+                            urunAra(arananKelime, kategori)
+                        },
+                        onUrunClick = { urun ->
+                            val action = kullaniciTumUrunlerFragmentDirections
+                                .actionKullaniciTumUrunlerFragmentToUrunFragment(
+                                    urun.barkodNo ?: "",      // Eğer null ise boş string gönder
+                                    urun.urunAdi ?: "",       // Eğer null ise boş string gönder
+                                    urun.icindekiler ?: "",
+                                    urun.gorselUrl ?: ""
+                                )
+                            findNavController().navigate(action)
                         }
-
-                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
-
-                        if (isAdded && !isDetached) {
-                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                            binding.urunlerRecyclerView.adapter = adapter
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-                    }
+                    )
                 }
-        } else {
-            db.collection("urunler")
-                .whereEqualTo("kategori",kategori)
-                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING) // Küçük harf bazlı alfabetik sıralama
-                .addSnapshotListener { value, error ->
-                    if (!isAdded || isDetached) return@addSnapshotListener
-
-                    if (error != null) {
-                        Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                        return@addSnapshotListener
-                    }
-
-                    if (value != null && !value.isEmpty) {
-                        urunListesi.clear()
-                        for (document in value.documents) {
-                            val documentId = document.id
-                            val barkodNo = document.getString("barkodNo") ?: ""
-                            val urunAdi = document.getString("urunAdi") ?: ""
-                            val icindekiler = document.getString("icindekiler") ?: ""
-                            val gorselUrl = document.getString("gorselUrl") ?: ""
-
-                            if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
-                                val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                                urunListesi.add(indirilenUrun)
-                            }
-                        }
-
-                        binding.urunSayisiText.text = "${getString(R.string.urunSayisi)} : ${urunListesi.count()}"
-
-                        if (isAdded && !isDetached) {
-                            val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                            binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                            binding.urunlerRecyclerView.adapter = adapter
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-                    }
-                }
+            }
         }
     }
 
-    private fun urunAra(kategori: String) {
-        val urun = binding.urunAdiText.text.toString().trim()
-            .lowercase(Locale("tr","TR"))
-            .replace("ç", "c")
-            .replace("ğ", "g")
-            .replace("ı", "i")
-            .replace("ö", "o")
-            .replace("ş", "s")
-            .replace("ü", "u")
-
-        if (kategori == "tumUrunler" || kategori.isEmpty()){
-            db.collection("urunler")
-                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
-                .get()
-                .addOnSuccessListener { documents ->
-                    urunListesi.clear()
-                    for (document in documents) {
-                        val documentId = document.id
-                        val barkodNo = document.getString("barkodNo") ?: ""
-                        val urunAdi = document.getString("urunAdi") ?: ""
-                        val icindekiler = document.getString("icindekiler") ?: ""
-                        val gorselUrl = document.getString("gorselUrl") ?: ""
-
-                        val urunAdiNormalized = urunAdi
-                            .lowercase(Locale("tr","TR"))
-                            .replace("ç", "c")
-                            .replace("ğ", "g")
-                            .replace("ı", "i")
-                            .replace("ö", "o")
-                            .replace("ş", "s")
-                            .replace("ü", "u")
-
-                        if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                            urunListesi.add(indirilenUrun)
-                        }
-                    }
-
-                    val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                    binding.urunlerRecyclerView.adapter = adapter
-                }.addOnFailureListener { error ->
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
-                }
+    private fun urunleriAl(kategori: String) {
+        val baseQuery = if (kategori == "tumUrunler" || kategori.isEmpty()) {
+            db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
         } else {
-            db.collection("urunler")
-                .whereEqualTo("kategori",kategori)
+            db.collection("urunler").whereEqualTo("kategori", kategori)
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
-                .get()
-                .addOnSuccessListener { documents ->
-                    urunListesi.clear()
-                    for (document in documents) {
-                        val documentId = document.id
-                        val barkodNo = document.getString("barkodNo") ?: ""
-                        val urunAdi = document.getString("urunAdi") ?: ""
-                        val icindekiler = document.getString("icindekiler") ?: ""
-                        val gorselUrl = document.getString("gorselUrl") ?: ""
+        }
 
-                        val urunAdiNormalized = urunAdi
-                            .lowercase(Locale("tr","TR"))
-                            .replace("ç", "c")
-                            .replace("ğ", "g")
-                            .replace("ı", "i")
-                            .replace("ö", "o")
-                            .replace("ş", "s")
-                            .replace("ü", "u")
+        baseQuery.addSnapshotListener { value, error ->
+            if (error != null) {
+                Toast.makeText(context, "Hata: ${error.localizedMessage}", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
 
-                        if (urun.isEmpty() || urunAdiNormalized.contains(urun)) {
-                            val indirilenUrun = Urunler(barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
-                            urunListesi.add(indirilenUrun)
-                        }
-                    }
-
-                    val adapter = UrunlerAdapter(urunListesi, "kullanici")
-                    binding.urunlerRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                    binding.urunlerRecyclerView.adapter = adapter
-                }.addOnFailureListener { error ->
-                    Toast.makeText(requireContext(), error.localizedMessage, Toast.LENGTH_LONG).show()
+            value?.let { snapshot ->
+                val liste = snapshot.documents.mapNotNull { doc ->
+                    val bNo = doc.getString("barkodNo") ?: ""
+                    val uAd = doc.getString("urunAdi") ?: ""
+                    if (bNo.isNotEmpty() && uAd.isNotEmpty()) {
+                        Urunler(
+                            bNo, uAd,
+                            doc.getString("icindekiler") ?: "",
+                            doc.getString("gorselUrl") ?: "",
+                            doc.id
+                        )
+                    } else null
                 }
+                urunListesiState.value = liste
+            }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun urunAra(arananMetin: String, kategori: String) {
+        val queryText = arananMetin.lowercase(Locale("tr", "TR"))
+            .replace("ç", "c").replace("ğ", "g").replace("ı", "i")
+            .replace("ö", "o").replace("ş", "s").replace("ü", "u")
+
+        val baseQuery = if (kategori == "tumUrunler" || kategori.isEmpty()) {
+            db.collection("urunler")
+        } else {
+            db.collection("urunler").whereEqualTo("kategori", kategori)
+        }
+
+        baseQuery.get().addOnSuccessListener { documents ->
+            val filtrelenmisListe = documents.mapNotNull { doc ->
+                val urunAdi = doc.getString("urunAdi") ?: ""
+                val urunAdiNormalized = urunAdi.lowercase(Locale("tr", "TR"))
+                    .replace("ç", "c").replace("ğ", "g").replace("ı", "i")
+                    .replace("ö", "o").replace("ş", "s").replace("ü", "u")
+
+                if (queryText.isEmpty() || urunAdiNormalized.contains(queryText)) {
+                    Urunler(
+                        doc.getString("barkodNo") ?: "",
+                        urunAdi,
+                        doc.getString("icindekiler") ?: "",
+                        doc.getString("gorselUrl") ?: "",
+                        doc.id
+                    )
+                } else null
+            }
+            urunListesiState.value = filtrelenmisListe
+        }.addOnFailureListener {
+            Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 }

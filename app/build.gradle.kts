@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.ui)
 
     // Kamera ve Barcode
     testImplementation(libs.junit)
@@ -106,4 +107,5 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.12.4") // Activity ile entegre çalışması için şart
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }
