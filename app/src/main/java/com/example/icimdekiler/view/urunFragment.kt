@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.fragment.navArgs
 import com.example.icimdekiler.R
 import com.example.icimdekiler.databinding.FragmentUrunBinding
+import com.example.icimdekiler.ui.UrunScreen
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.squareup.picasso.Picasso
 
 class urunFragment : Fragment() {
 
-    private var _binding: FragmentUrunBinding? = null
-    private val binding get() = _binding!!
-
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
+    private val args: urunFragmentArgs by navArgs()
 
     private val icindekilerListesi = mutableListOf<String>()
     private lateinit var icindekilerAdapter: ArrayAdapter<String>
@@ -27,81 +28,63 @@ class urunFragment : Fragment() {
     var barkodNo: String=""
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: android.view.LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentUrunBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        return ComposeView(requireContext()).apply {
 
-        try {
-            icindekilerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, icindekilerListesi)
-            binding.icindekilerListView.adapter = icindekilerAdapter
+            setContent {
 
-            arguments?.let {
-                barkodNo = urunFragmentArgs.fromBundle(it).barkodNo
-                val urunAdi = urunFragmentArgs.fromBundle(it).urunAdi
-                val gelenIcindekiler = urunFragmentArgs.fromBundle(it).icindekiler
-                val gorselUrl = urunFragmentArgs.fromBundle(it).gorselUrl
+                val icindekilerListesi = args.icindekiler
+                    .split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
 
-                binding.urunAdiText.text = urunAdi
-
-                val icindekiler = gelenIcindekiler.split(", ").map { it.trim() }
-                icindekilerListesi.clear()
-                icindekilerListesi.addAll(icindekiler)
-                icindekilerAdapter.notifyDataSetChanged()
-
-                if (gorselUrl.isNotEmpty()) {
-                    Picasso.get().load(gorselUrl).fit().centerCrop().into(binding.gorselSecImageView)
-                } else {
-                    binding.gorselSecImageView.setImageResource(R.drawable.ic_launcher_background)
-                }
-            }
-
-            binding.icindekilerListView.setOnItemClickListener { parent, _, position, _ ->
-                val urun = parent.getItemAtPosition(position) as String
-                aciklamaGetir(urun, position)
-            }
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Hata: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun aciklamaGetir(urun: String, position: Int) {
-        try {
-            db.collection("icerik")
-                .whereEqualTo("urun", urun)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        val document = querySnapshot.documents.firstOrNull()
-
-                        if (document != null) {
-                            val aciklama = document.getString("aciklama") ?: "Açıklama bulunamadı"
-                            val alert = AlertDialog.Builder(requireContext())
-                            alert.setMessage(aciklama)
-                            alert.setPositiveButton(R.string.tamam) { dialog, _ -> dialog.dismiss() }
-                            alert.show()
-                        } else {
-                            Toast.makeText(requireContext(), R.string.belgeBulunamadi, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()
+                UrunScreen(
+                    urunAdi = args.urunAdi,
+                    gorselUrl = args.gorselUrl,
+                    icindekilerListesi = icindekilerListesi,
+                    onIngredientClick = { secilenMadde ->
+                        aciklamaGetir(secilenMadde)
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(requireContext(), "Veritabanı hatası: ${exception.localizedMessage}", Toast.LENGTH_SHORT).show()
-                }
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Hata: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                )
+            }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun aciklamaGetir(urun: String) {
+
+        db.collection("icerik")
+            .whereEqualTo("urun", urun)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+
+                val document = querySnapshot.documents.firstOrNull()
+
+                if (document != null) {
+                    val aciklama = document.getString("aciklama")
+                        ?: getString(R.string.sonucBulunamadi)
+
+                    AlertDialog.Builder(requireContext())
+                        .setMessage(aciklama)
+                        .setPositiveButton(R.string.tamam, null)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.sonucBulunamadi,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Veritabanı hatası",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 }
