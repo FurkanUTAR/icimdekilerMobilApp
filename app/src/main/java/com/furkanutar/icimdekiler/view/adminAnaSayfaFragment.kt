@@ -29,12 +29,15 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.ui.AdminAnaSayfaScreen
+import com.furkanutar.icimdekiler.ui.KaynakSecimDialog
+import com.furkanutar.icimdekiler.ui.OzelAlertDialog
 import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -53,7 +56,6 @@ class adminAnaSayfaFragment : Fragment() {
 
     private var urunAdi by mutableStateOf("")
 
-
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
@@ -67,6 +69,10 @@ class adminAnaSayfaFragment : Fragment() {
     private var isFlashOn = false  // Flash durumu
 
     private var barkodNo: String = ""
+
+    private var showLogoutDialog by mutableStateOf(false)
+    private var showSourceDialog by mutableStateOf(false)
+    private var isBarcodeAction by mutableStateOf(false) // Barkod mu yoksa Ürün Ekleme mi ayrımı için
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,56 +98,64 @@ class adminAnaSayfaFragment : Fragment() {
                         urunAdi = urunAdi,
                         onUrunAdiChange = { urunAdi = it },
                         onSearchClick = { urunAdiAra() },
-                        onAddClick = { showAddOptionsDialog() },
-                        onBarcodeClick = { showBarcodeOptionsDialog() },
+                        onAddClick = {
+                            isBarcodeAction = false
+                            showSourceDialog = true
+                        },
+                        onBarcodeClick = {
+                            isBarcodeAction = true
+                            showSourceDialog = true
+                        },
                         onTumUrunlerClick = { kontrol("tumUrunler") },
                         onAtistirmalikClick = { kontrol("Atıştırmalık") },
                         onTemelGidaClick = { kontrol("Temel Gıda") },
                         onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
                         onIceceklerClick = { kontrol("İçecek") },
-                        onSignOutConfirm = {
-                            AlertDialog.Builder(requireContext())
-                                .setTitle(R.string.cikisYap)
-                                .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                                .setPositiveButton(R.string.evet) { _, _ ->
-                                    auth.signOut()
-                                    findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment)
-                                }
-                                .setNegativeButton(R.string.iptal, null)
-                                .show()
-                        },
+                        onSignOutConfirm = { showLogoutDialog = true },
                         onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)}
+                    )
+                }
+
+                // Tek bir Dialog üzerinden her iki mantığı yönetiyoruz
+                if (showSourceDialog) {
+                    KaynakSecimDialog(
+                        isBarcodeAction = isBarcodeAction,
+                        onDismiss = { showSourceDialog = false },
+                        onOption1 = {
+                            if (isBarcodeAction) { showBarcodeScannerDialog() } // Kamera (Barkod)
+                            else {
+                                // Ürün Ekle Sayfasına Yönlendir
+                                val action = adminAnaSayfaFragmentDirections
+                                    .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", "", "", "", "", "")
+                                findNavController().navigate(action)
+                            }
+                        },
+                        onOption2 = {
+                            if (isBarcodeAction) { barkodOkuGaleri() }
+                            else {
+                                // İçerik Ekle Sayfasına Yönlendir
+                                findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_icerikEkleFragment)
+                            }
+                        }
+                    )
+                }
+
+                if (showLogoutDialog) {
+                    OzelAlertDialog(
+                        baslik = getString(R.string.cikisYapmakIstediginizdenEminMisiniz),
+                        onayButonMetni = getString(R.string.evet),
+                        iptalButonMetni = getString(R.string.iptal),
+                        onayButonRengi = Color.Red, // Çıkış kritik bir işlem olduğu için kırmızı tercih edilebilir
+                        onDismiss = { showLogoutDialog = false },
+                        onConfirm = {
+                            showLogoutDialog = false
+                            auth.signOut()
+                            findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment)
+                        }
                     )
                 }
             }
         }
-    }
-
-    private fun showBarcodeOptionsDialog() {
-        val secim = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.secimYap)
-            .setItems(secim) { _, which ->
-                if (which == 0) showBarcodeScannerDialog() else barkodOkuGaleri()
-            }
-            .show()
-    }
-
-    private fun showAddOptionsDialog() {
-        val secim = arrayOf(getString(R.string.urunEkle), getString(R.string.icerikEkle))
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.secimYap)
-            .setItems(secim) { _, which ->
-                if (which == 0) {
-                    val action = adminAnaSayfaFragmentDirections
-                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", "", "", "", "", "")
-                    findNavController().navigate(action)
-                } else {
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToIcerikEkleFragment()
-                    findNavController().navigate(action)
-                }
-            }
-            .show()
     }
 
     fun kontrol(kategori : String){

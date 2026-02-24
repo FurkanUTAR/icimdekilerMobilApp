@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.furkanutar.icimdekiler.R
 import coil.compose.AsyncImage
 
-// ... importlar aynı ...
-
 @Composable
 fun UrunScreen(
     urunAdi: String,
@@ -47,9 +45,8 @@ fun UrunScreen(
             Surface(
                 modifier = Modifier.size(120.dp),
                 shape = CircleShape,
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary), // Vurgu için yeşil çerçeve
-                shadowElevation = 6.dp,
-                color = MaterialTheme.colorScheme.surface
+                border = BorderStroke(2.dp, Color(0xFF4CAF50)), // Vurgu için yeşil çerçeve
+                shadowElevation = 6.dp
             ) {
                 AsyncImage(
                     model = gorselUrl,
@@ -89,7 +86,7 @@ fun UrunScreen(
                 shape = RoundedCornerShape(17.dp),
                 elevation = CardDefaults.cardElevation(2.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                border = BorderStroke(1.dp, Color(0xFF4CAF50))
             ) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(icindekilerListesi) { madde ->

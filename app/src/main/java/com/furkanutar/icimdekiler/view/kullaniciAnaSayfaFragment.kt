@@ -27,6 +27,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.ActivityCompat
@@ -34,7 +35,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
+import com.furkanutar.icimdekiler.ui.KaynakSecimDialog
 import com.furkanutar.icimdekiler.ui.KullaniciAnaSayfaScreen
+import com.furkanutar.icimdekiler.ui.OzelAlertDialog
 import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -67,6 +70,10 @@ class kullaniciAnaSayfaFragment : Fragment() {
 
     private var barkodNo: String = ""
 
+    private var showLogoutDialog by mutableStateOf(false)
+    private var showSourceDialog by mutableStateOf(false)
+    private var isBarcodeAction by mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
@@ -91,25 +98,47 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         urunAdi = urunAdi,
                         onUrunAdiChange = { urunAdi = it },
                         onSearchClick = { urunAdiAra() },
-                        onAddClick = { showAddOptionsDialog() },
-                        onBarcodeClick = { showBarcodeOptionsDialog() },
+                        onAddClick = {
+                            isBarcodeAction = false
+                            showSourceDialog = true
+                        },
+                        onBarcodeClick = {
+                            isBarcodeAction = true
+                            showSourceDialog = true
+                        },
                         onTumUrunlerClick = { kontrol("tumUrunler") },
                         onAtistirmalikClick = { kontrol("Atıştırmalık") },
                         onTemelGidaClick = { kontrol("Temel Gıda") },
                         onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
                         onIceceklerClick = { kontrol("İçecek") },
-                        onSignOutConfirm = {
-                            AlertDialog.Builder(requireContext())
-                                .setTitle(R.string.cikisYap)
-                                .setMessage(R.string.cikisYapmakIstediginizdenEminMisiniz)
-                                .setPositiveButton(R.string.evet) { _, _ ->
-                                    auth.signOut()
-                                    findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment)
-                                }
-                                .setNegativeButton(R.string.iptal, null)
-                                .show()
-                        },
+                        onSignOutConfirm = { showLogoutDialog = true },
                         onAyarlarClick = {findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_ayarlarFragment)}
+                    )
+                }
+
+                if (showSourceDialog){
+                    KaynakSecimDialog(
+                        isBarcodeAction = isBarcodeAction,
+                        onDismiss = { showSourceDialog = false },
+                        onOption1 = {
+                            if (isBarcodeAction) showBarcodeScannerDialog()
+                        },
+                        onOption2 = { if (isBarcodeAction)  barkodOkuGaleri() }
+                    )
+                }
+
+                if (showLogoutDialog){
+                    OzelAlertDialog(
+                        baslik = getString(R.string.cikisYapmakIstediginizdenEminMisiniz),
+                        onayButonMetni = getString(R.string.evet),
+                        iptalButonMetni = getString(R.string.hayir),
+                        onayButonRengi = Color.Red,
+                        onDismiss = { showLogoutDialog = false },
+                        onConfirm = {
+                            showLogoutDialog = false
+                            auth.signOut()
+                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment)
+                        }
                     )
                 }
             }
@@ -122,23 +151,6 @@ class kullaniciAnaSayfaFragment : Fragment() {
             .setTitle(R.string.secimYap)
             .setItems(secim) { _, which ->
                 if (which == 0) showBarcodeScannerDialog() else barkodOkuGaleri()
-            }
-            .show()
-    }
-
-    private fun showAddOptionsDialog() {
-        val secim = arrayOf(getString(R.string.urunEkle), getString(R.string.icerikEkle))
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.secimYap)
-            .setItems(secim) { _, which ->
-                if (which == 0) {
-                    val action = adminAnaSayfaFragmentDirections
-                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", "", "", "", "", "")
-                    findNavController().navigate(action)
-                } else {
-                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToIcerikEkleFragment()
-                    findNavController().navigate(action)
-                }
             }
             .show()
     }
