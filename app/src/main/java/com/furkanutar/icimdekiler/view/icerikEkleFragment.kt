@@ -7,46 +7,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.databinding.FragmentIcerikEkleBinding
+import com.furkanutar.icimdekiler.ui.IcerikEkleScreen
+import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.collections.set
 
 class icerikEkleFragment : Fragment() {
 
-    //Binding
-    private var _binding: FragmentIcerikEkleBinding? = null
-    private val binding get() = _binding!!
-
     //Firebase
     private val db = FirebaseFirestore.getInstance()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentIcerikEkleBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.kaydetButton.setOnClickListener {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
-            alert.setPositiveButton(R.string.evet) { dialog, _ -> icerikEkle() }
-            alert.setNegativeButton(R.string.hayir, null).show()
+    ): View {
+        return ComposeView(requireContext()).apply{
+            setContent {
+                IcimdekilerTheme {
+                    IcerikEkleScreen { urunAdi, aciklama ->
+                        val alert = AlertDialog.Builder(requireContext())
+                        alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
+                        alert.setPositiveButton(R.string.evet) { _, _ -> icerikEkle(urunAdi, aciklama) }
+                        alert.setNegativeButton(R.string.hayir, null).show()
+                    }
+                }
+            }
         }
     }
 
-    private fun icerikEkle() {
-        val urun = binding.urunAdiText.text.toString().trim()
-        val aciklama = binding.aciklamaText.text.toString().trim()
+    private fun icerikEkle(urunAdi: String, aciklama: String) {
+        val urun = urunAdi.trim()
+        val aciklama = aciklama.trim()
 
         if (urun.isEmpty() || aciklama.isEmpty()) {
             Toast.makeText(requireContext(), R.string.lutfenBosAlanBirakmayiniz, Toast.LENGTH_SHORT).show()
@@ -79,10 +73,5 @@ class icerikEkleFragment : Fragment() {
             }.addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
             }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
