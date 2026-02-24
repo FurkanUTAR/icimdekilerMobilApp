@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.runtime)
 
     // Kamera ve Barcode
     testImplementation(libs.junit)

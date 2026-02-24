@@ -7,10 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.databinding.FragmentIcerikEkleBinding
 import com.furkanutar.icimdekiler.ui.IcerikEkleScreen
+import com.furkanutar.icimdekiler.ui.OzelAlertDialog
 import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.collections.set
@@ -27,11 +34,30 @@ class icerikEkleFragment : Fragment() {
         return ComposeView(requireContext()).apply{
             setContent {
                 IcimdekilerTheme {
+
+                    var showDialog by remember { mutableStateOf(false) }
+                    var geciciUrunAdi by remember { mutableStateOf("") }
+                    var geciciAciklama by remember { mutableStateOf("") }
+
+
                     IcerikEkleScreen { urunAdi, aciklama ->
-                        val alert = AlertDialog.Builder(requireContext())
-                        alert.setTitle(R.string.kayitEtmekIstediginizdenEminMisiniz)
-                        alert.setPositiveButton(R.string.evet) { _, _ -> icerikEkle(urunAdi, aciklama) }
-                        alert.setNegativeButton(R.string.hayir, null).show()
+                        geciciUrunAdi = urunAdi
+                        geciciAciklama = aciklama
+                        showDialog = true
+                    }
+
+                    if (showDialog){
+                        OzelAlertDialog(
+                            baslik = stringResource(R.string.kayitEtmekIstediginizdenEminMisiniz),
+                            onDismiss = { showDialog = false },
+                            onConfirm = {
+                                showDialog = false
+                                icerikEkle(geciciUrunAdi,geciciAciklama)
+                            },
+                            onayButonMetni = stringResource(R.string.evet),
+                            iptalButonMetni = stringResource(R.string.hayir),
+                            onayButonRengi = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
