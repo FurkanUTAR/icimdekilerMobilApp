@@ -176,7 +176,7 @@ class urunEkleFragment : Fragment() {
                         onDismiss = { showSourceDialog = false },
                         onOption1 = { if (isBarcodeAction) showBarcodeScannerDialog() }, // Kamera (Barkod)
                         onOption2 = { if (isBarcodeAction) {
-                            islem == "barkodOku"
+                            islem = "barkodOku"
                             barkodOkuGaleri()
                         } } // Galeri (Barkod)
                     )
@@ -547,7 +547,6 @@ class urunEkleFragment : Fragment() {
                                                 val barkod = barcodes[0].displayValue
                                                 if (barkod != null) {
                                                     barkodNo = barkod // State güncellenir, TextField dolar
-                                                    Toast.makeText(requireContext(), "Barkod: $barkod", Toast.LENGTH_SHORT).show()
                                                 }
                                             } else {
                                                 Toast.makeText(requireContext(), R.string.barkodOkunamadi, Toast.LENGTH_SHORT).show()
