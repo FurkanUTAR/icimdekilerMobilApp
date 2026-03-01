@@ -88,27 +88,14 @@
         android:name="com.furkanutar.icimdekiler.view.urunEkleFragment"
         android:label="fragment_urun_ekle"
         tools:layout="@layout/fragment_urun_ekle" >
-        <argument
-            android:name="durum"
-            app:argType="string" />
-        <argument
-            android:name="barkodNo"
-            app:argType="string" />
-        <argument
-            android:name="urunAdi"
-            app:argType="string" />
-        <argument
-            android:name="icindekiler"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_urunEkleFragment_to_adminTumUrunlerFragment"
-            app:destination="@id/adminTumUrunlerFragment" />
-        <argument
-            android:name="gorselUrl"
-            app:argType="string" />
-        <argument
-            android:name="documentId"
-            app:argType="string" />
+
+        <argument android:name="durum" app:argType="string" />
+        <argument android:name="barkodNo" app:argType="string" />
+        <argument android:name="urunAdi" app:argType="string" />
+        <argument android:name="icindekiler" app:argType="string" />
+        <argument android:name="gorselUrl" app:argType="string" />
+        <argument android:name="documentId" app:argType="string" />
+        <action android:id="@+id/action_urunEkleFragment_to_adminTumUrunlerFragment" app:destination="@id/adminTumUrunlerFragment" />
     </fragment>
     <fragment
         android:id="@+id/urunFragment"

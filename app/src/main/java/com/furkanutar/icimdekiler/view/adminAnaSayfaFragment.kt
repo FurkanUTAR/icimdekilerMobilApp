@@ -32,9 +32,11 @@ import androidx.camera.view.PreviewView
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
+import com.furkanutar.icimdekiler.api.RetrofitClient
 import com.furkanutar.icimdekiler.ui.AdminAnaSayfaScreen
 import com.furkanutar.icimdekiler.ui.KaynakSecimDialog
 import com.furkanutar.icimdekiler.ui.OzelAlertDialog
@@ -48,6 +50,7 @@ import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -442,6 +445,8 @@ class adminAnaSayfaFragment : Fragment() {
                             } else {
                                 try {
                                     Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+
+                                    // OpenFoodFacts api burada kullanılacak
                                 } catch (e: Exception) {
                                     Log.e("AdminAnaSayfa", "Toast error", e)
                                 }
@@ -466,69 +471,80 @@ class adminAnaSayfaFragment : Fragment() {
     }
 
     private fun barkodNoAra() {
-        try {
-            try {
-                db.collection("urunler")
-                    .whereEqualTo("barkodNo", barkodNo)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        try {
-                            if (!querySnapshot.isEmpty) {
-                                try {
-                                    val document = querySnapshot.documents.firstOrNull()
-                                    val documentId = document?.id ?: ""
-                                    val urunAdi = document?.getString("urunAdi") ?: ""
-                                    val icindekiler = document?.getString("icindekiler") ?: ""
-                                    val gorselUrl = document?.getString("gorselUrl") ?: ""
+        // Firebase sorgusu başlatılıyor
+        db.collection("urunler")
+            .whereEqualTo("barkodNo", barkodNo)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // 1. DURUM: Ürün Firebase'de bulundu
+                    val document = querySnapshot.documents.firstOrNull()
+                    val documentId = document?.id ?: ""
+                    val urunAdi = document?.getString("urunAdi") ?: ""
+                    val icindekiler = document?.getString("icindekiler") ?: ""
+                    val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                                    try {
-                                        val action = adminAnaSayfaFragmentDirections
-                                            .actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                    val action = adminAnaSayfaFragmentDirections
+                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
 
-                                        if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
-                                            findNavController().navigate(action)
-                                        }
-                                    } catch (e: Exception) {
-                                        Log.e("AdminAnaSayfa", "Navigation error", e)
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e("AdminAnaSayfa", "Document processing error", e)
-                                }
-                            } else {
-                                try {
-                                    val action = adminAnaSayfaFragmentDirections
-                                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("yeni", barkodNo, "", "", "", "")
-                                    if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
-                                        findNavController().navigate(action)
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e("AdminAnaSayfa", "Navigation error", e)
-                                }
-
-                                try {
-                                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-                                } catch (e: Exception) {
-                                    Log.e("AdminAnaSayfa", "Toast error", e)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Log.e("AdminAnaSayfa", "Query success processing error", e)
-                        }
+                    // Güvenli navigasyon
+                    if (findNavController().currentDestination?.id == R.id.adminAnaSayfaFragment) {
+                        findNavController().navigate(action)
                     }
-                    .addOnFailureListener { exception ->
-                        try {
-                            Toast.makeText(requireContext(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
-                        } catch (e: Exception) {
-                            Log.e("AdminAnaSayfa", "Toast error", e)
-                        }
-                    }
-            } catch (e: Exception) {
-                Log.e("AdminAnaSayfa", "Firestore query error", e)
+                } else {
+                    // 2. DURUM: Ürün Firebase'de YOK!
+                    // ÖNEMLİ: Burada navigasyon yapmıyoruz, sadece API sorgusuna paslıyoruz.
+                    Log.d("Sorgu", "Firebase boş, API sorgusu başlıyor...")
+                    offApiSorgu(barkodNo)
+                }
             }
-        } catch (e: Exception) {
-            Log.e("AdminAnaSayfa", "Barcode search processing error", e)
+            .addOnFailureListener { exception ->
+                Log.e("AdminAnaSayfa", "Firestore hatası", exception)
+                Toast.makeText(requireContext(), "Veritabanı hatası: ${exception.localizedMessage}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun offApiSorgu(barkodNo: String) {
+        lifecycleScope.launch {
+            try {
+                val yanit = RetrofitClient.api.getUrun(barkodNo)
+
+                if (yanit.durum == 1 && yanit.urun != null) {
+                    val apiUrun = yanit.urun
+                    val gelenAd = apiUrun.urunAdi ?: ""
+                    val gelenIcerik = apiUrun.icindekilerTr ?: apiUrun.icindekilerGenel ?: ""
+                    val gelenGorsel = apiUrun.gorselUrl ?: ""
+
+                    Log.d("OFF_Sorgu", "🚀 Son Karar İçerik: $gelenIcerik")
+
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment(
+                        durum = "yeni",
+                        barkodNo = barkodNo,
+                        urunAdi = gelenAd,
+                        icindekiler = gelenIcerik,
+                        gorselUrl = gelenGorsel,
+                        documentId = ""
+                    )
+
+                    // Geçiş yapıyoruz
+                    if (findNavController().currentDestination?.id == R.id.adminAnaSayfaFragment) {
+                        findNavController().navigate(action)
+                    } else {
+                        Log.d("OFF_Sorgu", "Zaten urunEkleFragment ekranındayız, navigasyon iptal edildi.")
+                    }
+
+                    // Sadece bir tane Toast kalsın
+                    Toast.makeText(requireContext(), "Ürün Open Food Facts'ten getirildi!", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    Toast.makeText(requireContext(), "Ürün bulunamadı.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("OFF_Sorgu", "Hata oluştu: ${e.localizedMessage}")
+            }
         }
     }
+
 
     private fun barkodOkuGaleri() {
         try {

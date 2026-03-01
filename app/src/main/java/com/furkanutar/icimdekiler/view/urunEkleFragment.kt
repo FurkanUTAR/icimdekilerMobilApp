@@ -201,17 +201,43 @@ class urunEkleFragment : Fragment() {
     }
 
     private fun argumanlariYukle() {
-        durum = args.durum
-        barkodNo = args.barkodNo
-        urunAdi = args.urunAdi
-        secilenGorselUrl = args.gorselUrl
-        documentId = args.documentId
+        Log.d("Fragment_Veri", "TÜM ARGÜMANLAR: $args")
 
-        if (args.icindekiler.isNotBlank()) {
-            icindekilerListesi.clear()
-            icindekilerListesi.addAll(
-                args.icindekiler.split(",").map { it.trim() }.filter { it.isNotBlank() }
-            )
+        val gelenDurum = args.durum
+        if (gelenDurum.isNotBlank()) durum = gelenDurum
+
+        documentId = args.documentId
+        val gelenAd = args.urunAdi
+        val gelenBarkod = args.barkodNo
+        val gelenGorsel = args.gorselUrl
+        val gelenIcerik = args.icindekiler // Burayı eklemeyi unutma!
+
+        Log.d("Fragment_Veri", "Argümandan gelen isim: $gelenAd")
+        Log.d("Fragment_Veri", "Argümandan gelen içerik: $gelenIcerik")
+
+        if (gelenAd.isNotBlank()) urunAdi = gelenAd
+        if (gelenBarkod.isNotBlank()) barkodNo = gelenBarkod
+        if (gelenGorsel.isNotBlank()) secilenGorselUrl = gelenGorsel
+
+        // İÇİNDEKİLERİ LİSTEYE EKLEME:
+        if (gelenIcerik.isNotBlank()) {
+            icindekilerListesi.clear() // Önce temizle
+            // Virgüllere göre ayır, boşlukları sil ve listeye ekle
+            val parcalanmisListe = gelenIcerik
+                .replace(Regex("\\(.*?\\)"), "") // _, *, [, ] karakterlerini siler
+                .split(",", ".", ";")
+                .map { madde ->
+                    // Her maddenin içindeki kelimeleri bul ve baş harflerini büyüt
+                    madde.trim().lowercase()
+                        .split(" ") // Kelimelere ayır
+                        .joinToString(" ") { kelime ->
+                            kelime.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        }
+                }// Her kelimenin ilk harfini büyük yap
+                .filter { it.isNotEmpty() && it.length > 1 && !it.all { char -> char.isDigit() } }
+                .distinct() // Aynı içerik iki kere yazılmışsa teke düşür
+
+            icindekilerListesi.addAll(parcalanmisListe)
         }
     }
 
@@ -595,13 +621,7 @@ class urunEkleFragment : Fragment() {
     private fun urunKaydet() {
         val barkod = barkodNo.trim()
         val ad = urunAdi.trim()
-        val adLower = ad.lowercase().trim()
-            .replace("ç", "c")
-            .replace("ğ", "g")
-            .replace("ı", "i")
-            .replace("ö", "o")
-            .replace("ş", "s")
-            .replace("ü", "u")
+        val adLower = ad.lowercase().trim() // ... (senin mevcut replace işlemlerin)
         val kategori = seciliKategori.trim()
         val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
@@ -610,45 +630,56 @@ class urunEkleFragment : Fragment() {
             return
         }
 
-        val seciliUri = secilenGorselUri
-        if (seciliUri == null) {
-            Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
-            return
-        }
+        // --- KRİTİK DEĞİŞİKLİK BURADA BAŞLIYOR ---
 
-        val gorselReferansi = storage.reference.child("images/${barkod}.jpg")
-        gorselReferansi.putFile(seciliUri)
-            .addOnSuccessListener {
-                gorselReferansi.downloadUrl.addOnSuccessListener { uri ->
-                    val urunMap = hashMapOf(
-                        "urunAdi" to ad,
-                        "urunAdiLowerCase" to adLower,
-                        "barkodNo" to barkod,
-                        "kategori" to kategori,
-                        "icindekiler" to birlesikIcindekiler,
-                        "gorselUrl" to uri.toString()
-                    )
-
-                    db.collection("urunler")
-                        .whereEqualTo("barkodNo", barkod)
-                        .get()
-                        .addOnSuccessListener { q ->
-                            if (q.isEmpty) {
-                                db.collection("urunler").add(urunMap)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(requireContext(), R.string.urunBasariylaKayitEdildi, Toast.LENGTH_SHORT).show()
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
-                                    }
-                            } else {
-                                Toast.makeText(requireContext(), R.string.urunDahaOnceKayitEdilmis, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+        // Eğer galeriden yeni bir görsel seçilmişse (secilenGorselUri doluysa)
+        if (secilenGorselUri != null) {
+            val gorselReferansi = storage.reference.child("images/${barkod}")
+            gorselReferansi.putFile(secilenGorselUri!!)
+                .addOnSuccessListener {
+                    gorselReferansi.downloadUrl.addOnSuccessListener { uri ->
+                        // Storage'a yüklenen yeni URL ile kaydet
+                        veritabaninaKaydet(ad, adLower, barkod, kategori, birlesikIcindekiler, uri.toString())
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
+                .addOnFailureListener { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }
+        }
+        // Eğer galeriden seçilmemiş ama API'den bir link gelmişse (secilenGorselUrl doluysa)
+        else if (!secilenGorselUrl.isNullOrBlank()) {
+            // Direkt API'den gelen URL ile kaydet
+            veritabaninaKaydet(ad, adLower, barkod, kategori, birlesikIcindekiler, secilenGorselUrl!!)
+        }
+        // İkisi de yoksa hata ver
+        else {
+            Toast.makeText(requireContext(), R.string.gorselBulunamadi, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun veritabaninaKaydet(ad: String, adLower: String, barkod: String, kategori: String, icerik: String, url: String) {
+        val urunMap = hashMapOf(
+            "urunAdi" to ad,
+            "urunAdiLowerCase" to adLower,
+            "barkodNo" to barkod,
+            "kategori" to kategori,
+            "icindekiler" to icerik,
+            "gorselUrl" to url
+        )
+
+        db.collection("urunler")
+            .whereEqualTo("barkodNo", barkod)
+            .get()
+            .addOnSuccessListener { q ->
+                if (q.isEmpty) {
+                    db.collection("urunler").add(urunMap)
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), R.string.urunBasariylaKayitEdildi, Toast.LENGTH_SHORT).show()
+                            // İstersen kayıt sonrası ana sayfaya dönebilirsin
+                            findNavController().popBackStack()
+                        }
+                        .addOnFailureListener { e -> Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show() }
+                } else {
+                    Toast.makeText(requireContext(), R.string.urunDahaOnceKayitEdilmis, Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -707,6 +738,7 @@ class urunEkleFragment : Fragment() {
     }
 
     private fun urunSil() {
+
         if (documentId.isBlank()) {
             Toast.makeText(requireContext(), R.string.sonucBulunamadi, Toast.LENGTH_SHORT).show()
             return
