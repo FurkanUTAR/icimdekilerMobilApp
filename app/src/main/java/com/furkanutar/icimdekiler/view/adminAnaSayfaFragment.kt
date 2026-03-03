@@ -512,6 +512,7 @@ class adminAnaSayfaFragment : Fragment() {
                 if (yanit.durum == 1 && yanit.urun != null) {
                     val apiUrun = yanit.urun
                     val gelenAd = apiUrun.urunAdi ?: ""
+                    val gelenMarka = apiUrun.marka ?: ""
                     val gelenIcerik = apiUrun.icindekilerTr ?: apiUrun.icindekilerGenel ?: ""
                     val gelenGorsel = apiUrun.gorselUrl ?: ""
 
@@ -520,7 +521,7 @@ class adminAnaSayfaFragment : Fragment() {
                     val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment(
                         durum = "yeni",
                         barkodNo = barkodNo,
-                        urunAdi = gelenAd,
+                        urunAdi = "$gelenMarka $gelenAd",
                         icindekiler = gelenIcerik,
                         gorselUrl = gelenGorsel,
                         documentId = ""

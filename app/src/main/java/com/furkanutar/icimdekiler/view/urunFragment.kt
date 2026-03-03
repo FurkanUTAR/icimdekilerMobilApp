@@ -1,18 +1,26 @@
 package com.furkanutar.icimdekiler.view
 
+import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.Snackbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.ui.UrunScreen
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import java.time.DateTimeException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class urunFragment : Fragment() {
 
@@ -44,14 +52,14 @@ class urunFragment : Fragment() {
                     gorselUrl = args.gorselUrl,
                     icindekilerListesi = icindekilerListesi,
                     onIngredientClick = { secilenMadde ->
-                        aciklamaGetir(secilenMadde)
+                        aciklamaGetir(secilenMadde, args.urunAdi)
                     }
                 )
             }
         }
     }
 
-    private fun aciklamaGetir(urun: String) {
+    private fun aciklamaGetir(urun: String, urunAdi: String) {
 
         db.collection("icerik")
             .whereEqualTo("urun", urun)
@@ -69,19 +77,39 @@ class urunFragment : Fragment() {
                         .setPositiveButton(R.string.tamam, null)
                         .show()
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        R.string.sonucBulunamadi,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.bildir) {
+                            bildir("Açıklama Bulunamadı",urun, "Kullanıcı bu ürünün açıklamasını bulamadı ve bildirdi.", urunAdi)
+                        }.show()
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Veritabanı hatası",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Veritabanı hatası", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun bildir(durum: String, aramaTerimi: String, mesaj: String, urunAdi: String) {
+       // val suanKiZaman = (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm:ss"))
+
+        val bildiriMap = hashMapOf(
+            "durum" to durum,
+            "urunAdi" to urunAdi,
+            "aramaTerimi" to aramaTerimi,
+            "mesaj" to mesaj,
+            "zaman" to FieldValue.serverTimestamp()
+        )
+
+        db.collection("bildiriler")
+            .whereEqualTo("aramaTerimi", aramaTerimi)
+            .whereEqualTo("mesaj",mesaj)
+            .get()
+            .addOnSuccessListener { q ->
+                if (q.isEmpty){
+                    db.collection("bildiriler")
+                        .add(bildiriMap)
+                        .addOnSuccessListener { Toast.makeText(requireContext(), R.string.bildirinizIletildiTesekkurler, Toast.LENGTH_SHORT).show() }
+                        .addOnFailureListener { Toast.makeText(requireContext(), R.string.bildiriGonderilemedi, Toast.LENGTH_SHORT).show() }
+                } else Toast.makeText(requireContext(), R.string.bildiriDahaOnceYapilmis, Toast.LENGTH_SHORT).show()
             }
     }
 }

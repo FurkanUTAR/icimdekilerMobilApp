@@ -58,29 +58,6 @@ class girisYapFragment : Fragment() {
             }
         }
     }
-/*
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.kayitOlLabel.setOnClickListener {
-            try {
-                val action = girisYapFragmentDirections.actionGirisYapFragmentToKayitOlFragment()
-                requireView().findNavController().navigate(action)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        binding.girisYapButton.setOnClickListener {
-            try {
-                girisYap()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
- */
 
     private fun girisYap(ePosta: String, parola: String) {
         try {

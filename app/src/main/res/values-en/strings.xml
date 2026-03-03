@@ -19,6 +19,7 @@
     <string name="guncelle">Update</string>
     <string name="sil">Delete</string>
     <string name="izinVer">Allow</string>
+    <string name="bildir">Report</string>
     <string name="evet">Yes</string>
     <string name="hayir">No</string>
     <string name="iptal">Cancel</string>
@@ -90,6 +91,9 @@
     <string name="kameraIzniVerilmedi">Camera permission denied!</string>
     <string name="belgeBulunamadi">No document found!</string>
     <string name="sonucBulunamadi">No results found!</string>
+    <string name="bildirinizIletildiTesekkurler">Your notification has been sent, thank you!</string>
+    <string name="bildiriGonderilemedi">The report could not be sent.</string>
+    <string name="bildiriDahaOnceYapilmis">The announcement has already been made.</string>
     <string name="urunBasariylaSilindi">Product deleted successfully!</string>
     <string name="silmekIstediginizdenEminMisiniz">Are you sure you want to delete this?</string>
     <string name="urunBasariylaGuncellendi">Product updated successfully!</string>

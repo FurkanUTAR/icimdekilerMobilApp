@@ -10,6 +10,7 @@ data class OFFYanit(
 data class OFFUrun(
     @SerializedName("code") val barkodNo: String?,
     @SerializedName("product_name") val urunAdi: String?,
+    @SerializedName("brands") val marka: String?,
     @SerializedName("ingredients_text_tr") val icindekilerTr: String?, // Önce buraya bakacağız
     @SerializedName("ingredients_text") val icindekilerGenel: String?, // Burası yedek plan
     @SerializedName("image_url") val gorselUrl: String?

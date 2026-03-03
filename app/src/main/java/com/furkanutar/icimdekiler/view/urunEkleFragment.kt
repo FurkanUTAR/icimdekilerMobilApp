@@ -212,30 +212,48 @@ class urunEkleFragment : Fragment() {
         val gelenGorsel = args.gorselUrl
         val gelenIcerik = args.icindekiler // Burayı eklemeyi unutma!
 
+        val duzenlenmisUrunAdi = gelenAd.split(" ").joinToString(" ") { kelime ->
+            kelime.lowercase().replaceFirstChar { it.uppercase() }
+        }
+
         Log.d("Fragment_Veri", "Argümandan gelen isim: $gelenAd")
         Log.d("Fragment_Veri", "Argümandan gelen içerik: $gelenIcerik")
 
-        if (gelenAd.isNotBlank()) urunAdi = gelenAd
+        if (gelenAd.isNotBlank()) urunAdi = duzenlenmisUrunAdi
         if (gelenBarkod.isNotBlank()) barkodNo = gelenBarkod
         if (gelenGorsel.isNotBlank()) secilenGorselUrl = gelenGorsel
 
-        // İÇİNDEKİLERİ LİSTEYE EKLEME:
         if (gelenIcerik.isNotBlank()) {
-            icindekilerListesi.clear() // Önce temizle
-            // Virgüllere göre ayır, boşlukları sil ve listeye ekle
+            icindekilerListesi.clear()
+
             val parcalanmisListe = gelenIcerik
-                .replace(Regex("\\(.*?\\)"), "") // _, *, [, ] karakterlerini siler
-                .split(",", ".", ";")
+                // 1. ADIM: Tam parantez içlerini siler: (Soya), [Gluten] vb.
+                .replace(Regex("\\(.*?\\)|\\[.*?\\]|\\{.*?\\}"), "")
+
+                // 2. ADIM: Virgül, nokta, noktalı virgül ve "ve" bağlacına göre böl
+                .split(Regex("[,.;]|\\bve\\b"))
+
                 .map { madde ->
-                    // Her maddenin içindeki kelimeleri bul ve baş harflerini büyüt
-                    madde.trim().lowercase()
-                        .split(" ") // Kelimelere ayır
+                    madde.trim()
+                        // 3. ADIM: Kenarda kalmış tek parantezleri, yıldızları veya gereksiz işaretleri temizle
+                        .replace(Regex("^[\\s()*\\[\\]{}]+|[\\s()*\\[\\]{}]+$"), "")
+                        .lowercase(Locale("tr", "TR"))
+                        .split(" ")
+                        .filter { it.isNotBlank() }
                         .joinToString(" ") { kelime ->
-                            kelime.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                            kelime.replaceFirstChar { it.uppercase(Locale("tr", "TR")) }
                         }
-                }// Her kelimenin ilk harfini büyük yap
-                .filter { it.isNotEmpty() && it.length > 1 && !it.all { char -> char.isDigit() } }
-                .distinct() // Aynı içerik iki kere yazılmışsa teke düşür
+                }
+                // 4. ADIM: Temizlik sonrası hala kenarda işaret kaldıysa (Örn: "Çilek)") son bir kez temizle
+                .map { it.trim().removeSuffix(")").removePrefix("(").trim() }
+
+                // 5. ADIM: Filtreleme
+                .filter { madde ->
+                    madde.length > 1 &&
+                            !madde.all { it.isDigit() } &&
+                            !madde.contains(Regex("[%:0-9]"))
+                }
+                .distinct()
 
             icindekilerListesi.addAll(parcalanmisListe)
         }
