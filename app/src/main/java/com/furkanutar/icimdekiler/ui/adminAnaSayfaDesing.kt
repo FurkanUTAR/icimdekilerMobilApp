@@ -66,7 +66,8 @@ fun AdminAnaSayfaScreen(
     onSutUrunleriClick: () -> Unit,
     onIceceklerClick: () -> Unit,
     onSignOutConfirm: () -> Unit, // Çıkış onayı için callback
-    onAyarlarClick: () -> Unit   // Ayarlar navigasyonu için callback
+    onAyarlarClick: () -> Unit,   // Ayarlar navigasyonu için callback
+    onBildirilerClick: () -> Unit   // Bildiriler navigasyonu için callback
 ) {
     val categories = listOf(
         AdminCategory(R.string.tumUrunler, R.drawable.tum_urunler, onTumUrunlerClick),
@@ -117,6 +118,14 @@ fun AdminAnaSayfaScreen(
                         onDismissRequest = { mExpanded = false }, // Dışarı basınca kapansın
                         offset = DpOffset(x = (0).dp, y = 8.dp)
                     ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.bildiriler)) },
+                            onClick = {
+                                mExpanded = false
+                                onBildirilerClick() // Fragment'a haber ver
+                            },
+                            leadingIcon = { Icon(painterResource(R.drawable.notifications), contentDescription = null) }
+                        )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.ayarlar)) },
                             onClick = {
@@ -262,7 +271,8 @@ fun AdminAnaSayfaPreview() {
             onSutUrunleriClick = {},
             onIceceklerClick = {},
             onSignOutConfirm = {},
-            onAyarlarClick = {}
+            onAyarlarClick = {},
+            onBildirilerClick = {}
         )
     }
 }

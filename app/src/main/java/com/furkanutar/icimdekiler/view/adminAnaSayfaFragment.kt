@@ -115,7 +115,8 @@ class adminAnaSayfaFragment : Fragment() {
                         onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
                         onIceceklerClick = { kontrol("İçecek") },
                         onSignOutConfirm = { showLogoutDialog = true },
-                        onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)}
+                        onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)},
+                        onBildirilerClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_bildiriFragment)}
                     )
                 }
 
