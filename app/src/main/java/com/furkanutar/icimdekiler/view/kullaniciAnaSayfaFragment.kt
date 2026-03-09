@@ -32,9 +32,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
+import com.furkanutar.icimdekiler.api.RetrofitClient
 import com.furkanutar.icimdekiler.ui.KaynakSecimDialog
 import com.furkanutar.icimdekiler.ui.KullaniciAnaSayfaScreen
 import com.furkanutar.icimdekiler.ui.OzelAlertDialog
@@ -48,6 +50,7 @@ import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -143,16 +146,6 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun showBarcodeOptionsDialog() {
-        val secim = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.secimYap)
-            .setItems(secim) { _, which ->
-                if (which == 0) showBarcodeScannerDialog() else barkodOkuGaleri()
-            }
-            .show()
     }
 
     fun kontrol(kategori : String){
@@ -456,11 +449,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
                                 findNavController().navigate(action)
                             }
                         } else {
-                            try {
-                                Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
+                            // Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+
+                            offApiSorgu(barkodNo)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -477,6 +468,46 @@ class kullaniciAnaSayfaFragment : Fragment() {
         }
     }
 
+    private fun offApiSorgu(barkodNo: String) {
+        lifecycleScope.launch {
+            try {
+                val yanit = RetrofitClient.api.getUrun(barkodNo)
+
+                if (yanit.durum == 1 && yanit.urun != null) {
+                    val apiUrun = yanit.urun
+                    val gelenAd = apiUrun.urunAdi ?: ""
+                    val gelenMarka = apiUrun.marka ?: ""
+                    val gelenIcerik = apiUrun.icindekilerTr ?: apiUrun.icindekilerGenel ?: ""
+                    val gelenGorsel = apiUrun.gorselUrl ?: ""
+
+                    Log.d("OFF_Sorgu", "🚀 Son Karar İçerik: $gelenIcerik")
+
+                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(
+                        barkodNo = barkodNo,
+                        urunAdi = "$gelenMarka $gelenAd",
+                        icindekiler = gelenIcerik,
+                        gorselUrl = gelenGorsel
+                    )
+
+                    // Geçiş yapıyoruz
+                    if (findNavController().currentDestination?.id == R.id.kullaniciAnaSayfaFragment) {
+                        findNavController().navigate(action)
+                    } else {
+                        Log.d("OFF_Sorgu", "Zaten urunFragment ekranındayız, navigasyon iptal edildi.")
+                    }
+
+                    // Sadece bir tane Toast kalsın
+                    // Toast.makeText(requireContext(), "Ürün Open Food Facts'ten getirildi!", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("OFF_Sorgu", "Hata oluştu: ${e.localizedMessage}")
+            }
+        }
+    }
+    
     private fun barkodOkuGaleri() {
         try {
             if(Build.VERSION.SDK_INT >= 33){

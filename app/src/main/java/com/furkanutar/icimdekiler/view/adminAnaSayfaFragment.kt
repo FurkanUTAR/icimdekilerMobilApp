@@ -430,9 +430,7 @@ class adminAnaSayfaFragment : Fragment() {
 
                                         if (currentFragment != targetFragment) {
                                             val action = adminAnaSayfaFragmentDirections
-                                                .actionAdminAnaSayfaFragmentToUrunEkleFragment(
-                                                    "eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId
-                                                )
+                                                .actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
                                             findNavController().navigate(action)
                                         } else {
                                             Log.d("NavigationDebug", "Already in urunEkleFragment")
@@ -485,8 +483,7 @@ class adminAnaSayfaFragment : Fragment() {
                     val icindekiler = document?.getString("icindekiler") ?: ""
                     val gorselUrl = document?.getString("gorselUrl") ?: ""
 
-                    val action = adminAnaSayfaFragmentDirections
-                        .actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
+                    val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToUrunEkleFragment("eski", barkodNo, urunAdi, icindekiler, gorselUrl, documentId)
 
                     // Güvenli navigasyon
                     if (findNavController().currentDestination?.id == R.id.adminAnaSayfaFragment) {
@@ -536,17 +533,16 @@ class adminAnaSayfaFragment : Fragment() {
                     }
 
                     // Sadece bir tane Toast kalsın
-                    Toast.makeText(requireContext(), "Ürün Open Food Facts'ten getirildi!", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(requireContext(), "Ürün Open Food Facts'ten getirildi!", Toast.LENGTH_SHORT).show()
 
                 } else {
-                    Toast.makeText(requireContext(), "Ürün bulunamadı.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("OFF_Sorgu", "Hata oluştu: ${e.localizedMessage}")
             }
         }
     }
-
 
     private fun barkodOkuGaleri() {
         try {

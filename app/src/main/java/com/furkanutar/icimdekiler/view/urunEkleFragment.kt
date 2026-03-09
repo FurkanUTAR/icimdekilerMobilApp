@@ -1,4 +1,3 @@
-
 package com.furkanutar.icimdekiler.view
 
 import android.Manifest
@@ -6,7 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,15 +15,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.furkanutar.icimdekiler.R
@@ -78,9 +71,6 @@ class urunEkleFragment : Fragment() {
     private val icerikListesi = mutableListOf<String>()
     private val icindekilerListesi = mutableStateListOf<String>()
 
-    var secilenGorsel: Uri? = null
-    var secilenBitmap: Bitmap? = null
-
     private var islem by mutableStateOf("") // "barkodOku" veya "gorselSec"
     private var durum by mutableStateOf("yeni")
     private var documentId by mutableStateOf("")
@@ -90,7 +80,6 @@ class urunEkleFragment : Fragment() {
     private var seciliIcerik by mutableStateOf("")
     private var secilenGorselUri by mutableStateOf<Uri?>(null)
     private var secilenGorselUrl by mutableStateOf<String?>(null)
-
 
     private var showOzelDialog by mutableStateOf(false)
     private var dialogBaslik by mutableStateOf("")
@@ -210,7 +199,7 @@ class urunEkleFragment : Fragment() {
         val gelenAd = args.urunAdi
         val gelenBarkod = args.barkodNo
         val gelenGorsel = args.gorselUrl
-        val gelenIcerik = args.icindekiler // Burayı eklemeyi unutma!
+        val gelenIcerik = args.icindekiler
 
         val duzenlenmisUrunAdi = gelenAd.split(" ").joinToString(" ") { kelime ->
             kelime.lowercase().replaceFirstChar { it.uppercase() }
@@ -228,11 +217,9 @@ class urunEkleFragment : Fragment() {
 
             val parcalanmisListe = gelenIcerik
                 // 1. ADIM: Tam parantez içlerini siler: (Soya), [Gluten] vb.
-                .replace(Regex("\\(.*?\\)|\\[.*?\\]|\\{.*?\\}"), "")
-
+                .replace(Regex("\\(.*?\\)|\\[.*?]|\\{.*?\\}"), "")
                 // 2. ADIM: Virgül, nokta, noktalı virgül ve "ve" bağlacına göre böl
                 .split(Regex("[,.;]|\\bve\\b"))
-
                 .map { madde ->
                     madde.trim()
                         // 3. ADIM: Kenarda kalmış tek parantezleri, yıldızları veya gereksiz işaretleri temizle
@@ -246,7 +233,6 @@ class urunEkleFragment : Fragment() {
                 }
                 // 4. ADIM: Temizlik sonrası hala kenarda işaret kaldıysa (Örn: "Çilek)") son bir kez temizle
                 .map { it.trim().removeSuffix(")").removePrefix("(").trim() }
-
                 // 5. ADIM: Filtreleme
                 .filter { madde ->
                     madde.length > 1 &&
@@ -639,7 +625,7 @@ class urunEkleFragment : Fragment() {
     private fun urunKaydet() {
         val barkod = barkodNo.trim()
         val ad = urunAdi.trim()
-        val adLower = ad.lowercase().trim() // ... (senin mevcut replace işlemlerin)
+        val adLower = ad.lowercase().trim()
         val kategori = seciliKategori.trim()
         val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 

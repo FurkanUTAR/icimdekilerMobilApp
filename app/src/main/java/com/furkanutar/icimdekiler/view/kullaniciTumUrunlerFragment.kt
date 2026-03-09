@@ -22,7 +22,6 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
     private val db = FirebaseFirestore.getInstance()
 
-    // Compose'un dinleyeceği stateful liste
     private var urunListesiState = mutableStateOf<List<Urunler>>(emptyList())
     private var kategori = ""
 
@@ -35,7 +34,6 @@ class kullaniciTumUrunlerFragment : Fragment() {
             kategori = kullaniciTumUrunlerFragmentArgs.fromBundle(it).kategori
         }
 
-        // İlk veri yüklemesi
         urunleriAl(kategori)
 
         return ComposeView(requireContext()).apply {

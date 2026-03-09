@@ -22,10 +22,6 @@ class adminTumUrunlerFragment : Fragment() {
     private var urunListesiState = mutableStateOf<List<Urunler>>(emptyList())
     private var kategori = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
