@@ -130,15 +130,20 @@ class urunEkleFragment : Fragment() {
                     },
                     onKategoriSec = { seciliKategori = it },
                     onIcerikSec = { seciliIcerik = it },
+                    onIcerikMetinDegistir = { seciliIcerik = it },
                     onIcerikEkle = {
                         if (seciliIcerik.isNotBlank()) {
                             icindekilerListesi.add(seciliIcerik)
+                            seciliIcerik = "" // Eklendikten sonra kutuyu temizle
                         }
                     },
                     onIcerikSil = { index ->
                         if (index in icindekilerListesi.indices) {
                             icindekilerListesi.removeAt(index)
                         }
+                    },
+                    onIcerikYerDegistir = { eski, yeni ->
+                        icerikYerDegistir(eski, yeni)
                     },
                     onKaydetClick = {
                         dialogBaslik = if (durum == "yeni")
@@ -186,6 +191,16 @@ class urunEkleFragment : Fragment() {
                     )
                 }
             }
+        }
+    }
+
+    fun icerikYerDegistir(eskiIndeks: Int, yeniIndeks: Int) {
+        if (eskiIndeks in icindekilerListesi.indices && yeniIndeks in icindekilerListesi.indices) {
+            // Elemanların yerini değiştir
+            val tasinanOge = icindekilerListesi.removeAt(eskiIndeks)
+            icindekilerListesi.add(yeniIndeks, tasinanOge)
+
+            seciliIcerik = seciliIcerik
         }
     }
 
