@@ -97,7 +97,8 @@
         <argument android:name="urunAdi" app:argType="string" />
         <argument android:name="icindekiler" app:argType="string" />
         <argument android:name="gorselUrl" app:argType="string" />
-        <argument android:name="documentId" app:argType="string" />
+        <argument android:name="documentId" app:argType="string"
+            app:nullable="true" />
         <action android:id="@+id/action_urunEkleFragment_to_adminTumUrunlerFragment" app:destination="@id/adminTumUrunlerFragment" />
     </fragment>
     <fragment
@@ -172,5 +173,9 @@
         android:id="@+id/bildiriFragment"
         android:name="com.furkanutar.icimdekiler.view.bildiriFragment"
         android:label="fragment_bildiri"
-        tools:layout="@layout/fragment_bildiri" />
+        tools:layout="@layout/fragment_bildiri" >
+        <action
+            android:id="@+id/action_bildiriFragment_to_urunEkleFragment"
+            app:destination="@id/urunEkleFragment" />
+    </fragment>
 </navigation>

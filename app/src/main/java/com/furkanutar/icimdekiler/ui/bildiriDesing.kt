@@ -1,9 +1,6 @@
-
 package com.furkanutar.icimdekiler.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,38 +13,38 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.furkanutar.icimdekiler.model.Bildiri
-import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun BildiriListesi(bildiriListesi: List<Bildiri>) {
+fun BildiriListesi(
+    bildiriListesi: List<Bildiri>,
+    onBildiriClick : (Bildiri) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(bildiriListesi) { bildiri ->
-            BildiriKarti(bildiri)
+            BildiriKarti(bildiri = bildiri, onClick = { onBildiriClick(bildiri) })
         }
     }
 }
 
 @Composable
-fun BildiriKarti(bildiri: Bildiri) {
+fun BildiriKarti(bildiri: Bildiri, onClick: () -> Unit) {
     Card(
+        onClick = onClick, // Tıklama olayı buraya bağlandı
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -59,14 +56,17 @@ fun BildiriKarti(bildiri: Bildiri) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = bildiri.urunAdi,
+                    text = bildiri.urunAdi.ifBlank { "Bilinmeyen Ürün" },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                // Tarih formatlama işlemi burada yapılır
+
+                // Tarih formatlama (Firebase Timestamp kontrolü ile)
                 Text(
-                    text = bildiri.zaman?.toDate()?.let { SimpleDateFormat("dd/MM HH:mm").format(it) } ?: "",
+                    text = bildiri.zaman?.toDate()?.let {
+                        SimpleDateFormat("dd/MM HH:mm", Locale.getDefault()).format(it)
+                    } ?: "",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
@@ -74,18 +74,29 @@ fun BildiriKarti(bildiri: Bildiri) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "Bulunamayan: ${bildiri.aramaTerimi}",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            if (bildiri.aramaTerimi.isNotBlank()) {
+                Text(
+                    text = "Bulunamayan: ${bildiri.aramaTerimi}",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            if (bildiri.barkodNo.isNotBlank()) {
+                Text(
+                    text = "Barkod: ${bildiri.barkodNo}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
 
             Text(
-                text = bildiri.mesaj,
+                text = bildiri.mesaj.ifBlank { "Mesaj belirtilmemiş." },
                 style = MaterialTheme.typography.bodySmall,
-                fontStyle = FontStyle.Italic
+                fontStyle = FontStyle.Italic,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

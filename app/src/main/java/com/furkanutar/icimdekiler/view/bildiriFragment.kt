@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.model.Bildiri
 import com.furkanutar.icimdekiler.ui.BildiriKarti
@@ -23,14 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
 class bildiriFragment : Fragment() {
-
-
     private val db = FirebaseFirestore.getInstance()
     private val bildiriListesi = mutableStateOf<List<Bildiri>>(emptyList())
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +42,10 @@ class bildiriFragment : Fragment() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        BildiriListesi(bildiriListesi.value)
+                        BildiriListesi(
+                            bildiriListesi.value,
+                            onBildiriClick = { bildiri -> bildiriTiklandi(bildiri) }
+                        )
                     }
                 }
             }
@@ -61,10 +60,37 @@ class bildiriFragment : Fragment() {
                     Log.e("Bildiri_Hata", "Veri çekilemedi: ${error.message}")
                     return@addSnapshotListener
                 }
+
                 if (value != null) {
                     val yeniListe = value.toObjects(Bildiri::class.java)
                     bildiriListesi.value = yeniListe
                 }
+            }
+    }
+
+    fun bildiriTiklandi(bildiri: Bildiri) {
+        val barkodNo = bildiri.barkodNo
+
+        if (barkodNo.isEmpty()) return
+
+        db.collection("urunler")
+            .whereEqualTo("barkodNo", barkodNo)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if (snapshot != null && !snapshot.isEmpty) {
+                    // Ürün veritabanında bulunduysa bilgileri al
+                    val doc = snapshot.documents.firstOrNull()
+                    val docId = doc?.id
+                    val urunAdi = doc?.getString("urunAdi") ?: ""
+                    val icindekiler = doc?.getString("icindekiler") ?: ""
+                    val gorselUrl = doc?.getString("gorselUrl") ?: ""
+
+                    val action = bildiriFragmentDirections.actionBildiriFragmentToUrunEkleFragment("eski",barkodNo,urunAdi,icindekiler,gorselUrl,docId)
+                    findNavController().navigate(action)
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Hata: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
     }
 }

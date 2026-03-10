@@ -195,7 +195,7 @@ class urunEkleFragment : Fragment() {
         val gelenDurum = args.durum
         if (gelenDurum.isNotBlank()) durum = gelenDurum
 
-        documentId = args.documentId
+        documentId = args.documentId ?: ""
         val gelenAd = args.urunAdi
         val gelenBarkod = args.barkodNo
         val gelenGorsel = args.gorselUrl

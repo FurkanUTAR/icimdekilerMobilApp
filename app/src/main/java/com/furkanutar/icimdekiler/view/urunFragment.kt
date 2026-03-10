@@ -147,6 +147,7 @@ class urunFragment : Fragment() {
         val bildiriMap = hashMapOf(
             "durum" to durum,
             "urunAdi" to urunAdi,
+            "barkodNo" to args.barkodNo,
             "aramaTerimi" to aramaTerimi,
             "mesaj" to mesaj,
             "zaman" to FieldValue.serverTimestamp()

@@ -63,9 +63,11 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
     private fun urunleriAl(kategori: String) {
         val baseQuery = if (kategori == "tumUrunler" || kategori.isEmpty()) {
-            db.collection("urunler").orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
+            db.collection("urunler")
+                .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
         } else {
-            db.collection("urunler").whereEqualTo("kategori", kategori)
+            db.collection("urunler")
+                .whereEqualTo("kategori", kategori)
                 .orderBy("urunAdiLowerCase", Query.Direction.ASCENDING)
         }
 
@@ -77,17 +79,18 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
             value?.let { snapshot ->
                 val liste = snapshot.documents.mapNotNull { doc ->
-                    val bNo = doc.getString("barkodNo") ?: ""
-                    val uAd = doc.getString("urunAdi") ?: ""
-                    if (bNo.isNotEmpty() && uAd.isNotEmpty()) {
+                    val barkodNo = doc.getString("barkodNo") ?: ""
+                    val urunAdi = doc.getString("urunAdi") ?: ""
+                    if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
                         Urunler(
-                            bNo, uAd,
+                            barkodNo, urunAdi,
                             doc.getString("icindekiler") ?: "",
                             doc.getString("gorselUrl") ?: "",
                             doc.id
                         )
                     } else null
                 }
+
                 urunListesiState.value = liste
             }
         }
