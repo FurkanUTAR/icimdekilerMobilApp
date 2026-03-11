@@ -130,7 +130,7 @@ class urunFragment : Fragment() {
                         .setPositiveButton(R.string.tamam, null)
                         .show()
                 } else {
-                    Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.bildir) {
                             bildir("Açıklama Bulunamadı",urun, "Kullanıcı bu ürünün açıklamasını bulamadı ve bildirdi.", urunAdi)
                         }.show()
