@@ -6,5 +6,5 @@ data class Bildiri(
     val aramaTerimi: String = "",
     val durum: String = "",
     val mesaj: String = "",
-    val zaman: com.google.firebase.Timestamp? = null
+    val tarih: com.google.firebase.Timestamp? = null
 )

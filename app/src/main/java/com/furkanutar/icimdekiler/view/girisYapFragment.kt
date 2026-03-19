@@ -77,6 +77,7 @@ class girisYapFragment : Fragment() {
                                                     val kullanici = documents.documents.first()
                                                     isAdmin = kullanici.getBoolean("isAdmin") ?: false
                                                     kullaniciAdi = kullanici.getString("kullaniciAdi") ?: "Bilinmiyor"
+                                                    val isimSoyisim = kullanici.getString("isimSoyisim") ?: "Bilinmiyor"
 
                                                     if (isAdded) {
                                                         val navController = view?.findNavController()
@@ -85,7 +86,7 @@ class girisYapFragment : Fragment() {
                                                         } else {
                                                             findNavController().navigate(girisYapFragmentDirections.actionGirisYapFragmentToKullaniciAnaSayfaFragment())
                                                         }
-                                                        Toast.makeText(requireContext(), "Hoş geldin $kullaniciAdi", Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(requireContext(), "Hoş geldin $isimSoyisim", Toast.LENGTH_SHORT).show()
                                                     }
                                                 } else {
                                                     Toast.makeText(requireContext(), R.string.kullaniciBilgileriYanlis, Toast.LENGTH_LONG).show()
@@ -116,9 +117,5 @@ class girisYapFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 }

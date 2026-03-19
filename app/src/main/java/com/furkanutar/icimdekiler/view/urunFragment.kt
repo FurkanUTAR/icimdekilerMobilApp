@@ -150,7 +150,7 @@ class urunFragment : Fragment() {
             "barkodNo" to args.barkodNo,
             "aramaTerimi" to aramaTerimi,
             "mesaj" to mesaj,
-            "zaman" to FieldValue.serverTimestamp()
+            "tarih" to FieldValue.serverTimestamp()
         )
 
         db.collection("bildiriler")

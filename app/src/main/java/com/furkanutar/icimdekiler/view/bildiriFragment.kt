@@ -54,7 +54,7 @@ class bildiriFragment : Fragment() {
 
     fun bildirileriAl(){
         db.collection("bildiriler")
-            .orderBy("zaman", Query.Direction.DESCENDING)
+            .orderBy("tarih", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null){
                     Log.e("Bildiri_Hata", "Veri çekilemedi: ${error.message}")
