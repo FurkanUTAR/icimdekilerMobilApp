@@ -51,9 +51,22 @@ class urunFragment : Fragment() {
                 UrunScreen(
                     urunAdi = urunAdi,
                     gorselUrl = args.gorselUrl,
+                    // GEÇİCİ VERİLER (Tasarımı görmek için)
+                    kalori = 250,
+                    protein = 5.4f,
+                    karbonhidrat = 32.1f,
+                    yag = 12.8f,
                     icindekilerListesi = icindekilerListesi,
                     onIngredientClick = { secilenMadde ->
                         aciklamaGetir(secilenMadde, args.urunAdi)
+                    },
+                    onEkleClick = { miktar ->
+                        // Şimdilik sadece log basalım veya Toast gösterelim
+                        Log.d("KaloriTakip", "Seçilen miktar: $miktar gram. Hedefe eklenecek.")
+                        Toast.makeText(requireContext(), "$miktar gr günlüğünüze eklendi", Toast.LENGTH_SHORT).show()
+
+                        // İleride buraya RoomDB'ye kayıt kodu gelecek:
+                        // viewModel.gunlukVeriyeEkle(urunAdi, miktar, kalori)
                     }
                 )
             }
