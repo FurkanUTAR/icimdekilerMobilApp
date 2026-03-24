@@ -64,7 +64,7 @@ data class UrunEkleUiState(
     val icindekilerListesi: List<String> = emptyList(),
     val kategoriler: List<String> = emptyList(),
     val icerikler: List<String> = emptyList(),
-    val yeniMi: Boolean = true,
+    val yeniMi: Boolean = true
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +81,8 @@ fun UrunEkleScreen(
     onIcerikSil: (Int) -> Unit,
     onKaydetClick: () -> Unit,
     onSilClick: () -> Unit,
-    onIcerikYerDegistir: (Int, Int) -> Unit, // YENİ: Listenin sırasını değiştirmek için
-    onIcerikMetinDegistir: (String) -> Unit  // YENİ: Dropdown'a metin yazabilmek için
+    onIcerikYerDegistir: (Int, Int) -> Unit,
+    onIcerikMetinDegistir: (String) -> Unit,
 ) {
     // Klavye açıldığında ekranın kaydırılabilmesi için scroll state
     val scrollState = rememberScrollState()
@@ -180,7 +180,7 @@ fun UrunEkleScreen(
             IconButton(
                 onClick = onIcerikEkle,
                 modifier = Modifier
-                    .background(Color(0xFF4CAF50), CircleShape) // Daha belirgin buton
+                    .background(Color(0xFF4CAF50), CircleShape)
                     .size(48.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
@@ -193,7 +193,7 @@ fun UrunEkleScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 150.dp, max = 300.dp), // OnMeasure hatasını önlemek için sınır koyduk
+                .heightIn(min = 200.dp, max = 400.dp),
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(2.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -204,11 +204,10 @@ fun UrunEkleScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .background(Color.White),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Column {
                             if (index > 0) {
                                 IconButton(onClick = { onIcerikYerDegistir(index, index - 1) }, modifier = Modifier.size(24.dp)) {
@@ -222,7 +221,12 @@ fun UrunEkleScreen(
                             }
                         }
 
-                        Text(text = item, modifier = Modifier.weight(1f).padding(start = 8.dp), style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = item,
+                            modifier = Modifier.weight(1f).padding(start = 8.dp),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
                         IconButton(onClick = { onIcerikSil(index) }) {
                             Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
                         }
@@ -257,51 +261,6 @@ fun UrunEkleScreen(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(text = stringResource(R.string.kaydet), color = Color.White)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun YazilabilirDropdown(
-    label: String,
-    options: List<String>,
-    selectedValue: String,
-    onValueChange: (String) -> Unit, // Yazılanı iletir
-    onSelect: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = selectedValue,
-            onValueChange = onValueChange, // Kullanıcı yazabilir
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
-            singleLine = true
-        )
-
-        // Sadece seçenekler varsa menüyü göster
-        if (options.isNotEmpty()) {
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                // Filtreleme mantığı: Yazılan harflere göre listeyi daraltır
-                options.filter { it.contains(selectedValue, ignoreCase = true) }.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            onSelect(option)
-                            expanded = false
-                        }
-                    )
-                }
             }
         }
     }
@@ -348,6 +307,51 @@ private fun UrunEkleDropdown(
                         expanded = false
                     }
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun YazilabilirDropdown(
+    label: String,
+    options: List<String>,
+    selectedValue: String,
+    onValueChange: (String) -> Unit, // Yazılanı iletir
+    onSelect: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedValue,
+            onValueChange = onValueChange, // Kullanıcı yazabilir
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            singleLine = true
+        )
+
+        // Sadece seçenekler varsa menüyü göster
+        if (options.isNotEmpty()) {
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                // Filtreleme mantığı: Yazılan harflere göre listeyi daraltır
+                options.filter { it.contains(selectedValue, ignoreCase = true) }.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            onSelect(option)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

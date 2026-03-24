@@ -130,7 +130,7 @@ class urunFragment : Fragment() {
                         .setPositiveButton(R.string.tamam, null)
                         .show()
                 } else {
-                    Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.bildir) {
                             bildir("Açıklama Bulunamadı",urun, "Kullanıcı bu ürünün açıklamasını bulamadı ve bildirdi.", urunAdi)
                         }.show()
@@ -150,7 +150,7 @@ class urunFragment : Fragment() {
             "barkodNo" to args.barkodNo,
             "aramaTerimi" to aramaTerimi,
             "mesaj" to mesaj,
-            "zaman" to FieldValue.serverTimestamp()
+            "tarih" to FieldValue.serverTimestamp()
         )
 
         db.collection("bildiriler")

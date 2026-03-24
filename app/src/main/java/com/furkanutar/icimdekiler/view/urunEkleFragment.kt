@@ -113,7 +113,7 @@ class urunEkleFragment : Fragment() {
                         seciliKategori = seciliKategori,
                         seciliIcerik = seciliIcerik,
                         seciliGorselUrl = secilenGorselUri?.toString() ?: secilenGorselUrl,
-                        icindekilerListesi = icindekilerListesi,
+                        icindekilerListesi = icindekilerListesi.toList(), // Compose'un değişikliği fark etmesi için toList()
                         kategoriler = kategoriler,
                         icerikler = icerikListesi,
                         yeniMi = durum == "yeni"
@@ -125,11 +125,12 @@ class urunEkleFragment : Fragment() {
                     },
                     onUrunAdiChange = { urunAdi = it },
                     onGorselSecClick = {
-                        islem = "gorselSec" // Görsel seçme işlemi olarak işaretle
+                        islem = "gorselSec"
                         barkodOkuGaleri()
                     },
                     onKategoriSec = { seciliKategori = it },
                     onIcerikSec = { seciliIcerik = it },
+                    // YENİ: ComboBox içine bir şey yazıldığında tetiklenir
                     onIcerikMetinDegistir = { seciliIcerik = it },
                     onIcerikEkle = {
                         if (seciliIcerik.isNotBlank()) {
@@ -142,6 +143,7 @@ class urunEkleFragment : Fragment() {
                             icindekilerListesi.removeAt(index)
                         }
                     },
+                    // YENİ: Sıralama değiştirme bağlantısı
                     onIcerikYerDegistir = { eski, yeni ->
                         icerikYerDegistir(eski, yeni)
                     },
@@ -157,7 +159,7 @@ class urunEkleFragment : Fragment() {
                     },
                     onSilClick = {
                         dialogBaslik = getString(R.string.silmekIstediginizdenEminMisiniz)
-                        onayButonRengi = Color.Red // Silme işlemi için kırmızı renk
+                        onayButonRengi = Color.Red
                         pendingAction = { urunSil() }
                         showOzelDialog = true
                     }
@@ -191,16 +193,6 @@ class urunEkleFragment : Fragment() {
                     )
                 }
             }
-        }
-    }
-
-    fun icerikYerDegistir(eskiIndeks: Int, yeniIndeks: Int) {
-        if (eskiIndeks in icindekilerListesi.indices && yeniIndeks in icindekilerListesi.indices) {
-            // Elemanların yerini değiştir
-            val tasinanOge = icindekilerListesi.removeAt(eskiIndeks)
-            icindekilerListesi.add(yeniIndeks, tasinanOge)
-
-            seciliIcerik = seciliIcerik
         }
     }
 
@@ -283,6 +275,15 @@ class urunEkleFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun icerikYerDegistir(eskiIndeks: Int, yeniIndeks: Int) {
+        if (eskiIndeks in icindekilerListesi.indices && yeniIndeks in icindekilerListesi.indices) {
+            // Elemanların yerini değiştir
+            val tasinanOge = icindekilerListesi.removeAt(eskiIndeks)
+            icindekilerListesi.add(yeniIndeks, tasinanOge)
+            seciliIcerik = seciliIcerik // Basit bir state değişikliği recomposition tetikler
+        }
     }
 
     private fun showBarcodeScannerDialog() {
