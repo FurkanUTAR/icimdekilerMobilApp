@@ -2,72 +2,54 @@ package com.furkanutar.icimdekiler.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.furkanutar.icimdekiler.R
-import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
+import kotlinx.coroutines.launch
 
-data class KullaniciCategory(
-    val titleRes: Int,
-    val imageRes: Int,
-    val onClick: () -> Unit,
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KullaniciAnaSayfaScreen(
     urunAdi: String,
+    isLoggedIn: Boolean, // Firebase'den gelecek giriş durumu
+    kullaniciAdSoyad: String = "Furkan Utar", // Örnek isim
+    kullaniciEmail: String = "furkan@example.com",
+    gunlukKaloriHedefi: Int = 2000,
+    harcananKalori: Int = 450,
     onUrunAdiChange: (String) -> Unit,
     onSearchClick: () -> Unit,
-    onAddClick: () -> Unit,
     onBarcodeClick: () -> Unit,
     onTumUrunlerClick: () -> Unit,
     onAtistirmalikClick: () -> Unit,
     onTemelGidaClick: () -> Unit,
     onSutUrunleriClick: () -> Unit,
     onIceceklerClick: () -> Unit,
-    onSignOutConfirm: () -> Unit, // Çıkış onayı için callback
-    onAyarlarClick: () -> Unit   // Ayarlar navigasyonu için callback
+    onSignOutConfirm: () -> Unit,
+    onAyarlarClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit
 ) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     val categories = listOf(
         AdminCategory(R.string.tumUrunler, R.drawable.tum_urunler, onTumUrunlerClick),
         AdminCategory(R.string.temelGida, R.drawable.temel_gida, onTemelGidaClick),
@@ -76,180 +58,183 @@ fun KullaniciAnaSayfaScreen(
         AdminCategory(R.string.atistirmaliklar, R.drawable.atistirmalik, onAtistirmalikClick)
     )
 
-    var mExpanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.End
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            ModalDrawerSheet(
+                modifier = Modifier.width(300.dp).fillMaxHeight(),
+                drawerContainerColor = Color.White,
+                drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp)
             ) {
-                Box { // DropdownMenu'yü konumlandırmak için Box şart
-                    IconButton(
-                        onClick = { mExpanded = true }, // Menüyü aç
+                // --- PROFIL BAŞLIĞI ---
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(24.dp)
+                ) {
+                    Box(
                         modifier = Modifier
-                            .size(48.dp)
-                            .background(MaterialTheme.colorScheme.primary, CircleShape)
+                            .size(60.dp)
+                            .background(Color.White.copy(alpha = 0.2f), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.menu),
-                            contentDescription = stringResource(R.string.menu),
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(35.dp))
                     }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(text = kullaniciAdSoyad, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = kullaniciEmail, color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+                }
 
-                    DropdownMenu(
-                        modifier = Modifier
-                            .padding(top = 10.dp),
-                        expanded = mExpanded,
-                        onDismissRequest = { mExpanded = false }, // Dışarı basınca kapansın
-                        offset = DpOffset(x = (0).dp, y = 8.dp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // --- KALORİ TAKİP ÖZETİ ---
+                if (isLoggedIn) {
+                    Text(
+                        "Günlük Takip",
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.Gray
+                    )
+                    Card(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp).fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.ayarlar)) },
-                            onClick = {
-                                mExpanded = false
-                                onAyarlarClick() // Fragment'a haber ver
-                            },
-                            leadingIcon = { Icon(painterResource(R.drawable.settings), contentDescription = null) }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.cikisYap)) },
-                            onClick = {
-                                mExpanded = false
-                                onSignOutConfirm() // Çıkış diyaloğunu tetikle
-                            },
-                            leadingIcon = { Icon(painterResource(R.drawable.logout), contentDescription = null) }
-                        )
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("Kalan Kalori", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                                Text("${gunlukKaloriHedefi - harcananKalori} kcal", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                            }
+                            LinearProgressIndicator(
+                                progress = { harcananKalori.toFloat() / gunlukKaloriHedefi.toFloat() },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(8.dp).clip(CircleShape),
+                                color = MaterialTheme.colorScheme.primary,
+                                trackColor = Color.LightGray.copy(alpha = 0.3f)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // --- MENÜ ÖĞELERİ ---
+                if (!isLoggedIn) {
+                    DrawerItem(Icons.Default.Settings, "Giriş Yap", onLoginClick)
+                    DrawerItem(Icons.Default.Settings, "Kayıt Ol", onRegisterClick)
+                } else {
+                    DrawerItem(Icons.Default.Settings, "Ayarlar", onAyarlarClick)
+                    DrawerItem(Icons.Default.Settings, "Geçmiş Veriler", { /* Navigasyon */ })
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp), thickness = 0.5.dp)
+                    DrawerItem(Icons.Default.Settings, "Çıkış Yap", onSignOutConfirm, textColor = Color.Red)
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    "Versiyon 1.0.2",
+                    modifier = Modifier.padding(20.dp).align(Alignment.CenterHorizontally),
+                    fontSize = 11.sp, color = Color.Gray
+                )
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        Icon(painterResource(id = R.drawable.menu), contentDescription = "Menü", tint = MaterialTheme.colorScheme.primary)
+                    }
+                    Text("İçimdekiler", fontWeight = FontWeight.ExtraBold, fontSize = 20.sp, color = MaterialTheme.colorScheme.primary)
+                    IconButton(onClick = onBarcodeClick) {
+                        Icon(painterResource(id = R.drawable.barcode_reader), contentDescription = "Barkod", modifier = Modifier.size(30.dp), tint = Color.Unspecified)
                     }
                 }
             }
-
-            IconButton(
-                onClick = onBarcodeClick,
+        ) { paddingValues ->
+            Column(
                 modifier = Modifier
-                    .size(width = 170.dp, height = 120.dp) // Görselin sığması için buton boyutunu belirledik
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.barcode_reader),
-                    contentDescription = stringResource(R.string.barkodOku),
-                    modifier = Modifier
-                        .size(width = 160.dp, height = 110.dp)
-                        .padding(top = 10.dp),
-                    tint = Color.Unspecified // Orijinal görsel renklerini korumak için (siyah olmaması için)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+                // Arama Çubuğu
                 OutlinedTextField(
                     value = urunAdi,
                     onValueChange = onUrunAdiChange,
                     placeholder = { Text(stringResource(R.string.urunAra)) },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     shape = RoundedCornerShape(24.dp),
                     trailingIcon = {
                         IconButton(onClick = onSearchClick) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.search),
-                                contentDescription = stringResource(R.string.urunAra)
-                            )
+                            Icon(painterResource(id = R.drawable.search), contentDescription = null)
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                        unfocusedContainerColor = Color.White
                     ),
                     singleLine = true
                 )
-            }
 
-            Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(categories) { category ->
-                    KullaniciCategoryCard(category = category)
+                // Kategori Izgarası
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(bottom = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(categories) { category ->
+                        KullaniciCategoryCard(category = category)
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun DrawerItem(icon: ImageVector, label: String, onClick: () -> Unit, textColor: Color = Color.Black) {
+    NavigationDrawerItem(
+        icon = { Icon(icon, contentDescription = null, tint = if (textColor == Color.Red) Color.Red else MaterialTheme.colorScheme.primary) },
+        label = { Text(label, color = textColor, fontWeight = FontWeight.Medium) },
+        selected = false,
+        onClick = onClick,
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    )
 }
 
 @Composable
 private fun KullaniciCategoryCard(category: AdminCategory) {
     Card(
         onClick = category.onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(142.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        elevation = CardDefaults.cardElevation(4.dp)
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
+                modifier = Modifier.fillMaxSize().padding(15.dp),
                 contentScale = ContentScale.Fit
             )
             Text(
                 text = stringResource(id = category.titleRes),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 10.dp),
-                color = Color.Black,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 12.dp),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+                fontSize = 14.sp
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun KullaniciAnaSayfaPreview() {
-    IcimdekilerTheme() {
-        KullaniciAnaSayfaScreen(
-            urunAdi = "",
-            onUrunAdiChange = {},
-            onSearchClick = {},
-            onAddClick = {},
-            onBarcodeClick = {},
-            onTumUrunlerClick = {},
-            onAtistirmalikClick = {},
-            onTemelGidaClick = {},
-            onSutUrunleriClick = {},
-            onIceceklerClick = {},
-            onSignOutConfirm = {},
-            onAyarlarClick = {}
-        )
     }
 }

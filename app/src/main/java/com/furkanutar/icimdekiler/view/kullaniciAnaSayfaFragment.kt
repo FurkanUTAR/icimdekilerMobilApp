@@ -99,12 +99,17 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 IcimdekilerTheme {
                     KullaniciAnaSayfaScreen(
                         urunAdi = urunAdi,
+                        // Firebase'den mevcut kullanıcıyı kontrol ediyoruz
+                        isLoggedIn = auth.currentUser != null,
+                        kullaniciAdSoyad = auth.currentUser?.displayName ?: "Kullanıcı",
+                        kullaniciEmail = auth.currentUser?.email ?: "",
+
+                        // Kalori değerlerini şimdilik sabit (veya ViewModel'den) veriyoruz
+                        gunlukKaloriHedefi = 2000,
+                        harcananKalori = 450,
+
                         onUrunAdiChange = { urunAdi = it },
                         onSearchClick = { urunAdiAra() },
-                        onAddClick = {
-                            isBarcodeAction = false
-                            showSourceDialog = true
-                        },
                         onBarcodeClick = {
                             isBarcodeAction = true
                             showSourceDialog = true
@@ -114,8 +119,20 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         onTemelGidaClick = { kontrol("Temel Gıda") },
                         onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
                         onIceceklerClick = { kontrol("İçecek") },
+
+                        // Yan menüden tetiklenen aksiyonlar
                         onSignOutConfirm = { showLogoutDialog = true },
-                        onAyarlarClick = {findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_ayarlarFragment)}
+                        onAyarlarClick = {
+                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_ayarlarFragment)
+                        },
+                        onLoginClick = {
+                            // Giriş sayfasına yönlendir
+                            //findNavController().navigate(R.id.action_global_girisFragment)
+                        },
+                        onRegisterClick = {
+                            // Kayıt sayfasına yönlendir
+                            // findNavController().navigate(R.id.action_global_kayitFragment)
+                        }
                     )
                 }
 
