@@ -10,6 +10,7 @@
     <string name="parola">Parola</string>
 
     <!-- Buton Metinleri -->
+    <string name="misafirKullanici">Misafir Kullanıcı</string>
     <string name="kayitOl">Kayıt Ol</string>
     <string name="girisYap">Giriş Yap</string>
     <string name="cikisYap">Çıkış Yap</string>

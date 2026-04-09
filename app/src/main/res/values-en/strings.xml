@@ -10,6 +10,7 @@
     <string name="parola">Password</string>
 
     <!-- Buton Metinleri -->
+    <string name="misafirKullanici">Guest User</string>
     <string name="kayitOl">Sign Up</string>
     <string name="girisYap">Sign In</string>
     <string name="cikisYap">Log Out</string>

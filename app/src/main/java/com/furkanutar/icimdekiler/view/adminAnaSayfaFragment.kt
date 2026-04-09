@@ -54,6 +54,11 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
 class adminAnaSayfaFragment : Fragment() {
 
@@ -76,6 +81,7 @@ class adminAnaSayfaFragment : Fragment() {
     private var showLogoutDialog by mutableStateOf(false)
     private var showSourceDialog by mutableStateOf(false)
     private var isBarcodeAction by mutableStateOf(false) // Barkod mu yoksa Ürün Ekleme mi ayrımı için
+    private var adminYetkisiOnaylandi by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,27 +103,33 @@ class adminAnaSayfaFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 IcimdekilerTheme {
-                    AdminAnaSayfaScreen(
-                        urunAdi = urunAdi,
-                        onUrunAdiChange = { urunAdi = it },
-                        onSearchClick = { urunAdiAra() },
-                        onAddClick = {
-                            isBarcodeAction = false
-                            showSourceDialog = true
-                        },
-                        onBarcodeClick = {
-                            isBarcodeAction = true
-                            showSourceDialog = true
-                        },
-                        onTumUrunlerClick = { kontrol("tumUrunler") },
-                        onAtistirmalikClick = { kontrol("Atıştırmalık") },
-                        onTemelGidaClick = { kontrol("Temel Gıda") },
-                        onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
-                        onIceceklerClick = { kontrol("İçecek") },
-                        onSignOutConfirm = { showLogoutDialog = true },
-                        onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)},
-                        onBildirilerClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_bildiriFragment)}
-                    )
+                    if (adminYetkisiOnaylandi) {
+                        AdminAnaSayfaScreen(
+                            urunAdi = urunAdi,
+                            onUrunAdiChange = { urunAdi = it },
+                            onSearchClick = { urunAdiAra() },
+                            onAddClick = {
+                                isBarcodeAction = false
+                                showSourceDialog = true
+                            },
+                            onBarcodeClick = {
+                                isBarcodeAction = true
+                                showSourceDialog = true
+                            },
+                            onTumUrunlerClick = { kontrol("tumUrunler") },
+                            onAtistirmalikClick = { kontrol("Atıştırmalık") },
+                            onTemelGidaClick = { kontrol("Temel Gıda") },
+                            onSutUrunleriClick = { kontrol("Süt ve Süt Ürünü") },
+                            onIceceklerClick = { kontrol("İçecek") },
+                            onSignOutConfirm = { showLogoutDialog = true },
+                            onAyarlarClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_ayarlarFragment)},
+                            onBildirilerClick = {findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_bildiriFragment)}
+                        )
+                    } else {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
 
                 // Tek bir Dialog üzerinden her iki mantığı yönetiyoruz
@@ -154,12 +166,50 @@ class adminAnaSayfaFragment : Fragment() {
                         onConfirm = {
                             showLogoutDialog = false
                             auth.signOut()
-                            findNavController().navigate(R.id.action_adminAnaSayfaFragment_to_girisYapFragment)
+                            findNavController().navigate(R.id.kullaniciAnaSayfaFragment)
                         }
                     )
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        adminYetkisiniKontrolEt()
+    }
+
+    private fun adminYetkisiniKontrolEt() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            adminYetkisiOnaylandi = false
+            if (isAdded && findNavController().currentDestination?.id != R.id.kullaniciAnaSayfaFragment) {
+                findNavController().navigate(R.id.kullaniciAnaSayfaFragment)
+            }
+            return
+        }
+
+        db.collection("kullaniciBilgileri")
+            .whereEqualTo("kullaniciUID", currentUser.uid)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!isAdded) return@addOnSuccessListener
+
+                val isAdmin = documents.documents.firstOrNull()?.getBoolean("isAdmin") == true
+                adminYetkisiOnaylandi = isAdmin
+
+                if (!isAdmin && findNavController().currentDestination?.id != R.id.kullaniciAnaSayfaFragment) {
+                    findNavController().navigate(R.id.kullaniciAnaSayfaFragment)
+                }
+            }
+            .addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
+                adminYetkisiOnaylandi = false
+                if (findNavController().currentDestination?.id != R.id.kullaniciAnaSayfaFragment) {
+                    findNavController().navigate(R.id.kullaniciAnaSayfaFragment)
+                }
+            }
     }
 
     fun kontrol(kategori : String){

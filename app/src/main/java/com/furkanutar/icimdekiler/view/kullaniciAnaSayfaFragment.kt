@@ -76,6 +76,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
     private var showLogoutDialog by mutableStateOf(false)
     private var showSourceDialog by mutableStateOf(false)
     private var isBarcodeAction by mutableStateOf(false)
+    private var kullaniciAdSoyad by mutableStateOf("Kullanıcı")
+    private var kullaniciEmail by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,8 +103,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         urunAdi = urunAdi,
                         // Firebase'den mevcut kullanıcıyı kontrol ediyoruz
                         isLoggedIn = auth.currentUser != null,
-                        kullaniciAdSoyad = auth.currentUser?.displayName ?: "Kullanıcı",
-                        kullaniciEmail = auth.currentUser?.email ?: "",
+                        kullaniciAdSoyad = kullaniciAdSoyad,
+                        kullaniciEmail = kullaniciEmail,
 
                         // Kalori değerlerini şimdilik sabit (veya ViewModel'den) veriyoruz
                         gunlukKaloriHedefi = 2000,
@@ -126,12 +128,10 @@ class kullaniciAnaSayfaFragment : Fragment() {
                             findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_ayarlarFragment)
                         },
                         onLoginClick = {
-                            // Giriş sayfasına yönlendir
-                            //findNavController().navigate(R.id.action_global_girisFragment)
+                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment)
                         },
                         onRegisterClick = {
-                            // Kayıt sayfasına yönlendir
-                            // findNavController().navigate(R.id.action_global_kayitFragment)
+                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_kayitOlFragment)
                         }
                     )
                 }
@@ -157,7 +157,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         onConfirm = {
                             showLogoutDialog = false
                             auth.signOut()
-                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_girisYapFragment)
+                            kullaniciBilgileriniYukle()
                         }
                     )
                 }
@@ -165,35 +165,76 @@ class kullaniciAnaSayfaFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        kullaniciBilgileriniYukle()
+    }
+
+    private fun kullaniciBilgileriniYukle() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            kullaniciAdSoyad = getString(R.string.misafirKullanici)
+            kullaniciEmail = ""
+            return
+        }
+
+        kullaniciEmail = currentUser.email.orEmpty()
+
+        db.collection("kullaniciBilgileri")
+            .document(currentUser.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (!isAdded) return@addOnSuccessListener
+
+                val isimSoyisim = document.getString("isimSoyisim")?.takeIf { it.isNotBlank() }
+
+                kullaniciAdSoyad = isimSoyisim ?: "Kullanıcı"
+                kullaniciEmail = document.getString("ePosta")?.takeIf { it.isNotBlank() }
+                    ?: currentUser.email.orEmpty()
+            }
+            .addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
+                kullaniciAdSoyad = currentUser.displayName ?: "Kullanıcı"
+                kullaniciEmail = currentUser.email.orEmpty()
+            }
+    }
+
     fun kontrol(kategori : String){
         val currentUser = auth.currentUser
-        if (currentUser != null) {
-            // Kullanıcı bilgileri Firestore'dan çek
-            db.collection("kullaniciBilgileri")
-                .whereEqualTo("kullaniciUID", currentUser.uid)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val kullanici = documents.documents.first()
-                        val isAdmin = kullanici.getBoolean("isAdmin") ?: false
-
-                        // Yönlendirme işlemi
-                        if (isAdmin){
-                            val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment(kategori)
-                            requireView().findNavController().navigate(action)
-                        } else {
-                            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
-                            requireView().findNavController().navigate(action)
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
-                    }
-                }.addOnFailureListener {
-                    Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(requireContext(), R.string.beklenmedikBirHataOlustu, Toast.LENGTH_SHORT).show()
+        if (currentUser == null) {
+            val action = kullaniciAnaSayfaFragmentDirections
+                .actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+            findNavController().navigate(action)
+            return
         }
+
+        // Kullanıcı bilgileri Firestore'dan çek
+        db.collection("kullaniciBilgileri")
+            .whereEqualTo("kullaniciUID", currentUser.uid)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val kullanici = documents.documents.first()
+                    val isAdmin = kullanici.getBoolean("isAdmin") ?: false
+
+                    // Yönlendirme işlemi
+                    if (isAdmin){
+                        val action = adminAnaSayfaFragmentDirections.actionAdminAnaSayfaFragmentToAdminTumUrunlerFragment(kategori)
+                        requireView().findNavController().navigate(action)
+                    } else {
+                        val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+                        requireView().findNavController().navigate(action)
+                    }
+                } else {
+                    val action = kullaniciAnaSayfaFragmentDirections
+                        .actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+                    findNavController().navigate(action)
+                }
+            }.addOnFailureListener {
+                val action = kullaniciAnaSayfaFragmentDirections
+                    .actionKullaniciAnaSayfaFragmentToKullaniciTumUrunlerFragment(kategori)
+                findNavController().navigate(action)
+            }
     }
 
     private fun showBarcodeScannerDialog() {
