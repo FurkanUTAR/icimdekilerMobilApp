@@ -106,7 +106,7 @@ fun AdminAnaSayfaScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.menu),
                             contentDescription = stringResource(R.string.menu),
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -183,8 +183,8 @@ fun AdminAnaSayfaScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                     ),
@@ -200,7 +200,7 @@ fun AdminAnaSayfaScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.add),
                         contentDescription = stringResource(R.string.urunEkle),
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -247,7 +247,7 @@ private fun AdminCategoryCard(category: AdminCategory) {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 10.dp),
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp
             )

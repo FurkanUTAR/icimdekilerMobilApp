@@ -25,7 +25,7 @@ fun AyarlarScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -34,7 +34,7 @@ fun AyarlarScreen(
             text = stringResource(R.string.ayarlar),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(top = 32.dp)
         )
 
@@ -44,7 +44,7 @@ fun AyarlarScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(17.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(
@@ -61,7 +61,7 @@ fun AyarlarScreen(
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     thickness = 1.dp,
-                    color = Color.Black.copy(alpha = 0.1f) // Saf siyah yerine hafif şeffaf daha modern durur
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f) // Saf siyah yerine hafif şeffaf daha modern durur
                 )
 
                 // Tema Ayarı
@@ -73,7 +73,7 @@ fun AyarlarScreen(
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     thickness = 1.dp,
-                    color = Color.Black.copy(alpha = 0.1f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                 )
 
                 // Dil Ayarı
@@ -107,7 +107,7 @@ fun AyarButonu(
             // İstersen buraya Icon(painter = ...) ekleyerek XML'deki app:icon özelliğini canlandırabiliriz
             Text(
                 text = text,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
             )

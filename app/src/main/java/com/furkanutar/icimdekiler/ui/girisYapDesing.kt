@@ -155,13 +155,13 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
         ) {
             Text(
                 text = stringResource(R.string.halaKayitOlmadinMi),
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp
             )
             TextButton(onClick = kayitOlTiklandi) {
                 Text(
                     text = stringResource(R.string.kayitOl),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -181,7 +181,7 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
         ) {
             Text(
                 text = stringResource(R.string.girisYap),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 16.sp
             )
         }

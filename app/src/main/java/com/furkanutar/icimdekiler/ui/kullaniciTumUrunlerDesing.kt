@@ -97,7 +97,7 @@ fun UrunKarti(urun: Urunler, onClick: () -> Unit) {
             .height(220.dp), // BÜTÜN CARDLARIN AYNI BOY OLMASI İÇİN SABİT YÜKSEKLİK
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
     ) {
         Column(

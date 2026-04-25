@@ -69,7 +69,7 @@ fun KullaniciAnaSayfaScreen(
         drawerContent = {
             ModalDrawerSheet(
                 modifier = Modifier.width(300.dp).fillMaxHeight(),
-                drawerContainerColor = Color.White,
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
                 drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp)
             ) {
                 // Tüm içeriği kapsayan ana sütun
@@ -201,8 +201,8 @@ fun KullaniciAnaSayfaScreen(
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface
                         ),
                         singleLine = true
                     )
@@ -317,7 +317,7 @@ private fun KaloriTakipKarti(
 }
 
 @Composable
-fun DrawerItem(iconRes: Int? = null, iconVector: ImageVector? = null, label: String, onClick: () -> Unit, textColor: Color = Color.Black) {
+fun DrawerItem(iconRes: Int? = null, iconVector: ImageVector? = null, label: String, onClick: () -> Unit, textColor: Color = MaterialTheme.colorScheme.onSurface) {
     NavigationDrawerItem(
         icon = {
             val iconTintColor = if (textColor == Color.Red) Color.Red else MaterialTheme.colorScheme.primary

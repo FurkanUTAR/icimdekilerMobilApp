@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -47,7 +48,7 @@ fun TemaBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     ) {
         Column(
@@ -99,7 +100,7 @@ fun TemaSecimSatiri(
                 colors = RadioButtonDefaults.colors(selectedColor = EmeraldGreen)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = label, fontSize = 16.sp, color = Color.Black)
+            Text(text = label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }

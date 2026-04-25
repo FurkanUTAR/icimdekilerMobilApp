@@ -44,7 +44,7 @@ fun HesapAyarlariScreen(
             text = stringResource(id = R.string.hesapAyarlari),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
@@ -87,10 +87,10 @@ fun HesapAyarlariScreen(
         Button(
             onClick = onParolaDegistirClick,
             modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text(text = stringResource(id = R.string.parolayiDegistir), color = Color.White)
+            Text(text = stringResource(id = R.string.parolayiDegistir), color = MaterialTheme.colorScheme.onPrimary)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -98,10 +98,10 @@ fun HesapAyarlariScreen(
         Button(
             onClick = onGuncelleClick,
             modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text(text = stringResource(id = R.string.guncelle), color = Color.White)
+            Text(text = stringResource(id = R.string.guncelle), color = MaterialTheme.colorScheme.onPrimary)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -109,10 +109,10 @@ fun HesapAyarlariScreen(
         Button(
             onClick = onHesabiSilClick,
             modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)), // buttonRed
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error), // buttonRed
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text(text = stringResource(id = R.string.hesabiSil), color = Color.White)
+            Text(text = stringResource(id = R.string.hesabiSil), color = MaterialTheme.colorScheme.onError)
         }
     }
 }

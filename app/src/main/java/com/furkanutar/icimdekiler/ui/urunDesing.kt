@@ -52,7 +52,7 @@ fun UrunScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()) // Tüm ekranın kaydırılabilir olması daha iyi
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -80,7 +80,7 @@ fun UrunScreen(
             fontSize = 26.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(top = 16.dp),
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
 
 //        // --- YENİ: BESİN DEĞERLERİ ÖZET KARTI ---
@@ -140,7 +140,8 @@ fun UrunScreen(
             text = stringResource(R.string.icindekiler),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         // İçindekiler için LazyColumn yerine Column kullanıyoruz
@@ -148,8 +149,8 @@ fun UrunScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
         ) {
             icindekilerListesi.forEach { madde ->
                 Text(
@@ -158,9 +159,10 @@ fun UrunScreen(
                         .fillMaxWidth()
                         .clickable { onIngredientClick(madde) }
                         .padding(14.dp),
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             }
         }
     }

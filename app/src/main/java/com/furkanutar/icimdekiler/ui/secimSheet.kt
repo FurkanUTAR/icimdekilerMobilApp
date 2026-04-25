@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,13 +28,13 @@ fun KaynakSecimDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(24.dp),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         title = {
             Text(
                 text = stringResource(R.string.secimYap),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         text = {
@@ -46,7 +47,7 @@ fun KaynakSecimDialog(
                     Text(
                         text = if (isBarcodeAction) stringResource(R.string.kamera)
                         else stringResource(R.string.urunEkle),
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -62,7 +63,7 @@ fun KaynakSecimDialog(
                     Text(
                         text = if (isBarcodeAction) stringResource(R.string.galeri)
                         else stringResource(R.string.icerikEkle),
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         modifier = Modifier.fillMaxWidth()
                     )

@@ -35,7 +35,7 @@ fun ChatBotFab(modifier: Modifier = Modifier) {
             FloatingActionButton(
                 onClick = { isChatOpen = true },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -97,7 +97,7 @@ fun ChatWindow(onClose: () -> Unit) {
             .height(450.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Header
@@ -111,12 +111,12 @@ fun ChatWindow(onClose: () -> Unit) {
             ) {
                 Text(
                     "İçimdekiler AI Asistan",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.Close, contentDescription = "Kapat", tint = Color.White)
+                    Icon(Icons.Default.Close, contentDescription = "Kapat", tint = MaterialTheme.colorScheme.onPrimary)
                 }
             }
 
@@ -181,7 +181,7 @@ fun ChatWindow(onClose: () -> Unit) {
 fun ChatBubble(message: Message) {
     val alignment = if (message.isUser) Alignment.End else Alignment.Start
     val color = if (message.isUser) MaterialTheme.colorScheme.primary else Color(0xFFE0E0E0)
-    val textColor = if (message.isUser) Color.White else Color.Black
+    val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = alignment) {
         Surface(

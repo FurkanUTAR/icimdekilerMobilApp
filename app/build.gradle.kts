@@ -102,7 +102,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // --- JETPACK COMPOSE ENTEGRASYONU ---
-    val composeBom = platform("androidx.compose:compose-bom:2024.02.01")
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 

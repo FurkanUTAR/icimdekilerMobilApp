@@ -38,7 +38,7 @@ fun IcerikEkleScreen(
     var aciklama by remember { mutableStateOf("") }
 
     val anaYesil = EmeraldGreen // Tema rengin
-    val metinRengi = Color.Black
+    val metinRengi = MaterialTheme.colorScheme.onBackground
 
     // TextField stil ayarları
     val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -57,7 +57,7 @@ fun IcerikEkleScreen(
             FloatingActionButton(
                 onClick = { showBottomSheet = true },
                 containerColor = anaYesil,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(16.dp),
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
             ) {
@@ -69,7 +69,7 @@ fun IcerikEkleScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(LightBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues) // Scaffold'un FAB ve diğer barlara göre ayırdığı boşluk
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.Start
@@ -93,7 +93,7 @@ fun IcerikEkleScreen(
                 items(mevcutIcerikler) { icerik ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(2.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -134,7 +134,7 @@ fun IcerikEkleScreen(
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
-            containerColor = LightBackground, // Formun arka planı
+            containerColor = MaterialTheme.colorScheme.background, // Formun arka planı
             dragHandle = { BottomSheetDefaults.DragHandle() } // Üstteki küçük gri çekme çubuğu
         ) {
             Column(
@@ -192,7 +192,7 @@ fun IcerikEkleScreen(
                     shape = RoundedCornerShape(24.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
                 ) {
-                    Text(text = stringResource(R.string.kaydet), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(text = stringResource(R.string.kaydet), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }

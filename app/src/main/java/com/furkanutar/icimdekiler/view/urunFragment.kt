@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.ui.UrunScreen
+import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
@@ -43,32 +44,34 @@ class urunFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val icindekilerListesi = args.icindekiler
-                    .split(",")
-                    .map { it.trim() }
-                    .filter { it.isNotEmpty() }
+                IcimdekilerTheme {
+                    val icindekilerListesi = args.icindekiler
+                        .split(",")
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
 
-                UrunScreen(
-                    urunAdi = urunAdi,
-                    gorselUrl = args.gorselUrl,
-                    // GEÇİCİ VERİLER (Tasarımı görmek için)
-                    kalori = 250,
-                    protein = 5.4f,
-                    karbonhidrat = 32.1f,
-                    yag = 12.8f,
-                    icindekilerListesi = icindekilerListesi,
-                    onIngredientClick = { secilenMadde ->
-                        aciklamaGetir(secilenMadde, args.urunAdi)
-                    },
-                    onEkleClick = { miktar ->
-                        // Şimdilik sadece log basalım veya Toast gösterelim
-                        Log.d("KaloriTakip", "Seçilen miktar: $miktar gram. Hedefe eklenecek.")
-                        Toast.makeText(requireContext(), "$miktar gr günlüğünüze eklendi", Toast.LENGTH_SHORT).show()
+                    UrunScreen(
+                        urunAdi = urunAdi,
+                        gorselUrl = args.gorselUrl,
+                        // GEÇİCİ VERİLER (Tasarımı görmek için)
+                        kalori = 250,
+                        protein = 5.4f,
+                        karbonhidrat = 32.1f,
+                        yag = 12.8f,
+                        icindekilerListesi = icindekilerListesi,
+                        onIngredientClick = { secilenMadde ->
+                            aciklamaGetir(secilenMadde, args.urunAdi)
+                        },
+                        onEkleClick = { miktar ->
+                            // Şimdilik sadece log basalım veya Toast gösterelim
+                            Log.d("KaloriTakip", "Seçilen miktar: $miktar gram. Hedefe eklenecek.")
+                            Toast.makeText(requireContext(), "$miktar gr günlüğünüze eklendi", Toast.LENGTH_SHORT).show()
 
-                        // İleride buraya RoomDB'ye kayıt kodu gelecek:
-                        // viewModel.gunlukVeriyeEkle(urunAdi, miktar, kalori)
-                    }
-                )
+                            // İleride buraya RoomDB'ye kayıt kodu gelecek:
+                            // viewModel.gunlukVeriyeEkle(urunAdi, miktar, kalori)
+                        }
+                    )
+                }
             }
         }
     }

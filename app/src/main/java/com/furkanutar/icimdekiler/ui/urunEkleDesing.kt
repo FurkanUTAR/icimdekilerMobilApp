@@ -104,7 +104,7 @@ fun UrunEkleScreen(
                 .clickable { onGorselSecClick() },
             shape = CircleShape,
             shadowElevation = 6.dp,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             border = BorderStroke(2.dp, Color(0xFF4CAF50)) // Vurgu için yeşil çerçeve
         ) {
             AsyncImage(
@@ -180,10 +180,10 @@ fun UrunEkleScreen(
             IconButton(
                 onClick = onIcerikEkle,
                 modifier = Modifier
-                    .background(Color(0xFF4CAF50), CircleShape)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape)
                     .size(48.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
             }
         }
 
@@ -196,7 +196,7 @@ fun UrunEkleScreen(
                 .heightIn(min = 200.dp, max = 400.dp),
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(2.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             border = BorderStroke(1.dp, Color(0xFF4CAF50))
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -205,7 +205,7 @@ fun UrunEkleScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .background(Color.White),
+                            .background(MaterialTheme.colorScheme.surface),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
@@ -247,20 +247,20 @@ fun UrunEkleScreen(
                 Button(
                     onClick = onSilClick,
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text(text = stringResource(R.string.sil), fontWeight = FontWeight.Bold)
+                    Text(text = stringResource(R.string.sil), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onError)
                 }
             }
 
             Button(
                 onClick = onKaydetClick,
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(text = stringResource(R.string.kaydet), color = Color.White)
+                Text(text = stringResource(R.string.kaydet), color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }

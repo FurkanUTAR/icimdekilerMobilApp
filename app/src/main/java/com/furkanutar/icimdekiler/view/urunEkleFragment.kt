@@ -39,6 +39,7 @@ import com.furkanutar.icimdekiler.ui.OzelAlertDialog
 import com.furkanutar.icimdekiler.ui.UrunEkleScreen
 import com.furkanutar.icimdekiler.ui.UrunEkleUiState
 import com.furkanutar.icimdekiler.ui.theme.EmeraldGreen
+import com.furkanutar.icimdekiler.ui.theme.IcimdekilerTheme
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
@@ -106,8 +107,9 @@ class urunEkleFragment : Fragment() {
     ): android.view.View {
         return ComposeView(requireContext()).apply {
             setContent {
-                UrunEkleScreen(
-                    state = UrunEkleUiState(
+                IcimdekilerTheme {
+                    UrunEkleScreen(
+                        state = UrunEkleUiState(
                         barkodNo = barkodNo,
                         urunAdi = urunAdi,
                         seciliKategori = seciliKategori,
@@ -195,6 +197,7 @@ class urunEkleFragment : Fragment() {
             }
         }
     }
+}
 
     private fun argumanlariYukle() {
         Log.d("Fragment_Veri", "TÜM ARGÜMANLAR: $args")
@@ -781,5 +784,8 @@ class urunEkleFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         cameraExecutor.shutdown()  // Kamera executor'ı kapat
+    }
+    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
+
     }
 }
