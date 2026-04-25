@@ -150,80 +150,87 @@ fun KullaniciAnaSayfaScreen(
             }
         }
     ) {
-        Scaffold(
-            topBar = {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                        Icon(painterResource(id = R.drawable.menu), contentDescription = "Menü", tint = MaterialTheme.colorScheme.primary)
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("İçimdekiler", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = MaterialTheme.colorScheme.primary)
-                }
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(
-                    onClick = onBarcodeClick,
-                    modifier = Modifier
-                        .size(90.dp)
-                        .padding(vertical = 8.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.barcode_reader),
-                        contentDescription = "Barkod Oku",
-                        modifier = Modifier.fillMaxSize(),
-                        tint = Color.Unspecified // Logonun kendi renklerini korur
-                    )
-                }
-
-                // Arama Çubuğu
-                OutlinedTextField(
-                    value = urunAdi,
-                    onValueChange = onUrunAdiChange,
-                    placeholder = { Text(stringResource(R.string.urunAra)) },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    trailingIcon = {
-                        IconButton(onClick = onSearchClick) {
-                            Icon(painterResource(id = R.drawable.search), contentDescription = null)
+        Box(modifier = Modifier.fillMaxSize()) {
+            Scaffold(
+                topBar = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(painterResource(id = R.drawable.menu), contentDescription = "Menü", tint = MaterialTheme.colorScheme.primary)
                         }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    singleLine = true
-                )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("İçimdekiler", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(horizontal = 20.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(
+                        onClick = onBarcodeClick,
+                        modifier = Modifier
+                            .size(90.dp)
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.barcode_reader),
+                            contentDescription = "Barkod Oku",
+                            modifier = Modifier.fillMaxSize(),
+                            tint = Color.Unspecified // Logonun kendi renklerini korur
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Kategori Izgarası
-                if (isLoggedIn) {
-                    KaloriTakipKarti(
-                        gunlukKaloriHedefi = gunlukKaloriHedefi,
-                        harcananKalori = harcananKalori
+                    // Arama Çubuğu
+                    OutlinedTextField(
+                        value = urunAdi,
+                        onValueChange = onUrunAdiChange,
+                        placeholder = { Text(stringResource(R.string.urunAra)) },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        trailingIcon = {
+                            IconButton(onClick = onSearchClick) {
+                                Icon(painterResource(id = R.drawable.search), contentDescription = null)
+                            }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        singleLine = true
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                KategoriBolumu(
-                    tumUrunlerCategory = tumUrunlerCategory,
-                    digerCategories = categories,
-                    modifier = Modifier.padding(bottom = 20.dp)
-                )
+                    // Kategori Izgarası
+                    if (isLoggedIn) {
+                        /* Şimdilik kalori takibi rafa kaldırıldığı için gizlendi
+                        KaloriTakipKarti(
+                            gunlukKaloriHedefi = gunlukKaloriHedefi,
+                            harcananKalori = harcananKalori
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        */
+                    }
+
+                    KategoriBolumu(
+                        tumUrunlerCategory = tumUrunlerCategory,
+                        digerCategories = categories,
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    )
+                }
             }
+            
+            // AI Chat Bot FAB
+            ChatBotFab(modifier = Modifier.align(Alignment.BottomEnd))
         }
     }
 }

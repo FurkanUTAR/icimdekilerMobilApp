@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.runtime)
 
+    // Gemini AI
+    implementation(libs.generativeai)
+
     // Kamera ve Barcode
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -107,7 +110,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.activity:activity-compose:1.12.4") // Activity ile entegre çalışması için şart
+    implementation("androidx.activity:activity-compose:1.12.4") 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.coil-kt:coil-compose:2.7.0")

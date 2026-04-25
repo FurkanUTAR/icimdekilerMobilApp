@@ -83,57 +83,57 @@ fun UrunScreen(
             color = Color.Black
         )
 
-        // --- YENİ: BESİN DEĞERLERİ ÖZET KARTI ---
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(4.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                BesinOgesi("Kalori", "$kalori", "kcal", EmeraldGreen)
-                BesinOgesi("Prot", "$protein", "g", Color(0xFFE91E63))
-                BesinOgesi("Karb", "$karbonhidrat", "g", Color(0xFFFF9800))
-                BesinOgesi("Yağ", "$yag", "g", Color(0xFFF44336))
-            }
-        }
-
-        // --- YENİ: MİKTAR VE EKLEME ALANI ---
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            OutlinedTextField(
-                value = miktar,
-                onValueChange = {
-                    if (it.all { char -> char.isDigit() }) {
-                    miktar = it }
-                },
-                label = { Text("Miktar (gr)") },
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            Button(
-                onClick = { onEkleClick(miktar.toIntOrNull() ?: 0) },
-                modifier = Modifier.height(56.dp).weight(1f),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text("Günlüğe Ekle")
-            }
-        }
+//        // --- YENİ: BESİN DEĞERLERİ ÖZET KARTI ---
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 16.dp),
+//            shape = RoundedCornerShape(16.dp),
+//            colors = CardDefaults.cardColors(containerColor = Color.White),
+//            elevation = CardDefaults.cardElevation(4.dp)
+//        ) {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                BesinOgesi("Kalori", "$kalori", "kcal", EmeraldGreen)
+//                BesinOgesi("Prot", "$protein", "g", Color(0xFFE91E63))
+//                BesinOgesi("Karb", "$karbonhidrat", "g", Color(0xFFFF9800))
+//                BesinOgesi("Yağ", "$yag", "g", Color(0xFFF44336))
+//            }
+//        }
+//
+//        // --- YENİ: MİKTAR VE EKLEME ALANI ---
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            OutlinedTextField(
+//                value = miktar,
+//                onValueChange = {
+//                    if (it.all { char -> char.isDigit() }) {
+//                    miktar = it }
+//                },
+//                label = { Text("Miktar (gr)") },
+//                modifier = Modifier.weight(1f),
+//                shape = RoundedCornerShape(12.dp),
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
+//
+//            Button(
+//                onClick = { onEkleClick(miktar.toIntOrNull() ?: 0) },
+//                modifier = Modifier.height(56.dp).weight(1f),
+//                shape = RoundedCornerShape(12.dp),
+//                colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen)
+//            ) {
+//                Icon(Icons.Default.Add, contentDescription = null)
+//                Spacer(Modifier.width(4.dp))
+//                Text("Günlüğe Ekle")
+//            }
+//        }
 
         // --- İÇİNDEKİLER LİSTESİ ---
         Text(
