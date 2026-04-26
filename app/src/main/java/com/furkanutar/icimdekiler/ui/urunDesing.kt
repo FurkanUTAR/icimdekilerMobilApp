@@ -4,8 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,22 +28,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.furkanutar.icimdekiler.R
 import coil.compose.AsyncImage
+import com.furkanutar.icimdekiler.R
 import com.furkanutar.icimdekiler.ui.theme.EmeraldGreen
-import com.furkanutar.icimdekiler.ui.theme.LightBackground
 
 @Composable
 fun UrunScreen(
     urunAdi: String,
     gorselUrl: String,
-    kalori: Int, // Yeni: Ürünün 100g kalori değeri
+    kalori: Int,
     protein: Float,
     karbonhidrat: Float,
     yag: Float,
     icindekilerListesi: List<String>,
     onIngredientClick: (String) -> Unit,
-    onEkleClick: (Int) -> Unit // Hedefe ekleme tetikleyicisi
+    onEkleClick: (Int) -> Unit
 ) {
     var miktar by remember { mutableStateOf("100") }
 
@@ -53,13 +50,13 @@ fun UrunScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()) // Tüm ekranın kaydırılabilir olması daha iyi
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Üst Kısım: Görsel ve İsim (Mevcut yapın)
+        // ── Görsel ──────────────────────────────────────────────────────────────
         Surface(
             modifier = Modifier.size(140.dp),
             shape = CircleShape,
@@ -79,100 +76,160 @@ fun UrunScreen(
             text = urunAdi,
             fontSize = 26.sp,
             fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
             color = MaterialTheme.colorScheme.onBackground
         )
 
-//        // --- YENİ: BESİN DEĞERLERİ ÖZET KARTI ---
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 16.dp),
-//            shape = RoundedCornerShape(16.dp),
-//            colors = CardDefaults.cardColors(containerColor = Color.White),
-//            elevation = CardDefaults.cardElevation(4.dp)
-//        ) {
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-//            ) {
-//                BesinOgesi("Kalori", "$kalori", "kcal", EmeraldGreen)
-//                BesinOgesi("Prot", "$protein", "g", Color(0xFFE91E63))
-//                BesinOgesi("Karb", "$karbonhidrat", "g", Color(0xFFFF9800))
-//                BesinOgesi("Yağ", "$yag", "g", Color(0xFFF44336))
-//            }
-//        }
-//
-//        // --- YENİ: MİKTAR VE EKLEME ALANI ---
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(8.dp)
-//        ) {
-//            OutlinedTextField(
-//                value = miktar,
-//                onValueChange = {
-//                    if (it.all { char -> char.isDigit() }) {
-//                    miktar = it }
-//                },
-//                label = { Text("Miktar (gr)") },
-//                modifier = Modifier.weight(1f),
-//                shape = RoundedCornerShape(12.dp),
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
-//
-//            Button(
-//                onClick = { onEkleClick(miktar.toIntOrNull() ?: 0) },
-//                modifier = Modifier.height(56.dp).weight(1f),
-//                shape = RoundedCornerShape(12.dp),
-//                colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen)
-//            ) {
-//                Icon(Icons.Default.Add, contentDescription = null)
-//                Spacer(Modifier.width(4.dp))
-//                Text("Günlüğe Ekle")
-//            }
-//        }
+        // ── Besin Değerleri Özet Kartı ───────────────────────────────────────────
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(6.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                BesinOgesi(
+                    etiket = "Kalori",
+                    deger = if (kalori > 0) "$kalori" else "—",
+                    birim = "kcal",
+                    renk = EmeraldGreen
+                )
+                BesinOgesiDivider()
+                BesinOgesi(
+                    etiket = "Protein",
+                    deger = if (protein > 0f) "%.1f".format(protein) else "—",
+                    birim = "g",
+                    renk = Color(0xFFE91E63)
+                )
+                BesinOgesiDivider()
+                BesinOgesi(
+                    etiket = "Karb",
+                    deger = if (karbonhidrat > 0f) "%.1f".format(karbonhidrat) else "—",
+                    birim = "g",
+                    renk = Color(0xFFFF9800)
+                )
+                BesinOgesiDivider()
+                BesinOgesi(
+                    etiket = "Yağ",
+                    deger = if (yag > 0f) "%.1f".format(yag) else "—",
+                    birim = "g",
+                    renk = Color(0xFFF44336)
+                )
+            }
+        }
 
-        // --- İÇİNDEKİLER LİSTESİ ---
+        // ── Miktar + Günlüğe Ekle ───────────────────────────────────────────────
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = miktar,
+                onValueChange = { if (it.all { c -> c.isDigit() }) miktar = it },
+                label = { Text("Miktar (gr)") },
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true
+            )
+            Button(
+                onClick = { onEkleClick(miktar.toIntOrNull() ?: 0) },
+                modifier = Modifier
+                    .height(56.dp)
+                    .weight(1f),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(Modifier.width(4.dp))
+                Text("Günlüğe Ekle")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // ── İçindekiler Listesi ──────────────────────────────────────────────────
         Text(
             text = stringResource(R.string.icindekiler),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 8.dp),
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        // İçindekiler için LazyColumn yerine Column kullanıyoruz
-        // çünkü dışarıda bir scroll var (Performans için az eleman varsa sorun olmaz)
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-        ) {
-            icindekilerListesi.forEach { madde ->
-                Text(
-                    text = madde,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onIngredientClick(madde) }
-                        .padding(14.dp),
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        if (icindekilerListesi.isEmpty()) {
+            Text(
+                text = "İçindekiler bilgisi bulunamadı.",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            )
+        } else {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+            ) {
+                icindekilerListesi.forEach { madde ->
+                    Text(
+                        text = madde,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onIngredientClick(madde) }
+                            .padding(14.dp),
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                }
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
+// ── Besin Ögesi Göstergesi ───────────────────────────────────────────────────
 @Composable
 fun BesinOgesi(etiket: String, deger: String, birim: String, renk: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = etiket, fontSize = 12.sp, color = Color.Gray)
-        Text(text = deger, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = renk)
-        Text(text = birim, fontSize = 10.sp, color = Color.Gray)
+        Text(
+            text = etiket,
+            fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
+        Text(
+            text = deger,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = renk
+        )
+        Text(
+            text = birim,
+            fontSize = 10.sp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
     }
+}
+
+// Kart içi dikey ayırıcı
+@Composable
+private fun BesinOgesiDivider() {
+    HorizontalDivider(
+        modifier = Modifier
+            .height(40.dp)
+            .width(1.dp),
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)
+    )
 }

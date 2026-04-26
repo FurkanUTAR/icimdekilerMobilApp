@@ -13,5 +13,13 @@ data class OFFUrun(
     @SerializedName("brands") val marka: String?,
     @SerializedName("ingredients_text_tr") val icindekilerTr: String?, // Önce buraya bakacağız
     @SerializedName("ingredients_text") val icindekilerGenel: String?, // Burası yedek plan
-    @SerializedName("image_url") val gorselUrl: String?
+    @SerializedName("image_url") val gorselUrl: String?,
+    @SerializedName("nutriments") val nutriments: OFFNutriments?
+)
+
+data class OFFNutriments(
+    @SerializedName("energy-kcal_100g") val enerjiKcal100g: Double?,
+    @SerializedName("proteins_100g") val protein100g: Double?,
+    @SerializedName("carbohydrates_100g") val karbonhidrat100g: Double?,
+    @SerializedName("fat_100g") val yag100g: Double?
 )

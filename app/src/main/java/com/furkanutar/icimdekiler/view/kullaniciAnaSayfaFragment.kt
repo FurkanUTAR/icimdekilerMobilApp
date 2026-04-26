@@ -36,6 +36,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.furkanutar.icimdekiler.R
+import com.furkanutar.icimdekiler.api.FatSecretClient
 import com.furkanutar.icimdekiler.api.RetrofitClient
 import com.furkanutar.icimdekiler.ui.KaynakSecimDialog
 import com.furkanutar.icimdekiler.ui.KullaniciAnaSayfaScreen
@@ -440,12 +441,8 @@ class kullaniciAnaSayfaFragment : Fragment() {
         try {
             val urunAdiLowerCase = urunAdi
                 .lowercase(Locale("tr","TR"))
-                .replace("ç", "c")
-                .replace("ğ", "g")
-                .replace("ı", "i")
-                .replace("ö", "o")
-                .replace("ş", "s")
-                .replace("ü", "u")
+                .replace("ç", "c").replace("ğ", "g").replace("ı", "i")
+                .replace("ö", "o").replace("ş", "s").replace("ü", "u")
                 .trim()
 
             db.collection("urunler")
@@ -455,38 +452,31 @@ class kullaniciAnaSayfaFragment : Fragment() {
                     try {
                         if (!querySnapshot.isEmpty) {
                             val document = querySnapshot.documents.firstOrNull()
-                            barkodNo = document?.getString("barkodNo") ?: ""
-                            val urunAdi = document?.getString("urunAdi") ?: ""
+                            barkodNo      = document?.getString("barkodNo")  ?: ""
+                            val urunAdi   = document?.getString("urunAdi")   ?: ""
                             val icindekiler = document?.getString("icindekiler") ?: ""
-                            var gorselUrl = document?.getString("gorselUrl") ?: ""
+                            val gorselUrl = document?.getString("gorselUrl")  ?: ""
+                            val kalori        = document?.getLong("kalori")?.toInt() ?: 0
+                            val protein       = (document?.getDouble("protein")       ?: 0.0).toFloat()
+                            val karbonhidrat  = (document?.getDouble("karbonhidrat")  ?: 0.0).toFloat()
+                            val yag           = (document?.getDouble("yag")           ?: 0.0).toFloat()
 
-                            val currentFragment = findNavController().currentDestination?.id
-                            val targetFragment = R.id.urunEkleFragment
-
-                            if (currentFragment != targetFragment) {
-                                val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
+                            if (findNavController().currentDestination?.id != R.id.urunEkleFragment) {
+                                val action = kullaniciAnaSayfaFragmentDirections
+                                    .actionKullaniciAnaSayfaFragmentToUrunFragment(
+                                        barkodNo, urunAdi, icindekiler, gorselUrl,
+                                        kalori, protein, karbonhidrat, yag
+                                    )
                                 findNavController().navigate(action)
-                            } else Log.d("NavigationDebug", "Zaten urunEkleFragment içindesin, tekrar yönlendirme yapılmadı.")
-                        } else {
-                            try {
-                                Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
+                        } else {
+                            Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }.addOnFailureListener { exepion ->
-                    try {
-                        Toast.makeText(requireContext(), exepion.localizedMessage, Toast.LENGTH_LONG).show()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_LONG).show()
                 }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     private fun barkodNoAra() {
@@ -497,71 +487,99 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     try {
                         if (!querySnapshot.isEmpty) {
-                            val document = querySnapshot.documents.firstOrNull()
-                            val urunAdi = document?.getString("urunAdi") ?: ""
-                            val icindekiler = document?.getString("icindekiler") ?: ""
-                            var gorselUrl = document?.getString("gorselUrl") ?: ""
+                            val document      = querySnapshot.documents.firstOrNull()
+                            val urunAdi       = document?.getString("urunAdi")    ?: ""
+                            val icindekiler   = document?.getString("icindekiler") ?: ""
+                            val gorselUrl     = document?.getString("gorselUrl")   ?: ""
+                            val kalori        = document?.getLong("kalori")?.toInt() ?: 0
+                            val protein       = (document?.getDouble("protein")      ?: 0.0).toFloat()
+                            val karbonhidrat  = (document?.getDouble("karbonhidrat") ?: 0.0).toFloat()
+                            val yag           = (document?.getDouble("yag")          ?: 0.0).toFloat()
 
-                            val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(barkodNo, urunAdi, icindekiler, gorselUrl)
+                            val action = kullaniciAnaSayfaFragmentDirections
+                                .actionKullaniciAnaSayfaFragmentToUrunFragment(
+                                    barkodNo, urunAdi, icindekiler, gorselUrl,
+                                    kalori, protein, karbonhidrat, yag
+                                )
                             if (findNavController().currentDestination?.id != R.id.urunFragment) {
                                 findNavController().navigate(action)
                             }
                         } else {
-                            // Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
-
                             offApiSorgu(barkodNo)
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }.addOnFailureListener { exeption ->
-                    try {
-                        Toast.makeText(requireContext(), exeption.localizedMessage, Toast.LENGTH_SHORT).show()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     private fun offApiSorgu(barkodNo: String) {
         lifecycleScope.launch {
             try {
+                // 1. OpenFoodFacts → görsel + içindekiler
                 val yanit = RetrofitClient.api.getUrun(barkodNo)
 
                 if (yanit.durum == 1 && yanit.urun != null) {
-                    val apiUrun = yanit.urun
-                    val gelenAd = apiUrun.urunAdi ?: ""
-                    val gelenMarka = apiUrun.marka ?: ""
+                    val apiUrun    = yanit.urun
+                    val gelenAd    = apiUrun.urunAdi ?: ""
+                    val gelenMarka = apiUrun.marka   ?: ""
                     val gelenIcerik = apiUrun.icindekilerTr ?: apiUrun.icindekilerGenel ?: ""
                     val gelenGorsel = apiUrun.gorselUrl ?: ""
+                    val tamUrunAdi  = "$gelenMarka $gelenAd".trim()
 
-                    Log.d("OFF_Sorgu", "🚀 Son Karar İçerik: $gelenIcerik")
+                    Log.d("OFF_Sorgu", "OFF bulundu: $tamUrunAdi")
 
-                    val action = kullaniciAnaSayfaFragmentDirections.actionKullaniciAnaSayfaFragmentToUrunFragment(
-                        barkodNo = barkodNo,
-                        urunAdi = "$gelenMarka $gelenAd",
-                        icindekiler = gelenIcerik,
-                        gorselUrl = gelenGorsel
-                    )
-
-                    // Geçiş yapıyoruz
-                    if (findNavController().currentDestination?.id == R.id.kullaniciAnaSayfaFragment) {
-                        findNavController().navigate(action)
-                    } else {
-                        Log.d("OFF_Sorgu", "Zaten urunFragment ekranındayız, navigasyon iptal edildi.")
+                    // 2. FatSecret → besin değerleri (hata veya eşleşmeme olursa null döner)
+                    var fsKalori       = 0
+                    var fsProtein      = 0f
+                    var fsKarb         = 0f
+                    var fsYag          = 0f
+                    
+                    try {
+                        val besin = FatSecretClient.besinDegerleriniAl(urunAdi = tamUrunAdi, barkodNo = barkodNo)
+                        if (besin != null) {
+                            fsKalori  = besin.calories?.toDoubleOrNull()?.toInt() ?: 0
+                            fsProtein = besin.protein?.toFloatOrNull()            ?: 0f
+                            fsKarb    = besin.carbohydrate?.toFloatOrNull()       ?: 0f
+                            fsYag     = besin.fat?.toFloatOrNull()                ?: 0f
+                            Log.d("FatSecret", "$tamUrunAdi (FS) → Kal=$fsKalori P=$fsProtein K=$fsKarb Y=$fsYag")
+                        } else {
+                            Log.w("FatSecret", "FatSecret eşleşmesi bulunamadı, OpenFoodFacts verileri kullanılıyor.")
+                            val nut = apiUrun.nutriments
+                            if (nut != null) {
+                                fsKalori  = nut.enerjiKcal100g?.toInt() ?: 0
+                                fsProtein = nut.protein100g?.toFloat() ?: 0f
+                                fsKarb    = nut.karbonhidrat100g?.toFloat() ?: 0f
+                                fsYag     = nut.yag100g?.toFloat() ?: 0f
+                                Log.d("OFF_Nutriments", "$tamUrunAdi (OFF) → Kal=$fsKalori P=$fsProtein K=$fsKarb Y=$fsYag")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FatSecret", "Besin değerleri alınamadı: ${e.message}")
                     }
 
-                    // Sadece bir tane Toast kalsın
-                    // Toast.makeText(requireContext(), "Ürün Open Food Facts'ten getirildi!", Toast.LENGTH_SHORT).show()
+                    // 3. Yönlendir
+                    val action = kullaniciAnaSayfaFragmentDirections
+                        .actionKullaniciAnaSayfaFragmentToUrunFragment(
+                            barkodNo    = barkodNo,
+                            urunAdi     = tamUrunAdi,
+                            icindekiler = gelenIcerik,
+                            gorselUrl   = gelenGorsel,
+                            kalori      = fsKalori,
+                            protein     = fsProtein,
+                            karbonhidrat = fsKarb,
+                            yag         = fsYag
+                        )
 
+                    if (findNavController().currentDestination?.id == R.id.kullaniciAnaSayfaFragment) {
+                        findNavController().navigate(action)
+                    }
                 } else {
                     Toast.makeText(requireContext(), R.string.urunBulunamadi, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Log.e("OFF_Sorgu", "Hata oluştu: ${e.localizedMessage}")
+                Log.e("OFF_Sorgu", "Hata: ${e.localizedMessage}")
             }
         }
     }

@@ -1,3 +1,10 @@
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -20,6 +27,11 @@ android {
         versionName = "3.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val fsClientId     = localProperties.getProperty("fatsecret.client.id",     "")
+        val fsClientSecret  = localProperties.getProperty("fatsecret.client.secret", "")
+        buildConfigField("String", "FATSECRET_CLIENT_ID",     "\"$fsClientId\"")
+        buildConfigField("String", "FATSECRET_CLIENT_SECRET", "\"$fsClientSecret\"")
 
         vectorDrawables {
             useSupportLibrary = true
@@ -50,6 +62,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
 
     packaging {

@@ -48,10 +48,14 @@ class kullaniciTumUrunlerFragment : Fragment() {
                         onUrunClick = { urun ->
                             val action = kullaniciTumUrunlerFragmentDirections
                                 .actionKullaniciTumUrunlerFragmentToUrunFragment(
-                                    urun.barkodNo ?: "",      // Eğer null ise boş string gönder
-                                    urun.urunAdi ?: "",       // Eğer null ise boş string gönder
+                                    urun.barkodNo    ?: "",
+                                    urun.urunAdi     ?: "",
                                     urun.icindekiler ?: "",
-                                    urun.gorselUrl ?: ""
+                                    urun.gorselUrl   ?: "",
+                                    urun.kalori,
+                                    urun.protein,
+                                    urun.karbonhidrat,
+                                    urun.yag
                                 )
                             findNavController().navigate(action)
                         }
@@ -80,13 +84,18 @@ class kullaniciTumUrunlerFragment : Fragment() {
             value?.let { snapshot ->
                 val liste = snapshot.documents.mapNotNull { doc ->
                     val barkodNo = doc.getString("barkodNo") ?: ""
-                    val urunAdi = doc.getString("urunAdi") ?: ""
+                    val urunAdi  = doc.getString("urunAdi")  ?: ""
                     if (barkodNo.isNotEmpty() && urunAdi.isNotEmpty()) {
                         Urunler(
-                            barkodNo, urunAdi,
-                            doc.getString("icindekiler") ?: "",
-                            doc.getString("gorselUrl") ?: "",
-                            doc.id
+                            barkodNo     = barkodNo,
+                            urunAdi      = urunAdi,
+                            icindekiler  = doc.getString("icindekiler") ?: "",
+                            gorselUrl    = doc.getString("gorselUrl")   ?: "",
+                            documentId   = doc.id,
+                            kalori       = doc.getLong("kalori")?.toInt()           ?: 0,
+                            protein      = (doc.getDouble("protein")      ?: 0.0).toFloat(),
+                            karbonhidrat = (doc.getDouble("karbonhidrat") ?: 0.0).toFloat(),
+                            yag          = (doc.getDouble("yag")          ?: 0.0).toFloat()
                         )
                     } else null
                 }
@@ -116,11 +125,15 @@ class kullaniciTumUrunlerFragment : Fragment() {
 
                 if (queryText.isEmpty() || urunAdiNormalized.contains(queryText)) {
                     Urunler(
-                        doc.getString("barkodNo") ?: "",
-                        urunAdi,
-                        doc.getString("icindekiler") ?: "",
-                        doc.getString("gorselUrl") ?: "",
-                        doc.id
+                        barkodNo     = doc.getString("barkodNo")    ?: "",
+                        urunAdi      = urunAdi,
+                        icindekiler  = doc.getString("icindekiler")  ?: "",
+                        gorselUrl    = doc.getString("gorselUrl")    ?: "",
+                        documentId   = doc.id,
+                        kalori       = doc.getLong("kalori")?.toInt()           ?: 0,
+                        protein      = (doc.getDouble("protein")      ?: 0.0).toFloat(),
+                        karbonhidrat = (doc.getDouble("karbonhidrat") ?: 0.0).toFloat(),
+                        yag          = (doc.getDouble("yag")          ?: 0.0).toFloat()
                     )
                 } else null
             }

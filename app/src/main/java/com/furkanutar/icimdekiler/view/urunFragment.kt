@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.getValue
@@ -29,8 +28,12 @@ class urunFragment : Fragment() {
     private val args: urunFragmentArgs by navArgs()
 
     private val icindekilerListesi = mutableStateListOf<String>()
-    private var urunAdi by mutableStateOf("")
-    private var barkodNo by mutableStateOf("")
+    private var urunAdi       by mutableStateOf("")
+    private var barkodNo      by mutableStateOf("")
+    private var kalori        by mutableStateOf(0)
+    private var protein       by mutableStateOf(0f)
+    private var karbonhidrat  by mutableStateOf(0f)
+    private var yag           by mutableStateOf(0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,30 +48,30 @@ class urunFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 IcimdekilerTheme {
-                    val icindekilerListesi = args.icindekiler
+                    val gorunenIcindekiler = args.icindekiler
                         .split(",")
                         .map { it.trim() }
                         .filter { it.isNotEmpty() }
 
                     UrunScreen(
-                        urunAdi = urunAdi,
-                        gorselUrl = args.gorselUrl,
-                        // GEÇİCİ VERİLER (Tasarımı görmek için)
-                        kalori = 250,
-                        protein = 5.4f,
-                        karbonhidrat = 32.1f,
-                        yag = 12.8f,
-                        icindekilerListesi = icindekilerListesi,
+                        urunAdi       = urunAdi,
+                        gorselUrl     = args.gorselUrl,
+                        kalori        = kalori,
+                        protein       = protein,
+                        karbonhidrat  = karbonhidrat,
+                        yag           = yag,
+                        icindekilerListesi = gorunenIcindekiler,
                         onIngredientClick = { secilenMadde ->
                             aciklamaGetir(secilenMadde, args.urunAdi)
                         },
                         onEkleClick = { miktar ->
-                            // Şimdilik sadece log basalım veya Toast gösterelim
-                            Log.d("KaloriTakip", "Seçilen miktar: $miktar gram. Hedefe eklenecek.")
-                            Toast.makeText(requireContext(), "$miktar gr günlüğünüze eklendi", Toast.LENGTH_SHORT).show()
-
-                            // İleride buraya RoomDB'ye kayıt kodu gelecek:
-                            // viewModel.gunlukVeriyeEkle(urunAdi, miktar, kalori)
+                            Log.d("KaloriTakip", "Seçilen miktar: $miktar gram.")
+                            Toast.makeText(
+                                requireContext(),
+                                "$miktar gr günlüğünüze eklendi",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // İleride buraya RoomDB kaydı gelecek
                         }
                     )
                 }
@@ -79,31 +82,30 @@ class urunFragment : Fragment() {
     private fun argumanlariYukle() {
         Log.d("Fragment_Veri", "TÜM ARGÜMANLAR: $args")
 
-        val gelenAd = args.urunAdi
-        val gelenBarkod = args.barkodNo
-        val gelenIcerik = args.icindekiler
+        val gelenAd      = args.urunAdi
+        val gelenBarkod  = args.barkodNo
+        val gelenIcerik  = args.icindekiler
 
         val duzenlenmisUrunAdi = gelenAd.split(" ").joinToString(" ") { kelime ->
             kelime.lowercase().replaceFirstChar { it.uppercase() }
         }
 
-        Log.d("Fragment_Veri", "Argümandan gelen isim: $gelenAd")
-        Log.d("Fragment_Veri", "Argümandan gelen içerik: $gelenIcerik")
+        if (gelenAd.isNotBlank())     urunAdi    = duzenlenmisUrunAdi
+        if (gelenBarkod.isNotBlank()) barkodNo   = gelenBarkod
 
-        if (gelenAd.isNotBlank()) urunAdi = duzenlenmisUrunAdi
-        if (gelenBarkod.isNotBlank()) barkodNo = gelenBarkod
+        // Besin değerleri
+        kalori       = args.kalori
+        protein      = args.protein
+        karbonhidrat = args.karbonhidrat
+        yag          = args.yag
 
         if (gelenIcerik.isNotBlank()) {
             icindekilerListesi.clear()
-
-            val parcalanmisListe = gelenIcerik
-                // 1. ADIM: Tam parantez içlerini siler: (Soya), [Gluten] vb.
+            val parcalanmis = gelenIcerik
                 .replace(Regex("\\(.*?\\)|\\[.*?]|\\{.*?\\}"), "")
-                // 2. ADIM: Virgül, nokta, noktalı virgül ve "ve" bağlacına göre böl
                 .split(Regex("[,.;]|\\bve\\b"))
                 .map { madde ->
                     madde.trim()
-                        // 3. ADIM: Kenarda kalmış tek parantezleri, yıldızları veya gereksiz işaretleri temizle
                         .replace(Regex("^[\\s()*\\[\\]{}]+|[\\s()*\\[\\]{}]+$"), "")
                         .lowercase(Locale("tr", "TR"))
                         .split(" ")
@@ -112,35 +114,38 @@ class urunFragment : Fragment() {
                             kelime.replaceFirstChar { it.uppercase(Locale("tr", "TR")) }
                         }
                 }
-                // 4. ADIM: Temizlik sonrası hala kenarda işaret kaldıysa (Örn: "Çilek)") son bir kez temizle
                 .map { it.trim().removeSuffix(")").removePrefix("(").trim() }
-                // 5. ADIM: Filtreleme
                 .filter { madde ->
                     madde.length > 1 &&
                             !madde.all { it.isDigit() } &&
                             !madde.contains(Regex("[%:0-9]"))
                 }
                 .distinct()
-
-            icindekilerListesi.addAll(parcalanmisListe)
+            icindekilerListesi.addAll(parcalanmis)
         }
 
-        urunKaydet(gelenBarkod,duzenlenmisUrunAdi,icindekilerListesi,args.gorselUrl,"tumUrunler")
+        urunKaydet(
+            barkodNo         = gelenBarkod,
+            urunAdi          = duzenlenmisUrunAdi,
+            icindekilerListesi = icindekilerListesi,
+            gorselUrl        = args.gorselUrl,
+            kategori         = "tumUrunler",
+            kalori           = args.kalori,
+            protein          = args.protein,
+            karbonhidrat     = args.karbonhidrat,
+            yag              = args.yag
+        )
     }
 
     private fun aciklamaGetir(urun: String, urunAdi: String) {
-
         db.collection("icerik")
             .whereEqualTo("urun", urun)
             .get()
             .addOnSuccessListener { querySnapshot ->
-
                 val document = querySnapshot.documents.firstOrNull()
-
                 if (document != null) {
                     val aciklama = document.getString("aciklama")
                         ?: getString(R.string.sonucBulunamadi)
-
                     AlertDialog.Builder(requireContext())
                         .setMessage(aciklama)
                         .setPositiveButton(R.string.tamam, null)
@@ -148,7 +153,12 @@ class urunFragment : Fragment() {
                 } else {
                     Snackbar.make(requireView(), R.string.sonucBulunamadi, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.bildir) {
-                            bildir("Açıklama Bulunamadı",urun, "Kullanıcı bu ürünün açıklamasını bulamadı ve bildirdi.", urunAdi)
+                            bildir(
+                                "Açıklama Bulunamadı",
+                                urun,
+                                "Kullanıcı bu ürünün açıklamasını bulamadı ve bildirdi.",
+                                urunAdi
+                            )
                         }.show()
                 }
             }
@@ -158,61 +168,96 @@ class urunFragment : Fragment() {
     }
 
     private fun bildir(durum: String, aramaTerimi: String, mesaj: String, urunAdi: String) {
-       // val suanKiZaman = (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm:ss"))
-
         val bildiriMap = hashMapOf(
-            "durum" to durum,
-            "urunAdi" to urunAdi,
-            "barkodNo" to args.barkodNo,
+            "durum"       to durum,
+            "urunAdi"     to urunAdi,
+            "barkodNo"    to args.barkodNo,
             "aramaTerimi" to aramaTerimi,
-            "mesaj" to mesaj,
-            "tarih" to FieldValue.serverTimestamp()
+            "mesaj"       to mesaj,
+            "tarih"       to FieldValue.serverTimestamp()
         )
-
         db.collection("bildiriler")
             .whereEqualTo("aramaTerimi", aramaTerimi)
-            .whereEqualTo("mesaj",mesaj)
+            .whereEqualTo("mesaj", mesaj)
             .get()
             .addOnSuccessListener { q ->
-                if (q.isEmpty){
-                    db.collection("bildiriler")
-                        .add(bildiriMap)
-                        .addOnSuccessListener { Toast.makeText(requireContext(), R.string.bildirinizIletildiTesekkurler, Toast.LENGTH_SHORT).show() }
-                        .addOnFailureListener { Toast.makeText(requireContext(), R.string.bildiriGonderilemedi, Toast.LENGTH_SHORT).show() }
-                } else Toast.makeText(requireContext(), R.string.bildiriDahaOnceYapilmis, Toast.LENGTH_SHORT).show()
+                if (q.isEmpty) {
+                    db.collection("bildiriler").add(bildiriMap)
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), R.string.bildirinizIletildiTesekkurler, Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), R.string.bildiriGonderilemedi, Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(requireContext(), R.string.bildiriDahaOnceYapilmis, Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
-    private fun urunKaydet(barkodNo: String, urunAdi: String, icindekilerListesi: List<String>, gorselUrl: String, kategori: String){
+    private fun urunKaydet(
+        barkodNo: String,
+        urunAdi: String,
+        icindekilerListesi: List<String>,
+        gorselUrl: String,
+        kategori: String,
+        kalori: Int,
+        protein: Float,
+        karbonhidrat: Float,
+        yag: Float
+    ) {
+        if (barkodNo.isEmpty() || urunAdi.isEmpty() || kategori.isEmpty()) return
+
         val birlesikIcindekiler = icindekilerListesi.joinToString(", ").trim()
 
         val urunMap = hashMapOf(
-            "urunAdi" to urunAdi.trim(),
+            "urunAdi"          to urunAdi.trim(),
             "urunAdiLowerCase" to urunAdi.lowercase().trim(),
-            "barkodNo" to barkodNo.trim(),
-            "kategori" to kategori.trim(),
-            "icindekiler" to birlesikIcindekiler,
-            "gorselUrl" to gorselUrl.trim()
+            "barkodNo"         to barkodNo.trim(),
+            "kategori"         to kategori.trim(),
+            "icindekiler"      to birlesikIcindekiler,
+            "gorselUrl"        to gorselUrl.trim(),
+            "kalori"           to kalori,
+            "protein"          to protein,
+            "karbonhidrat"     to karbonhidrat,
+            "yag"              to yag
         )
-
-        if (barkodNo.isEmpty() || urunAdi.isEmpty() || kategori.isEmpty()) return
 
         db.collection("urunler")
             .whereEqualTo("barkodNo", barkodNo)
             .get()
             .addOnSuccessListener { querySnapshot ->
-                if (querySnapshot.isEmpty) db.collection("urunler").add(urunMap)
+                if (querySnapshot.isEmpty) {
+                    // Yeni ürün → ekle
+                    db.collection("urunler").add(urunMap)
+                    Log.d("urunKaydet", "Yeni ürün kaydedildi: $urunAdi")
+                } else {
+                    // Mevcut ürün → sadece eksik besin değerleri varsa güncelle
+                    val docRef = querySnapshot.documents.first().reference
+                    val mevcutKalori = querySnapshot.documents.first().getLong("kalori")?.toInt() ?: 0
+                    if (mevcutKalori == 0 && kalori > 0) {
+                        docRef.update(
+                            mapOf(
+                                "kalori"      to kalori,
+                                "protein"     to protein,
+                                "karbonhidrat" to karbonhidrat,
+                                "yag"         to yag
+                            )
+                        )
+                        Log.d("urunKaydet", "Mevcut ürün besin değerleri güncellendi: $urunAdi")
+                    }
+                }
             }
 
-        val bildiriMap = hashMapOf(
-            "durum" to "OFF'tan Ürün Kayıt Edildi.",
-            "urunAdi" to urunAdi,
-            "barkodNo" to barkodNo,
-            "mesaj" to "OFF'tan kayıt edilen ürün.",
-            "zaman" to FieldValue.serverTimestamp()
+        // Bildiri kaydı (OFF'tan gelen ürünler için)
+        db.collection("bildiriler").add(
+            hashMapOf(
+                "durum"    to "OFF'tan Ürün Kayıt Edildi.",
+                "urunAdi"  to urunAdi,
+                "barkodNo" to barkodNo,
+                "mesaj"    to "OFF'tan kayıt edilen ürün.",
+                "zaman"    to FieldValue.serverTimestamp()
+            )
         )
-
-        db.collection("bildiriler")
-            .add(bildiriMap)
     }
 }
