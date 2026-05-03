@@ -147,8 +147,8 @@ fun ChatWindow(onClose: () -> Unit) {
                     placeholder = { Text("Sorunuzu yazın...", fontSize = 14.sp) },
                     maxLines = 2,
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
+                        focusedContainerColor = MaterialTheme.colorScheme.primary,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
                 IconButton(
@@ -180,7 +180,7 @@ fun ChatWindow(onClose: () -> Unit) {
 @Composable
 fun ChatBubble(message: Message) {
     val alignment = if (message.isUser) Alignment.End else Alignment.Start
-    val color = if (message.isUser) MaterialTheme.colorScheme.primary else Color(0xFFE0E0E0)
+    val color = if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
     val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = alignment) {
