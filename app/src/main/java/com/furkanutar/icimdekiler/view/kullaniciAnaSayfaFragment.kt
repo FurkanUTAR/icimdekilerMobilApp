@@ -133,6 +133,9 @@ class kullaniciAnaSayfaFragment : Fragment() {
                         },
                         onRegisterClick = {
                             findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_kayitOlFragment)
+                        },
+                        onGunlukTakipClick = {
+                            findNavController().navigate(R.id.action_kullaniciAnaSayfaFragment_to_gunlukTakipFragment)
                         }
                     )
                 }

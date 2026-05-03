@@ -61,7 +61,7 @@ fun IcerikEkleScreen(
                 shape = RoundedCornerShape(16.dp),
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Yeni İçerik Ekle", modifier = Modifier.size(28.dp))
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.yeniIcerikEkle), modifier = Modifier.size(28.dp))
             }
         }
     ) { paddingValues ->
@@ -77,7 +77,7 @@ fun IcerikEkleScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "İçerik Yönetimi",
+                text = stringResource(R.string.icerikYonetimi),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = anaYesil,
@@ -120,7 +120,7 @@ fun IcerikEkleScreen(
                                 )
                             }
                             IconButton(onClick = { onSilClick(icerik.id) }) {
-                                Icon(Icons.Default.Delete, contentDescription = "Sil", tint = Color.Red.copy(alpha = 0.8f))
+                                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.sil), tint = Color.Red.copy(alpha = 0.8f))
                             }
                         }
                     }
@@ -145,7 +145,7 @@ fun IcerikEkleScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Yeni İçerik Ekle",
+                    text = stringResource(R.string.yeniIcerikEkle),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = anaYesil,

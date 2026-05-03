@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_kullaniciAnaSayfaFragment_to_kayitOlFragment"
             app:destination="@id/kayitOlFragment" />
+        <action
+            android:id="@+id/action_kullaniciAnaSayfaFragment_to_gunlukTakipFragment"
+            app:destination="@id/gunlukTakipFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAnaSayfaFragment"
@@ -178,4 +181,9 @@
             android:id="@+id/action_bildiriFragment_to_urunEkleFragment"
             app:destination="@id/urunEkleFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/gunlukTakipFragment"
+        android:name="com.furkanutar.icimdekiler.view.gunlukTakipFragment"
+        android:label="fragment_gunluk_takip"
+        tools:layout="@layout/fragment_gunluk_takip" />
 </navigation>

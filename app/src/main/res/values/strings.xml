@@ -40,6 +40,8 @@
     <string name="atistirmaliklar">Atıştırmalıklar</string>
     <string name="sutVeSutUrunleri">Süt ve Süt Ürünleri</string>
     <string name="temelGida">Temel Gıda</string>
+    <string name="icerikYonetimi">İçerik Yönetimi</string>
+    <string name="yeniIcerikEkle">Yeni İçerik Ekle</string>
     <string name="parolayiDegistir">Parolayı Değiştir</string>
     <string name="guncelParola">Güncel Parola</string>
     <string name="yeniParola">Yeni Parola</string>
@@ -68,6 +70,33 @@
     <string name="barkod">Barkod</string>
     <string name="aciklama">Açıklama</string>
     <string name="urunSayisi">Ürün Sayısı</string>
+
+    <!-- Günlük Takip Ekranı Metinleri -->
+    <string name="gunlukTakip">Günlük Takip</string>
+    <string name="tarihSec">Tarih Seç</string>
+    <string name="gunlukTakipVeHedefler">Günlük Takip &amp; Hedefler</string>
+    <string name="kaloriMakroVeIstatistikler">Kalori, Makro ve İstatistikler</string>
+    <string name="geri">Geri</string>
+    <string name="hedefDuzenle">Hedef Düzenle</string>
+    <string name="kaloriHedefi">Kalori Hedefi</string>
+    <string name="kalanKcal">Kalan: %s kcal</string>
+    <string name="makroDagilimi">Makro Dağılımı</string>
+    <string name="protein">Protein</string>
+    <string name="karbonhidrat">Karbonhidrat</string>
+    <string name="yag">Yağ</string>
+    <string name="tuketilenOgunler">Tüketilen Öğünler</string>
+    <string name="henuzUrunEklemediniz">Henüz bir ürün eklemediniz.</string>
+    <string name="hedefleriGuncelle">Hedefleri Güncelle</string>
+    <string name="gunlukKaloriKcal">Günlük Kalori (kcal)</string>
+    <string name="proteinGr">Protein (g)</string>
+    <string name="karbonhidratGr">Karbonhidrat (g)</string>
+    <string name="yagGr">Yağ (g)</string>
+    <string name="buEkranIcinGirisYapmalisiniz">Bu ekran için giriş yapmalısınız.</string>
+    <string name="hedeflerKaydedildi">Hedefler kaydedildi.</string>
+    <string name="hedeflerKaydedilemedi">Hedefler kaydedilemedi.</string>
+    <string name="lutfenOnceGirisYapin">Lütfen önce giriş yapın.</string>
+    <string name="kaydedilemedi">Kaydedilemedi.</string>
+    <string name="grKcalGunlugunuzeEklendi">%1$s gr (%2$s kcal) günlüğünüze eklendi</string>
 
     <!-- Diğer Metinler -->
     <string name="halaKayitOlmadinMi">Hâlâ Kayıt Olmadın Mı?</string>

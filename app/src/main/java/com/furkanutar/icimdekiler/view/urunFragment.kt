@@ -25,6 +25,7 @@ import java.util.Locale
 class urunFragment : Fragment() {
 
     private val db = Firebase.firestore
+    private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
     private val args: urunFragmentArgs by navArgs()
 
     private val icindekilerListesi = mutableStateListOf<String>()
@@ -66,12 +67,42 @@ class urunFragment : Fragment() {
                         },
                         onEkleClick = { miktar ->
                             Log.d("KaloriTakip", "Seçilen miktar: $miktar gram.")
-                            Toast.makeText(
-                                requireContext(),
-                                "$miktar gr günlüğünüze eklendi",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            // İleride buraya RoomDB kaydı gelecek
+                            
+                            val currentUser = auth.currentUser
+                            if (currentUser != null && miktar > 0) {
+                                val oran = miktar / 100f
+                                val hesaplananKalori = (kalori * oran).toInt()
+                                val hesaplananProtein = protein * oran
+                                val hesaplananKarb = karbonhidrat * oran
+                                val hesaplananYag = yag * oran
+                                
+                                val bugun = java.time.LocalDate.now().toString()
+                                val tuketimKaydi = hashMapOf(
+                                    "urunAdi" to urunAdi,
+                                    "kalori" to hesaplananKalori,
+                                    "protein" to hesaplananProtein,
+                                    "karbonhidrat" to hesaplananKarb,
+                                    "yag" to hesaplananYag,
+                                    "miktarGr" to miktar,
+                                    "timestamp" to FieldValue.serverTimestamp()
+                                )
+                                
+                                db.collection("users").document(currentUser.uid)
+                                    .collection("gunlukKayitlar").document(bugun)
+                                    .collection("urunler").add(tuketimKaydi)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.grKcalGunlugunuzeEklendi, miktar.toString(), hesaplananKalori.toString()),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(requireContext(), getString(R.string.kaydedilemedi), Toast.LENGTH_SHORT).show()
+                                    }
+                            } else if (currentUser == null) {
+                                Toast.makeText(requireContext(), getString(R.string.lutfenOnceGirisYapin), Toast.LENGTH_SHORT).show()
+                            }
                         }
                     )
                 }

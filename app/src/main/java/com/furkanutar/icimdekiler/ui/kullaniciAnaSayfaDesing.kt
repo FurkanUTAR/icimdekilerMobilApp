@@ -51,7 +51,8 @@ fun KullaniciAnaSayfaScreen(
     onSignOutConfirm: () -> Unit,
     onAyarlarClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onGunlukTakipClick: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -100,6 +101,7 @@ fun KullaniciAnaSayfaScreen(
                     // --- ORTA KISIM: MENÜ ÖĞELERİ ---
                     if (isLoggedIn) {
                         DrawerItem(R.drawable.settings, label = stringResource(R.string.ayarlar), onClick = onAyarlarClick)
+                        DrawerItem(R.drawable.calendar_meal, label = "Günlük Takip", onClick = onGunlukTakipClick)
                     }
 
                     // BU SPACER HER ŞEYİ AŞAĞI İTER
@@ -213,14 +215,10 @@ fun KullaniciAnaSayfaScreen(
 
                     // Kategori Izgarası
                     if (isLoggedIn) {
-                        /* Şimdilik kalori takibi rafa kaldırıldığı için gizlendi
-                        KaloriTakipKarti(
-                            gunlukKaloriHedefi = gunlukKaloriHedefi,
-                            harcananKalori = harcananKalori
+                        GunlukTakipKarti(
+                            onClick = onGunlukTakipClick
                         )
-
                         Spacer(modifier = Modifier.height(16.dp))
-                        */
                     }
 
                     KategoriBolumu(
@@ -230,7 +228,7 @@ fun KullaniciAnaSayfaScreen(
                     )
                 }
             }
-            
+
             // AI Chat Bot FAB
             ChatBotFab(modifier = Modifier.align(Alignment.BottomEnd))
         }
@@ -277,43 +275,27 @@ private fun KategoriBolumu(
 }
 
 @Composable
-private fun KaloriTakipKarti(
-    gunlukKaloriHedefi: Int,
-    harcananKalori: Int
+private fun GunlukTakipKarti(
+    onClick: () -> Unit
 ) {
-    val kalanKalori = (gunlukKaloriHedefi - harcananKalori).coerceAtLeast(0)
-    val progress = (harcananKalori.toFloat() / gunlukKaloriHedefi.toFloat()).coerceIn(0f, 1f)
-
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Kalori Takibi", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Kalan", color = Color.Gray)
-                Text("$kalanKalori kcal", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text("Günlük Takip & Hedefler", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MaterialTheme.colorScheme.onPrimary)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Kalori, Makro ve İstatistikler", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f))
             }
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-                    .height(8.dp)
-                    .clip(CircleShape),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = Color.LightGray.copy(alpha = 0.4f)
-            )
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Alınan: $harcananKalori kcal", fontSize = 12.sp, color = Color.Gray)
-                Text("Hedef: $gunlukKaloriHedefi kcal", fontSize = 12.sp, color = Color.Gray)
-            }
+            Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(32.dp))
         }
     }
 }
