@@ -1,57 +1,38 @@
 package com.furkanutar.icimdekiler.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.furkanutar.icimdekiler.R
 
@@ -64,7 +45,12 @@ data class UrunEkleUiState(
     val icindekilerListesi: List<String> = emptyList(),
     val kategoriler: List<String> = emptyList(),
     val icerikler: List<String> = emptyList(),
-    val yeniMi: Boolean = true
+    val yeniMi: Boolean = true,
+    // Besin Değerleri (100g başına)
+    val kalori: String = "",
+    val protein: String = "",
+    val karbonhidrat: String = "",
+    val yag: String = ""
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,185 +69,417 @@ fun UrunEkleScreen(
     onSilClick: () -> Unit,
     onIcerikYerDegistir: (Int, Int) -> Unit,
     onIcerikMetinDegistir: (String) -> Unit,
+    // Besin Değerleri Callback'leri
+    onKaloriChange: (String) -> Unit = {},
+    onProteinChange: (String) -> Unit = {},
+    onKarbonhidratChange: (String) -> Unit = {},
+    onYagChange: (String) -> Unit = {},
 ) {
-    // Klavye açıldığında ekranın kaydırılabilmesi için scroll state
     val scrollState = rememberScrollState()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(scrollState) // Klavye odaklı kaydırma için eklendi
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Ürün Görseli
-        Surface(
+        // Arka Plan Gradiyenti (Üst Kısım İçin)
+        Box(
             modifier = Modifier
-                .size(120.dp)
-                .clickable { onGorselSecClick() },
-            shape = CircleShape,
-            shadowElevation = 6.dp,
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(2.dp, Color(0xFF4CAF50)) // Vurgu için yeşil çerçeve
-        ) {
-            AsyncImage(
-                model = state.seciliGorselUrl,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize().clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.insert_photo),
-                error = painterResource(R.drawable.insert_photo)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Barkod Alanı
-        OutlinedTextField(
-            value = state.barkodNo,
-            onValueChange = onBarkodChange,
-            label = { Text(stringResource(R.string.barkod)) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            trailingIcon = {
-                IconButton(onClick = onBarkodOkuClick) {
-                    // DÜZELTME: R.drawable doğrudan verilmez, painterResource kullanılır
-                    Icon(
-                        painter = painterResource(id = R.drawable.barcode_reader),
-                        contentDescription = stringResource(R.string.barkod),
-                        modifier = Modifier.size(24.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            Color.Transparent
+                        )
                     )
-                }
-            }
+                )
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Ürün Adı
-        OutlinedTextField(
-            value = state.urunAdi,
-            onValueChange = onUrunAdiChange,
-            label = { Text(stringResource(R.string.urunAdi)) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Kategori Dropdown
-        UrunEkleDropdown(
-            label = stringResource(R.string.kategori),
-            options = state.kategoriler,
-            selectedValue = state.seciliKategori,
-            onSelect = onKategoriSec
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // İçerik Ekleme Satırı
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                YazilabilirDropdown(
-                    label = stringResource(R.string.icerik),
-                    options = state.icerikler,
-                    selectedValue = state.seciliIcerik,
-                    onValueChange = onIcerikMetinDegistir, // Yazılan metni yakalar
-                    onSelect = onIcerikSec
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Durum Rozeti (Yeni / Düzenleme)
+            Surface(
+                color = if (state.yeniMi) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.padding(bottom = 16.dp)
+            ) {
+                Text(
+                    text = if (state.yeniMi) stringResource(R.string.yeniUrun) else stringResource(R.string.mevcutUrun),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (state.yeniMi) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
 
-            IconButton(
-                onClick = onIcerikEkle,
+            // Başlık
+            Text(
+                text = if (state.yeniMi) stringResource(R.string.urunEkle) else stringResource(R.string.urunDuzenle),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.5.sp
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Ürün Görseli Kartı
+            Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary, CircleShape)
-                    .size(48.dp)
+                    .size(140.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .clickable { onGorselSecClick() }
+                    .shadow(12.dp, CircleShape),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                AsyncImage(
+                    model = state.seciliGorselUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.insert_photo),
+                    error = painterResource(R.drawable.insert_photo)
+                )
+                
+                // Kamera İkonu (Görsel Seçme İpucu)
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 8.dp, bottom = 8.dp)
+                        .size(36.dp)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        // İçindekiler Listesi (LazyColumn bir Box veya sabit yükseklik içinde olmalı)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 400.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(2.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(1.dp, Color(0xFF4CAF50))
-        ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(state.icindekilerListesi) { index, item ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .background(MaterialTheme.colorScheme.surface),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            if (index > 0) {
-                                IconButton(onClick = { onIcerikYerDegistir(index, index - 1) }, modifier = Modifier.size(24.dp)) {
-                                    Icon(painterResource(R.drawable.arrow_up), contentDescription = null, tint = Color.Gray)
-                                }
-                            }
-                            if (index < state.icindekilerListesi.size - 1) {
-                                IconButton(onClick = { onIcerikYerDegistir(index, index + 1) }, modifier = Modifier.size(24.dp)) {
-                                    Icon(painterResource(R.drawable.arrow_down), contentDescription = null, tint = Color.Gray)
-                                }
-                            }
-                        }
-
-                        Text(
-                            text = item,
-                            modifier = Modifier.weight(1f).padding(start = 8.dp),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-
-                        IconButton(onClick = { onIcerikSil(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
+            // TEMEL BİLGİLER BÖLÜMÜ
+            SectionCard(title = stringResource(R.string.temelBilgiler)) {
+                // Barkod Alanı
+                OutlinedTextField(
+                    value = state.barkodNo,
+                    onValueChange = onBarkodChange,
+                    label = { Text(stringResource(R.string.barkod)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    leadingIcon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
+                    trailingIcon = {
+                        IconButton(onClick = onBarkodOkuClick) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.barcode_reader),
+                                contentDescription = stringResource(R.string.barkod),
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
-                    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Ürün Adı
+                OutlinedTextField(
+                    value = state.urunAdi,
+                    onValueChange = onUrunAdiChange,
+                    label = { Text(stringResource(R.string.urunAdi)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    leadingIcon = { Icon(Icons.Default.Label, contentDescription = null) }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Kategori Dropdown
+                UrunEkleDropdown(
+                    label = stringResource(R.string.kategori),
+                    options = state.kategoriler,
+                    selectedValue = state.seciliKategori,
+                    onSelect = onKategoriSec
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // BESİN DEĞERLERİ BÖLÜMÜ
+            SectionCard(title = stringResource(R.string.besinDegerleri)) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        MacroInput(
+                            value = state.kalori,
+                            onValueChange = onKaloriChange,
+                            label = stringResource(R.string.kaloriKcal100g),
+                            icon = Icons.Default.LocalFireDepartment,
+                            modifier = Modifier.weight(1f)
+                        )
+                        MacroInput(
+                            value = state.protein,
+                            onValueChange = onProteinChange,
+                            label = stringResource(R.string.protein100g),
+                            icon = Icons.Default.FitnessCenter,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        MacroInput(
+                            value = state.karbonhidrat,
+                            onValueChange = onKarbonhidratChange,
+                            label = stringResource(R.string.karbonhidrat100g),
+                            icon = Icons.Default.Grain,
+                            modifier = Modifier.weight(1f)
+                        )
+                        MacroInput(
+                            value = state.yag,
+                            onValueChange = onYagChange,
+                            label = stringResource(R.string.yag100g),
+                            icon = Icons.Default.Opacity,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // İÇİNDEKİLER BÖLÜMÜ
+            SectionCard(title = stringResource(R.string.icindekiler)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        YazilabilirDropdown(
+                            label = stringResource(R.string.icerikSecEkle),
+                            options = state.icerikler,
+                            selectedValue = state.seciliIcerik,
+                            onValueChange = onIcerikMetinDegistir,
+                            onSelect = onIcerikSec
+                        )
+                    }
+
+                    FloatingActionButton(
+                        onClick = onIcerikEkle,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(56.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Eklenen İçerikler Listesi
+                AnimatedVisibility(
+                    visible = state.icindekilerListesi.isNotEmpty(),
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 400.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(8.dp)
+                        ) {
+                            itemsIndexed(state.icindekilerListesi) { index, item ->
+                                IngredientItem(
+                                    name = item,
+                                    index = index,
+                                    isLast = index == state.icindekilerListesi.size - 1,
+                                    isFirst = index == 0,
+                                    onMoveUp = { onIcerikYerDegistir(index, index - 1) },
+                                    onMoveDown = { onIcerikYerDegistir(index, index + 1) },
+                                    onDelete = { onIcerikSil(index) }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // AKSİYON BUTONLARI
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                if (!state.yeniMi) {
+                    OutlinedButton(
+                        onClick = onSilClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Icon(Icons.Default.Delete, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.sil), fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                Button(
+                    onClick = onKaydetClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp)
+                        .shadow(8.dp, RoundedCornerShape(16.dp)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Icon(Icons.Default.Save, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (state.yeniMi) stringResource(R.string.kaydet) else stringResource(R.string.guncelle),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+        }
+    }
+}
+
+@Composable
+fun SectionCard(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(4.dp, RoundedCornerShape(20.dp)),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            content()
+        }
+    }
+}
+
+@Composable
+fun MacroInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label, fontSize = 11.sp) },
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        leadingIcon = { Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp)) }
+    )
+}
+
+@Composable
+fun IngredientItem(
+    name: String,
+    index: Int,
+    isFirst: Boolean,
+    isLast: Boolean,
+    onMoveUp: () -> Unit,
+    onMoveDown: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Sıralama Butonları
+        Column {
+            IconButton(
+                onClick = onMoveUp,
+                enabled = !isFirst,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    Icons.Default.ArrowDropUp,
+                    contentDescription = null,
+                    tint = if (isFirst) Color.LightGray else MaterialTheme.colorScheme.primary
+                )
+            }
+            IconButton(
+                onClick = onMoveDown,
+                enabled = !isLast,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = if (isLast) Color.LightGray else MaterialTheme.colorScheme.primary
+                )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
-        // Aksiyon Butonları
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (!state.yeniMi) {
-                Button(
-                    onClick = onSilClick,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(text = stringResource(R.string.sil), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onError)
-                }
-            }
+        Text(
+            text = "${index + 1}. $name",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium
+        )
 
-            Button(
-                onClick = onKaydetClick,
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(text = stringResource(R.string.kaydet), color = MaterialTheme.colorScheme.onPrimary)
-            }
+        IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
+            Icon(Icons.Default.RemoveCircle, contentDescription = null, tint = MaterialTheme.colorScheme.error)
         }
     }
 }
@@ -272,24 +490,22 @@ private fun UrunEkleDropdown(
     label: String,
     options: List<String>,
     selectedValue: String,
-    onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onSelect: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
+        onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
             value = selectedValue,
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
+            shape = RoundedCornerShape(12.dp),
+            leadingIcon = { Icon(Icons.Default.Category, contentDescription = null) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
@@ -318,7 +534,7 @@ private fun YazilabilirDropdown(
     label: String,
     options: List<String>,
     selectedValue: String,
-    onValueChange: (String) -> Unit, // Yazılanı iletir
+    onValueChange: (String) -> Unit,
     onSelect: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -329,20 +545,22 @@ private fun YazilabilirDropdown(
     ) {
         OutlinedTextField(
             value = selectedValue,
-            onValueChange = onValueChange, // Kullanıcı yazabilir
+            onValueChange = onValueChange,
             label = { Text(label) },
+            shape = RoundedCornerShape(12.dp),
+            leadingIcon = { Icon(Icons.Default.EditNote, contentDescription = null) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             singleLine = true
         )
 
-        // Sadece seçenekler varsa menüyü göster
         if (options.isNotEmpty()) {
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                // Filtreleme mantığı: Yazılan harflere göre listeyi daraltır
                 options.filter { it.contains(selectedValue, ignoreCase = true) }.forEach { option ->
                     DropdownMenuItem(
                         text = { Text(option) },

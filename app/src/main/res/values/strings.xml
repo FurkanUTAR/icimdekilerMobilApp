@@ -70,6 +70,18 @@
     <string name="barkod">Barkod</string>
     <string name="aciklama">Açıklama</string>
     <string name="urunSayisi">Ürün Sayısı</string>
+    <string name="urunDuzenle">Ürün Düzenle</string>
+    <string name="temelBilgiler">Temel Bilgiler</string>
+    <string name="icerikSecEkle">İçerik Seç veya Ekle</string>
+    <string name="yeniUrun">Yeni Ürün</string>
+    <string name="mevcutUrun">Mevcut Ürün</string>
+
+    <!-- Besin Değerleri -->
+    <string name="besinDegerleri">Besin Değerleri (100g)</string>
+    <string name="kaloriKcal100g">Kalori (kcal)</string>
+    <string name="protein100g">Protein (g)</string>
+    <string name="karbonhidrat100g">Karbonhidrat (g)</string>
+    <string name="yag100g">Yağ (g)</string>
 
     <!-- Günlük Takip Ekranı Metinleri -->
     <string name="gunlukTakip">Günlük Takip</string>

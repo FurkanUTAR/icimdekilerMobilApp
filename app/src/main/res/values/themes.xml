@@ -27,7 +27,22 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fitsSystemWindows">false</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.Icimdekiler.BottomSheetDialog</item>
     </style>
 
     <style name="Theme.Icimdekiler" parent="Base.Theme.Icimdekiler" />
+
+    <style name="Theme.Icimdekiler.BottomSheetDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Icimdekiler.BottomSheet</item>
+    </style>
+
+    <style name="Widget.Icimdekiler.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Icimdekiler.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.Icimdekiler.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
 </resources>

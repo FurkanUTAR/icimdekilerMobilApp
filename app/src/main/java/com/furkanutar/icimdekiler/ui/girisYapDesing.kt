@@ -69,7 +69,7 @@ fun GirisYapScreen(girisYapTiklandi: (String, String, String) -> Unit, kayitOlTi
             shape = CircleShape
         ) {
             Image(
-                bitmap = ImageBitmap.imageResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

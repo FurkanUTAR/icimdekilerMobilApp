@@ -262,7 +262,7 @@ class kullaniciAnaSayfaFragment : Fragment() {
                 }
             } else {
                 try {
-                    val dialog = BottomSheetDialog(requireContext())
+                    val dialog = BottomSheetDialog(requireContext(), R.style.Theme_Icimdekiler_BottomSheetDialog)
                     val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
                     dialog.setContentView(view)
                     dialog.show()

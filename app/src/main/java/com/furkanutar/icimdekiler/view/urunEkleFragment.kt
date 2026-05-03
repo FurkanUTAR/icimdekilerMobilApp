@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -82,6 +83,12 @@ class urunEkleFragment : Fragment() {
     private var secilenGorselUri by mutableStateOf<Uri?>(null)
     private var secilenGorselUrl by mutableStateOf<String?>(null)
 
+    // Besin Değerleri (100g başına)
+    private var kalori by mutableStateOf("")
+    private var protein by mutableStateOf("")
+    private var karbonhidrat by mutableStateOf("")
+    private var yag by mutableStateOf("")
+
     private var showOzelDialog by mutableStateOf(false)
     private var dialogBaslik by mutableStateOf("")
     private var pendingAction by mutableStateOf<(() -> Unit)?>(null)
@@ -115,10 +122,14 @@ class urunEkleFragment : Fragment() {
                         seciliKategori = seciliKategori,
                         seciliIcerik = seciliIcerik,
                         seciliGorselUrl = secilenGorselUri?.toString() ?: secilenGorselUrl,
-                        icindekilerListesi = icindekilerListesi.toList(), // Compose'un değişikliği fark etmesi için toList()
+                        icindekilerListesi = icindekilerListesi.toList(),
                         kategoriler = kategoriler,
                         icerikler = icerikListesi,
-                        yeniMi = durum == "yeni"
+                        yeniMi = durum == "yeni",
+                        kalori = kalori,
+                        protein = protein,
+                        karbonhidrat = karbonhidrat,
+                        yag = yag
                     ),
                     onBarkodChange = { barkodNo = it },
                     onBarkodOkuClick = {
@@ -134,10 +145,14 @@ class urunEkleFragment : Fragment() {
                     onIcerikSec = { seciliIcerik = it },
                     // YENİ: ComboBox içine bir şey yazıldığında tetiklenir
                     onIcerikMetinDegistir = { seciliIcerik = it },
+                    onKaloriChange = { kalori = it },
+                    onProteinChange = { protein = it },
+                    onKarbonhidratChange = { karbonhidrat = it },
+                    onYagChange = { yag = it },
                     onIcerikEkle = {
                         if (seciliIcerik.isNotBlank()) {
                             icindekilerListesi.add(seciliIcerik)
-                            seciliIcerik = "" // Eklendikten sonra kutuyu temizle
+                            seciliIcerik = ""
                         }
                     },
                     onIcerikSil = { index ->
@@ -253,6 +268,27 @@ class urunEkleFragment : Fragment() {
 
             icindekilerListesi.addAll(parcalanmisListe)
         }
+
+        // Mevcut ürünü düzenlerken besin değerlerini Firestore'dan çek
+        if (durum != "yeni" && documentId.isNotBlank()) {
+            db.collection("urunler").document(documentId).get()
+                .addOnSuccessListener { doc ->
+                    if (doc.exists()) {
+                        kalori = doc.getDouble("kalori")?.let {
+                            if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
+                        } ?: ""
+                        protein = doc.getDouble("protein")?.let {
+                            if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
+                        } ?: ""
+                        karbonhidrat = doc.getDouble("karbonhidrat")?.let {
+                            if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
+                        } ?: ""
+                        yag = doc.getDouble("yag")?.let {
+                            if (it % 1.0 == 0.0) it.toInt().toString() else it.toString()
+                        } ?: ""
+                    }
+                }
+        }
     }
 
     private fun kategorileriHazirla() {
@@ -310,7 +346,7 @@ class urunEkleFragment : Fragment() {
                 }
             } else {
                 try {
-                    val dialog = BottomSheetDialog(requireContext())
+                    val dialog = BottomSheetDialog(requireContext(), R.style.Theme_Icimdekiler_BottomSheetDialog)
                     val view = layoutInflater.inflate(R.layout.dialog_barkod_okuma, null)
                     dialog.setContentView(view)
                     dialog.show()
@@ -685,7 +721,11 @@ class urunEkleFragment : Fragment() {
             "barkodNo" to barkod,
             "kategori" to kategori,
             "icindekiler" to icerik,
-            "gorselUrl" to url
+            "gorselUrl" to url,
+            "kalori" to (kalori.toDoubleOrNull() ?: 0.0),
+            "protein" to (protein.toDoubleOrNull() ?: 0.0),
+            "karbonhidrat" to (karbonhidrat.toDoubleOrNull() ?: 0.0),
+            "yag" to (yag.toDoubleOrNull() ?: 0.0)
         )
 
         db.collection("urunler")
@@ -727,7 +767,11 @@ class urunEkleFragment : Fragment() {
             "urunAdiLowerCase" to adLower,
             "barkodNo" to barkod,
             "kategori" to seciliKategori,
-            "icindekiler" to icindekilerListesi.joinToString(", ")
+            "icindekiler" to icindekilerListesi.joinToString(", "),
+            "kalori" to (kalori.toDoubleOrNull() ?: 0.0),
+            "protein" to (protein.toDoubleOrNull() ?: 0.0),
+            "karbonhidrat" to (karbonhidrat.toDoubleOrNull() ?: 0.0),
+            "yag" to (yag.toDoubleOrNull() ?: 0.0)
         )
 
         val seciliUri = secilenGorselUri

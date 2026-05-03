@@ -71,11 +71,15 @@ class adminTumUrunlerFragment : Fragment() {
             value?.let { snapshot ->
                 val liste = snapshot.documents.mapNotNull { doc ->
                     Urunler(
-                        doc.getString("barkodNo") ?: "",
-                        doc.getString("urunAdi") ?: "",
-                        doc.getString("icindekiler") ?: "",
-                        doc.getString("gorselUrl") ?: "",
-                        doc.id
+                        barkodNo = doc.getString("barkodNo") ?: "",
+                        urunAdi = doc.getString("urunAdi") ?: "",
+                        icindekiler = doc.getString("icindekiler") ?: "",
+                        gorselUrl = doc.getString("gorselUrl") ?: "",
+                        documentId = doc.id,
+                        kalori = doc.getLong("kalori")?.toInt() ?: 0,
+                        protein = doc.getDouble("protein")?.toFloat() ?: 0f,
+                        karbonhidrat = doc.getDouble("karbonhidrat")?.toFloat() ?: 0f,
+                        yag = doc.getDouble("yag")?.toFloat() ?: 0f
                     )
                 }
                 urunListesiState.value = liste
@@ -103,11 +107,15 @@ class adminTumUrunlerFragment : Fragment() {
 
                 if (normalizedQuery.isEmpty() || normalizedUrunAdi.contains(normalizedQuery)) {
                     Urunler(
-                        doc.getString("barkodNo") ?: "",
-                        urunAdi,
-                        doc.getString("icindekiler") ?: "",
-                        doc.getString("gorselUrl") ?: "",
-                        doc.id
+                        barkodNo = doc.getString("barkodNo") ?: "",
+                        urunAdi = urunAdi,
+                        icindekiler = doc.getString("icindekiler") ?: "",
+                        gorselUrl = doc.getString("gorselUrl") ?: "",
+                        documentId = doc.id,
+                        kalori = doc.getLong("kalori")?.toInt() ?: 0,
+                        protein = doc.getDouble("protein")?.toFloat() ?: 0f,
+                        karbonhidrat = doc.getDouble("karbonhidrat")?.toFloat() ?: 0f,
+                        yag = doc.getDouble("yag")?.toFloat() ?: 0f
                     )
                 } else null
             }
