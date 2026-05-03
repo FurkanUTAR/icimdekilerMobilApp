@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dynamic Theme Colors (Dark) -->
+    <color name="theme_bg">#121212</color>
+    <color name="theme_surface">#1E1E1E</color>
+    <color name="theme_text">#E0E0E0</color>
+    <color name="theme_icon">#E0E0E0</color>
+    <color name="theme_primary">#66BB6A</color>
+    <color name="theme_secondary">#4CAF50</color>
+    <color name="theme_outline">#9E9E9E</color>
+
+    <!-- Overrides for hardcoded layout colors -->
+    <color name="text_black">#E0E0E0</color> <!-- Light text in dark mode -->
+    <color name="text_white">#1E1E1E</color> <!-- Dark text/bg in dark mode -->
+    <color name="textPrimary">#E0E0E0</color>
+    <color name="primary_green">#66BB6A</color>
+    <color name="secondary_green">#4CAF50</color>
+    <color name="border_green">#388E3C</color>
+    <color name="hint_green">#81C784</color>
+    <color name="buttonRed">#E57373</color>
+    <color name="black">#FFFFFF</color> <!-- If black was used for text, it will be white -->
+    <color name="white">#121212</color> <!-- If white was used for background, it will be dark -->
+</resources>

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -233,23 +235,30 @@ private fun AdminCategoryCard(category: AdminCategory) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp), // Dış boşluk
+            horizontalAlignment = Alignment.CenterHorizontally, // Yatayda her şeyi ortala
+            verticalArrangement = Arrangement.Center // Dikeyde her şeyi ortala
+        ) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
+                    .size(60.dp), // İkonun boyutunu buradan sabitle (en ideali 56dp-64dp arasıdır)
                 contentScale = ContentScale.Fit
             )
+
+            Spacer(modifier = Modifier.height(8.dp)) // İkon ile metin arasındaki boşluk
+
             Text(
                 text = stringResource(id = category.titleRes),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 10.dp),
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center, // Metin uzunsa ortalasın
+                lineHeight = 16.sp // Satır aralığını daraltarak daha derli toplu gösterir
             )
         }
     }

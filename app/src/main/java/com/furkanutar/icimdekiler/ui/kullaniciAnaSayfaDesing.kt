@@ -177,14 +177,16 @@ fun KullaniciAnaSayfaScreen(
                     IconButton(
                         onClick = onBarcodeClick,
                         modifier = Modifier
-                            .size(90.dp)
-                            .padding(vertical = 8.dp)
+                            .size(110.dp) // Butonun genel tıklama alanı
+                            .padding(8.dp) // Dış çerçeveden biraz nefes aldırır
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.barcode_reader),
                             contentDescription = "Barkod Oku",
-                            modifier = Modifier.fillMaxSize(),
-                            tint = Color.Unspecified // Logonun kendi renklerini korur
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp), // İkonun butonun sınırlarına yapışmasını engeller, daha kibar durur
+                            tint = Color.Unspecified
                         )
                     }
 
@@ -345,22 +347,33 @@ private fun KullaniciCategoryCard(
         onClick = category.onClick,
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp), // İçerideki tüm elemanların karta olan mesafesi
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize().padding(15.dp),
+                modifier = Modifier
+                    .size(64.dp) // İkon boyutunu buradan kontrol et, çok gelirse 56.dp yapabilirsin
+                    .weight(1f), // İkonun kartın üst kısmındaki boşluğu verimli kullanmasını sağlar
                 contentScale = ContentScale.Fit
             )
+
+            Spacer(modifier = Modifier.height(8.dp)) // İkon ile metin arasındaki nefes alma alanı
+
             Text(
                 text = stringResource(id = category.titleRes),
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 12.dp),
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center
             )
         }
     }

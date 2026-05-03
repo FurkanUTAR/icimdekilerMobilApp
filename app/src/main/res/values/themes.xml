@@ -2,14 +2,31 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Icimdekiler" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/theme_primary</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/theme_secondary</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+
+        <item name="colorTertiary">@color/theme_primary</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/theme_primary</item>
+        <item name="colorOnTertiaryContainer">@color/white</item>
+
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="colorOnSurface">@color/theme_text</item>
+        <item name="android:windowBackground">@color/theme_bg</item>
+        <item name="android:textColorPrimary">@color/theme_text</item>
+
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fitsSystemWindows">false</item>
-
-
-
     </style>
 
     <style name="Theme.Icimdekiler" parent="Base.Theme.Icimdekiler" />
